@@ -1,0 +1,254 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#-----------------------------------------
+# texcoord[0]	= TEX0 texcoords
+# attrib[9]		= tangent[0]
+# attrib[10]	= tangent[1]
+# attrib[11]	= normal
+#
+# env[5]		= localViewOrigin
+# env[6]		= modelMatrix[0]
+# env[7]		= modelMatrix[1]
+# env[8]		= modelMatrix[2]
+#
+# local[0]		= scroll
+# local[1]		= deform magnitude (1.0 is reasonable, 2.0 is twice as wavy, 0.5 is half as wavy, etc)
+# local[2]		= refract color
+# local[3]		= reflect color
+# 
+# output:
+#-----------------------------------------
+# texCoord[0]	= normal map texcoord
+# texCoord[1]	= vector to the eye in global space
+# texCoord[2]	= surface tangent to global coordiantes
+# texCoord[3]	= surface bitangent to global coordiantes
+# texCoord[4]	= surface normal to global coordiantes
+# texCoord[5]	= copied deform magnitude
+
+PARAM	scale	= { 2.0, 2.0, 2.0, 2.0 };
+PARAM	vec		= { 1.0, 0.0, 0.0, 1.0 };
+
+TEMP	R0, R1, R2;
+
+# texture 0 gets the texture coordinates
+MOV		result.texcoord[0], vertex.texcoord[0];
+
+# calculate vector to viewer in global coordinates
+ADD		R0, program.env[5], -vertex.position;
+DP3		result.texcoord[1].x, R0, program.env[6];
+DP3		result.texcoord[1].y, R0, program.env[7];
+DP3		result.texcoord[1].z, R0, program.env[8];
+
+# texture 2 gets the transformed tangent
+DP3		result.texcoord[2].x, vertex.attrib[9], program.env[6];
+DP3		result.texcoord[2].y, vertex.attrib[10], program.env[6];
+DP3		result.texcoord[2].z, vertex.normal, program.env[6];
+
+# texture 3 gets the transformed bitangent
+DP3		result.texcoord[3].x, vertex.attrib[9], program.env[7];
+DP3		result.texcoord[3].y, vertex.attrib[10], program.env[7];
+DP3		result.texcoord[3].z, vertex.normal, program.env[7];
+
+# texture 4 gets the transformed normal
+DP3		result.texcoord[4].x, vertex.attrib[9], program.env[8];
+DP3		result.texcoord[4].y, vertex.attrib[10], program.env[8];
+DP3		result.texcoord[4].z, vertex.normal, program.env[8];
+
+# vertex depth 
+DP4		result.texcoord[5].x, vertex.position, state.matrix.modelview.row[0];
+DP4		result.texcoord[5].y, vertex.position, state.matrix.modelview.row[1];
+DP4		result.texcoord[5].z, vertex.position, state.matrix.modelview.row[2];
+DP4		result.texcoord[5].w, vertex.position, state.matrix.modelview.row[3];
+DP4		result.texcoord[5].x, vertex.position, state.matrix.mvp.row[0];
+DP4		result.texcoord[5].y, vertex.position, state.matrix.mvp.row[1];
+DP4		result.texcoord[5].z, vertex.position, state.matrix.mvp.row[2];
+DP4		result.texcoord[5].w, vertex.position, state.matrix.mvp.row[3];
+
+MOV		result.texcoord[6], vertex.normal;
+
+# DP4 	R1.x, vertex.position, state.matrix.mvp.row[3];
+# MAX 	R1.x, R1.x, 64.0;
+# RCP 	R1.x, R1.x;
+
+# MOV 	result.texcoord[4], program.local[0];	# Fresnel parms
+# MUL 	result.texcoord[4].w, program.local[0].w, R1.x; # distortion scale
+
+# MOV 	result.texcoord[6], program.env[21];
+
+# MAD 	result.position, program.local[0], 0.001, vertex.position;
+# MOV 	result.position, vertex.position;
+
+END
+
+#==================================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_nicest;
+
+# per-pixel reflection-refraction liquid
+
+# texture 0	= environment cube map
+# texture 1	= normal map
+# texture 2	= _currentRender
+#
+# env[0]	= 1.0 to _currentRender conversion
+# env[1]	= fragment.position to 0.0 - 1.0 conversion
+
+OUTPUT 	oColor 		= result.color;
+OUTPUT 	oDepth 		= result.depth;
+
+ATTRIB	fPos		= fragment.position;
+ATTRIB 	TC			= fragment.texcoord[0];
+ATTRIB 	viewVecTC 	= fragment.texcoord[1];
+ATTRIB 	tangent 	= fragment.texcoord[2];
+ATTRIB 	bitangent 	= fragment.texcoord[3];
+ATTRIB 	normal	 	= fragment.texcoord[4];
+ATTRIB	vDepth		= fragment.texcoord[5];
+ATTRIB	surfNormal	= fragment.texcoord[6];
+
+PARAM 	nonPoT		= program.env[0];
+PARAM 	invRes		= program.env[1];
+PARAM 	proj2view	= program.env[20];
+
+PARAM	scroll		= program.local[0];	# scroll parms
+PARAM	fresnelParm	= program.local[1];	# fresnel power, bias, 1 - bias
+PARAM	refractCol	= program.local[2];	# refraction color, distortion scale
+PARAM	reflectCol	= program.local[3];	# reflection color, distortion scale
+PARAM	contrast	= program.local[4];	# depth fade, fade constrast
+
+PARAM	const		= { -1.0,  1.0,  2.0,  4.0 };
+PARAM	const2		= {  0.25, 0.5,  0.75, 1.5 };
+PARAM	cdParm 		= {  0.95,  0.95,  1.05,  1.05 };
+PARAM 	uvScale		= {  2.0,  2.0,  0.0 };
+PARAM 	uvBias		= { -1.0, -1.0,  1.0 };
+
+TEMP	uv, invres, viewVec, normalVec, wNormalVec, reflectVec, depthMod;
+TEMP 	fresnel, color, cubemap, depth, alpha, R0, R1, R2, R3;
+TEMP 	reflectNorm, refractNorm;
+
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL		R0, fPos, invRes;
+TEX		depth, R0, texture[3], 2D;
+SGE 	R2, depth, 1.0;
+
+# calculate the view space z by deriving w from depth.  This will be negative.
+MAD 	depth, depth.z, 2.0, -1.0;
+ADD		depth.z, -depth.z, -proj2view.x;
+RCP		depth.z, depth.z;
+MUL		depth, depth.z, proj2view.y;
+
+# calculate the view space z by deriving w from depth.  This will be negative.
+MAD 	R1, fPos.z, 2.0, -1.0;
+ADD 	R1.x, -R1.z, -proj2view.x;
+RCP 	R1.x, R1.x;
+MUL 	R1.z, R1.x, proj2view.y;
+
+# basically, we start the fade when depth difference is scale input
+# value and fade to 0 using the contrast function below
+ADD 	alpha, R1.z, -depth.z;
+MUL_SAT alpha.x, alpha.x, contrast.x;
+
+# contrast function (from nVidia's "Soft Particles" paper by Tristan Lorach)
+SGE 	alpha.w, alpha.x, 0.5;
+ADD 	alpha.y, alpha.w, -alpha.x;
+ABS 	alpha.y, alpha.y;
+ADD_SAT alpha.y, alpha.y, alpha.y;
+POW 	alpha.y, alpha.y, contrast.y;
+MAD 	alpha.y, alpha.y, -0.5, alpha.w;
+ABS_SAT alpha.y, alpha.y;
+MUL_SAT alpha.z, alpha.x, contrast.z;
+ADD_SAT alpha.yz, alpha, R2;
+MUL_SAT alpha.w, vDepth.w, contrast.w;
+
+MAD		R0, TC.xyxy, { 0.75, 0.75, 1.25, 1.25 }, scroll;
+ADD		R1, TC.xyxy, -scroll;
+ADD		R0.xy, R0, R0;
+ADD		R1.zw, R1, R1;
+TEX		normalVec,  TC.xyxy, texture[1], 2D;
+TEX		R0, R0.zwzw, texture[1], 2D;
+ADD		normalVec, normalVec, R0;
+TEX		R0, R1.xyxy, texture[1], 2D;
+ADD		normalVec, normalVec, R0;
+TEX		R0, R1.zwzw, texture[1], 2D;
+ADD		normalVec, normalVec, R0;
+MAD		normalVec, normalVec, 2.0, -4.0;
+
+# normalize the normal vector
+DP3		normalVec.w, normalVec, normalVec;
+RSQ		normalVec.w, normalVec.w;
+MUL		normalVec.xyz, normalVec, normalVec.w;
+
+LRP		reflectNorm, reflectCol.w, normalVec, { 0.0, 0.0, 1.0 };
+LRP 	refractNorm, alpha.x, normalVec, { 0.0, 0.0, 1.0 };
+MUL		refractNorm, refractNorm, refractCol.w;
+
+# transform the surface normal by the local tangent space 
+DP3		wNormalVec.x, reflectNorm, tangent;
+DP3		wNormalVec.y, reflectNorm, bitangent;
+DP3		wNormalVec.z, reflectNorm, normal;
+
+# normalize
+DP3 	wNormalVec.w, wNormalVec, wNormalVec;
+RSQ 	wNormalVec.w, wNormalVec.w;
+MUL 	wNormalVec.xyz, wNormalVec, wNormalVec.w;
+
+# normalize vector to eye
+DP3		viewVec.w, viewVecTC, viewVecTC;
+RSQ		viewVec.w, viewVec.w;
+MUL		viewVec.xyz, viewVecTC, viewVec.w;
+
+# calculate reflection vector
+DP3		reflectVec.w, wNormalVec, viewVec;
+MUL		reflectVec.xyz, reflectVec.w, wNormalVec;
+MAD		reflectVec.xyz, reflectVec, const.z, -viewVec;
+
+# read the environment map with the reflection vector
+TEX		cubemap, reflectVec, texture[0], CUBE;
+
+# calculate fresnel
+MOV 	fresnel.x, reflectVec.w;
+ABS 	fresnel.y, reflectVec.w;
+ADD_SAT	fresnel.x, 1.0, -fresnel; 
+POW_SAT	fresnel.x, fresnel.x, fresnelParm.x;
+POW_SAT	fresnel.y, fresnel.y, fresnelParm.x;
+MAD_SAT fresnel, fresnel, fresnelParm.y, fresnelParm.z;
+ADD_SAT alpha.y, 1.0, -alpha.y;
+ADD_SAT alpha.w, 1.0, -alpha.w;
+MUL_SAT fresnel.y, fresnel.y, alpha.w;
+ADD_SAT fresnel.x, -alpha.y, fresnel.x;
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, nonPoT.zwzw;
+
+# offset by the scaled normalVec and clamp it to 0.0 - 1.0
+MAD_SAT R1, refractNorm.xyxy, cdParm, uv;
+ADD_SAT	R2, refractNorm.xyxy, uv;
+MIN 	R1, R1, nonPoT.xyxy;
+MIN 	R2, R2, nonPoT.xyxy;
+
+# sample the RGB values along the displacements
+TEX		color.x, R1.xyxy, texture[2], 2D;
+TEX		color.y, R2.xyxy, texture[2], 2D;
+TEX		color.z, R1.zwzw, texture[2], 2D;
+
+LRP 	R1.xyz, alpha.z, refractCol, color;
+LRP 	R2.xyz, 1, color, refractCol;
+
+DP3		wNormalVec.w, surfNormal, viewVec;
+CMP 	color.xyz, wNormalVec.w, R2, R1;
+MUL		cubemap.xyz, cubemap, reflectCol;
+CMP 	fresnel.x, wNormalVec.w, fresnel.y, fresnel.x;
+
+# ADD refract and reflect
+MAD		oColor.xyz, cubemap, fresnel.x, color;
+
+# ADD 	oColor.w, 1, -alpha.y;
+# MOV 	oColor.xyz, color;
+# MOV 	oColor.w, 1;
+
+# ADD	 	oDepth, depthMod, fPos;
+
+END

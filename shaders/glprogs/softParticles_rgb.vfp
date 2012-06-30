@@ -1,0 +1,77 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+MOV		result.texcoord[0], vertex.texcoord[0];
+DP4		result.texcoord[1].z, vertex.position, state.matrix.modelview.row[2];
+DP4		result.texcoord[1].w, vertex.position, state.matrix.modelview.row[3];
+RCP		result.texcoord[2].x, program.local[0].x;
+MOV		result.texcoord[2].y, program.local[0].x;
+MOV		result.texcoord[3], program.local[0].y;
+MOV		result.color, vertex.color;
+
+END
+
+#======================================================================
+
+!!ARBfp1.0
+OPTION ARB_precision_hint_nicest;
+
+# texture 0	= sprite color texture
+# texture 1	= _depth texture 
+
+OUTPUT 	oColor 	= result.color;
+OUTPUT 	oDepth 	= result.depth;
+
+ATTRIB 	vColor 	= fragment.color;
+ATTRIB 	fPos 	= fragment.position;
+ATTRIB	TC		= fragment.texcoord[0];
+ATTRIB	vDepth	= fragment.texcoord[1];
+ATTRIB	scale	= fragment.texcoord[2];
+ATTRIB	contrast= fragment.texcoord[3];
+
+PARAM 	nonPoT	= program.env[0];
+PARAM 	invRes	= program.env[1];
+PARAM 	proj2view	= program.env[20];
+
+PARAM 	near 	= { -3.0, 3.0 };
+PARAM 	near2 	= 6.0;
+PARAM 	far 	= 131072.0;
+
+TEMP	color, depth, alpha, R0, R1;
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL		R0, fPos, invRes;
+
+# The color is the texture color modulated by the vertex color
+TEX		color, TC, texture[0], 2D;
+TEX		depth, R0, texture[1], 2D;
+
+MAD 	depth, depth.z, 2.0, -1.0;
+SUB		depth.z, -depth.z, proj2view.x;
+RCP		depth.z, depth.z;
+MUL		depth, depth.z, proj2view.y;
+
+# calculate the view space z by deriving w from depth.  This will be negative.
+MAD 	R1, fPos.z, 2.0, -1.0;
+SUB 	R1.x, -R1.z, proj2view.x;
+RCP 	R1.x, R1.x;
+MUL 	R1.z, R1.x, proj2view.y;
+
+# basically, we start the fade when depth difference is scale input
+# value and fade to 0 using the contrast function below
+ADD 	alpha, R1.z, -depth.z;
+MUL_SAT alpha.x, alpha, scale.x;
+
+# contrast function (from nVidia's "Soft Particles" paper by Tristan Lorach)
+SGE 	alpha.w, alpha.x, 0.5;
+ADD 	alpha.x, alpha.w, -alpha.x;
+ABS 	alpha.x, alpha.x;
+ADD_SAT alpha.x, alpha.x, alpha.x;
+POW 	alpha.x, alpha.x, contrast.x;
+MAD 	alpha.x, alpha.x, -0.5, alpha.w;
+ABS_SAT alpha.x, alpha.x;
+
+MUL		color, color, alpha.x;
+MUL		oColor, color, vColor;
+
+END

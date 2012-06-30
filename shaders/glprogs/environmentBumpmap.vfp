@@ -1,0 +1,126 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+# --------------------------------------
+# texcoord[0]	= TEX0 texcoords
+#
+# attrib[9]		= tangent
+# attrib[10]	= bitangent
+# attrib[11]	= normal
+#
+# env[5]  		= localViewOrigin
+# env[6]		= modelMatrix[0]
+# env[7]		= modelMatrix[1]
+# env[8]		= modelMatrix[2]
+#
+# output:
+#-----------------------------------------
+# texCoord[0]	= normal map texcoord
+# texCoord[1]	= vector to the eye in world space
+# texCoord[2]	= surface tangent to world space coordinates
+# texCoord[3]	= surface bitangent to world space coordinates
+# texCoord[4]	= surface normal to world space coordinates
+
+TEMP	R0;
+
+
+ADD		R0, program.env[5], -vertex.position;
+
+# texture 0 takes the unmodified texture coordinates
+MOV		result.texcoord[0], vertex.texcoord[0];
+
+# texture 1 is the vector to the eye in global coordinates
+DP3		result.texcoord[1].x, R0, program.env[6];
+DP3		result.texcoord[1].y, R0, program.env[7];
+DP3		result.texcoord[1].z, R0, program.env[8];
+
+# texture 2 gets the transformed tangent
+DP3		result.texcoord[2].x, vertex.attrib[9], program.env[6];
+DP3		result.texcoord[2].y, vertex.attrib[10], program.env[6];
+DP3		result.texcoord[2].z, vertex.normal, program.env[6];
+
+# texture 3 gets the transformed tangent
+DP3		result.texcoord[3].x, vertex.attrib[9], program.env[7];
+DP3		result.texcoord[3].y, vertex.attrib[10], program.env[7];
+DP3		result.texcoord[3].z, vertex.normal, program.env[7];
+
+# texture 4 gets the transformed tangent
+DP3		result.texcoord[4].x, vertex.attrib[9], program.env[8];
+DP3		result.texcoord[4].y, vertex.attrib[10], program.env[8];
+DP3		result.texcoord[4].z, vertex.normal, program.env[8];
+
+MOV		result.color, vertex.color;
+
+END
+
+#==================================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# per-pixel cubic reflection map calculation
+
+# texture 0		= environment cube map
+# texture 1		= normal map
+#
+# texCoord[0]	= normal map texcoord
+# texCoord[1]	= vector to the eye in world-space coordinates
+# texCoord[2]	= surface tangent to world-space coordinates
+# texCoord[3]	= surface bitangent to world-space coordinates
+# texCoord[4]	= surface normal to world-space coordinates
+
+OUTPUT 	oColor	 	= result.color;
+
+ATTRIB 	vColor 		= fragment.color;
+ATTRIB 	defaultTC 	= fragment.texcoord[0];
+ATTRIB 	viewVecTC 	= fragment.texcoord[1];
+ATTRIB 	tangentTC	= fragment.texcoord[2];
+ATTRIB 	bitangentTC	= fragment.texcoord[3];
+ATTRIB 	normalTC	= fragment.texcoord[4];
+
+PARAM	const		= { 1.0, 2.0, 4.0, 5.0 };
+
+TEMP	viewVec, normalVec, reflectVec, wNormalVec, color;
+TEMP	NdotV, fresnel;
+TEMP	R1, R2;
+
+
+# sample the filtered normal map and scale to (-1.0 to 1.0) range
+TEX		normalVec, defaultTC, texture[1], 2D;
+MAD		normalVec.xyz, normalVec, const.y, -const.x;
+
+# normalize normal map
+DP3		normalVec.w, normalVec, normalVec;
+RSQ		normalVec.w, normalVec.w;
+MUL		normalVec.xyz, normalVec, normalVec.w;
+
+# transform the surface normal by the local tangent space 
+DP3		wNormalVec.x, normalVec, tangentTC;
+DP3		wNormalVec.y, normalVec, bitangentTC;
+DP3		wNormalVec.z, normalVec, normalTC;
+
+# normalize vector to the viewer
+DP3		viewVec.w, viewVecTC, viewVecTC;
+RSQ		viewVec.w, viewVec.w;
+MUL		viewVec.xyz, viewVecTC, viewVec.w;
+
+# calculate reflection vector
+DP3 	reflectVec, wNormalVec, viewVec;
+MUL		reflectVec, reflectVec, wNormalVec;
+MAD		reflectVec.xyz, reflectVec, const.y, -viewVec;
+
+# sample the cube map
+TEX		color, reflectVec, texture[0], CUBE;
+
+# calculate Fresnel
+DP3 	NdotV.x, wNormalVec, viewVec;
+ABS 	NdotV.x, NdotV.x;
+ADD_SAT fresnel.w, 1.5, -NdotV.x;
+POW_SAT fresnel.w, fresnel.w, const.z;
+MUL_SAT color.xyz, color, fresnel.w;
+
+# modify by the vertex color
+MOV		oColor.xyz, color;
+
+END

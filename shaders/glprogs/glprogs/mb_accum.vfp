@@ -1,0 +1,59 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#--------------------------------
+# texcoord[0]	= TEX0 texcoords
+
+MOV 	result.texcoord[0], vertex.texcoord[0];
+MOV 	result.texcoord[1], program.local[0];
+
+END
+
+#=====================================================================================
+
+!!ARBfp1.0
+OPTION ARB_precision_hint_nicest;
+
+# texture 0	= _currentRender
+# texture 1	= _prevRender
+#
+# env[0]	= 1.0 to _currentRender conversion
+# env[1]	= fragment.position to 0.0 - 1.0 conversion
+
+OUTPUT 	oColor 	= result.color;
+
+ATTRIB	fPos	= fragment.position;
+ATTRIB 	TC		= fragment.texcoord[0];
+ATTRIB 	Lerp	= fragment.texcoord[1];
+
+PARAM 	nonPoT	= program.env[0];
+PARAM 	invRes	= program.env[1];
+
+PARAM	lumVec	= { 0.212671, 0.715160, 0.072169 };
+
+TEMP 	uv, invres, R0, R1, R2;
+
+
+# calculate the non-power-of-two inverse resolution
+MUL 	invres, invRes.xyxy, nonPoT.xyxy;
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, invres;
+
+TEX 	R1, uv, texture[0], 2D;
+TEX 	R2, uv, texture[1], 2D;
+
+# DP3 	R1.w, R1, lumVec;
+# DP3 	R2.w, R2, lumVec;
+# ADD 	R3, R1, -R2;
+# DP3 	R3.w, R3, R3;
+# RSQ 	R3.w, R3.w;
+# RCP_SAT R3.w, R3.w;
+# MUL 	R3.w, R3.w, 0.5;
+# ABS 	R3.w, R3.w;
+# ADD 	R3.w, 1.0, -R3.w;
+
+LRP 	oColor.xyz, Lerp, R2, R1;
+
+END

@@ -1,0 +1,268 @@
+###==============================================================================
+#	Feedback Sub-Surface Scattering Fragment Program 
+###==============================================================================
+#
+# input:
+#--------------------------------
+# texture 0	= _currentRender
+#
+# local[0]	= offset scale
+#
+# env[0]	= 1.0 to _currentRender conversion
+# env[1]	= fragment.position to 0.0 - 1.0 conversion
+#
+###==============================================================================
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#-----------------------------------------
+# texcoord[0]	= TEX0 texcoords
+# attrib[9]		= tangent[0]
+# attrib[10]	= tangent[1]
+# attrib[11]	= normal
+#
+# env[5]		= localViewOrigin
+# env[6]		= modelMatrix[0]
+# env[7]		= modelMatrix[1]
+# env[8]		= modelMatrix[2]
+#
+# local[0]		= scroll
+# local[1]		= deform magnitude (1.0 is reasonable, 2.0 is twice as wavy, 0.5 is half as wavy, etc)
+# local[2]		= refract color
+# local[3]		= reflect color
+# 
+# output:
+#-----------------------------------------
+# texCoord[0]	= normal map texcoord
+# texCoord[1]	= vector to the eye in global space
+# texCoord[2]	= surface tangent to global coordiantes
+# texCoord[3]	= surface bitangent to global coordiantes
+# texCoord[4]	= surface normal to global coordiantes
+# texCoord[5]	= copied deform magnitude
+
+PARAM	scale	= { 2.0, 2.0, 2.0, 2.0 };
+PARAM	vec		= { 1.0, 0.0, 0.0, 1.0 };
+
+TEMP	R0, R1, R2;
+
+# texture 0 gets the texture coordinates
+MOV		result.texcoord[0], vertex.texcoord[0];
+
+# calculate vector to viewer in global coordinates
+ADD		R0, program.env[5], -vertex.position;
+DP3		result.texcoord[1].x, R0, program.env[6];
+DP3		result.texcoord[1].y, R0, program.env[7];
+DP3		result.texcoord[1].z, R0, program.env[8];
+
+# texture 2 gets the transformed tangent
+DP3		result.texcoord[2].x, vertex.attrib[9], program.env[6];
+DP3		result.texcoord[2].y, vertex.attrib[10], program.env[6];
+DP3		result.texcoord[2].z, vertex.normal, program.env[6];
+
+# texture 3 gets the transformed bitangent
+DP3		result.texcoord[3].x, vertex.attrib[9], program.env[7];
+DP3		result.texcoord[3].y, vertex.attrib[10], program.env[7];
+DP3		result.texcoord[3].z, vertex.normal, program.env[7];
+
+# texture 4 gets the transformed normal
+DP3		result.texcoord[4].x, vertex.attrib[9], program.env[8];
+DP3		result.texcoord[4].y, vertex.attrib[10], program.env[8];
+DP3		result.texcoord[4].z, vertex.normal, program.env[8];
+
+# vertex depth 
+DP4		result.texcoord[5].x, vertex.position, state.matrix.modelview.row[0];
+DP4		result.texcoord[5].y, vertex.position, state.matrix.modelview.row[1];
+DP4		result.texcoord[5].z, vertex.position, state.matrix.modelview.row[2];
+DP4		result.texcoord[5].w, vertex.position, state.matrix.modelview.row[3];
+# DP4		result.texcoord[4].x, vertex.position, state.matrix.mvp.row[0];
+# DP4		result.texcoord[4].y, vertex.position, state.matrix.mvp.row[1];
+# DP4		result.texcoord[4].z, vertex.position, state.matrix.mvp.row[2];
+# DP4		result.texcoord[4].w, vertex.position, state.matrix.mvp.row[3];
+
+
+END
+
+
+!!ARBfp1.0 
+OPTION	ARB_precision_hint_fastest;
+
+OUTPUT 	oColor 	= result.color;
+
+ATTRIB	fPos	= fragment.position;
+ATTRIB 	TC		= fragment.texcoord[0];
+ATTRIB 	vDepth	= fragment.texcoord[5];
+
+PARAM 	nonPoT	= program.env[0];
+PARAM 	invRes	= program.env[1];
+
+PARAM 	Scale	= program.local[0];
+PARAM 	sssCol	= program.local[1];
+
+PARAM	lumVec	= { 0.212671, 0.715160, 0.072169 };
+
+# PARAM	off1	= { -0.326212, -0.405805, -0.840144, -0.073580 };
+# PARAM	off2	= { -0.695914,  0.457137, -0.203345,  0.620716 };
+# PARAM	off3	= {  0.962340, -0.194983,  0.473434, -0.480026 };
+# PARAM	off4	= {  0.519456,  0.767022,  0.185461, -0.893124 };
+# PARAM	off5	= {  0.507431,  0.064425,  0.896420,  0.412458 };
+# PARAM	off6	= { -0.321940, -0.932615, -0.791559, -0.597705 };
+
+# PARAM	off1	= {  0.507431,  0.064425, -0.326212, -0.405805 };
+# PARAM	off2	= { -0.203345,  0.620716,  0.473434, -0.480026 };
+# PARAM	off3	= { -0.695914,  0.457137, -0.840144, -0.073580 };
+# PARAM	off4	= {  0.185461, -0.893124,  0.519456,  0.767022 };
+# PARAM	off5	= {  0.962340, -0.194983, -0.321940, -0.932615 };
+# PARAM	off6	= {  0.896420,  0.412458, -0.791559, -0.597705 };
+
+PARAM	off1	= {  1.633992,  0.036795,  0.177801,  1.717593 };
+PARAM	off2	= { -0.194906,  0.091094, -0.239737, -0.220217 };
+PARAM	off3	= { -0.003530, -0.118219,  1.320107, -0.181542 };
+PARAM	off4	= {  5.970690,  0.253378, -1.089250,  4.958349 };
+PARAM	off5	= { -4.015465,  4.156699, -4.063099, -4.110150 };
+PARAM	off6	= { -0.638605, -6.297663,  2.542348, -3.245901 };
+
+PARAM	weight00	= { 0.220441, 0.437000, 0.635000 };
+PARAM	weight01	= { 0.076356, 0.064487, 0.039097 };
+PARAM	weight02	= { 0.116515, 0.103222, 0.064912 };
+PARAM	weight03	= { 0.064844, 0.086388, 0.062272 };
+PARAM	weight04	= { 0.131798, 0.151695, 0.103676 };
+PARAM	weight05	= { 0.025690, 0.042728, 0.033033 };
+PARAM	weight06	= { 0.048593, 0.064740, 0.046131 };
+PARAM	weight07	= { 0.048092, 0.003042, 0.000400 };
+PARAM	weight08	= { 0.048845, 0.005406, 0.001222 };
+PARAM	weight09	= { 0.051322, 0.006034, 0.001420 };
+PARAM	weight10	= { 0.061428, 0.009152, 0.002511 };
+PARAM	weight11	= { 0.030936, 0.002868, 0.000652 };
+PARAM	weight12	= { 0.073580, 0.023239, 0.009703 };
+
+# PARAM	weight00	= { 1.0, 0.0, 0.0 };
+# PARAM	weight01	= { 1.0, 0.0, 0.0 };
+# PARAM	weight02	= { 1.0, 0.0, 0.0 };
+# PARAM	weight03	= { 1.0, 0.0, 0.0 };
+# PARAM	weight04	= { 1.0, 0.0, 0.0 };
+# PARAM	weight05	= { 1.0, 0.0, 0.0 };
+# PARAM	weight06	= { 1.0, 0.0, 0.0 };
+# PARAM	weight07	= { 1.0, 0.0, 0.0 };
+# PARAM	weight08	= { 1.0, 0.0, 0.0 };
+# PARAM	weight09	= { 1.0, 0.0, 0.0 };
+# PARAM	weight10	= { 1.0, 0.0, 0.0 };
+# PARAM	weight11	= { 1.0, 0.0, 0.0 };
+# PARAM	weight12	= { 1.0, 0.0, 0.0 };
+
+PARAM	inv13	= 0.076923077;
+PARAM	inv16	= 0.0625;
+
+TEMP	uv, invres, color, scale, diffuse, invDiff, sss, random;
+TEMP 	R0, R1, R2, R3, R4, R5, R6, R7, R8;
+TEMP 	T0, T1, T2, T3, T4, T5, T6, T7, T8;
+
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, nonPoT.zwzw;
+MUL 	uv.zw, fPos.xyxy, inv16;
+
+# load the screen render
+TEX 	color, uv, texture[0], 2D;
+# TEX 	diffuse, TC, texture[1], 2D;
+TEX 	random, uv.zwzw, texture[2], 2D;
+
+# DP3 	diffuse.w, diffuse, lumVec;
+# ADD 	diffuse, 1.0, -diffuse;
+# MUL 	sss.xyz, diffuse.w, sssCol;
+
+# MUL 	scale, Scale.xyxy, invRes.xyxy;
+MUL 	scale, Scale.xyxy, random;
+RCP 	R1.x, vDepth.z;
+MUL 	scale, scale.xyxy, R1.x;
+
+MAD_SAT R1, off1, scale, uv.xyxy;
+MAD_SAT R2, off2, scale, uv.xyxy;
+MAD_SAT R3, off3, scale, uv.xyxy;
+MAD_SAT R4, off4, scale, uv.xyxy;
+MAD_SAT R5, off5, scale, uv.xyxy;
+MAD_SAT R6, off6, scale, uv.xyxy;
+
+TEX 	T1, R1.xyxy, texture[0], 2D;
+TEX 	T2, R1.zwzw, texture[0], 2D;
+TEX 	T3, R2.xyxy, texture[0], 2D;
+TEX 	T4, R2.zwzw, texture[0], 2D;
+TEX 	T5, R3.xyxy, texture[0], 2D;
+TEX 	T6, R3.zwzw, texture[0], 2D;
+
+# MAX 	diffuse, diffuse, 0.0001;
+# RCP 	invDiff.x, diffuse.x;
+# RCP 	invDiff.y, diffuse.y;
+# RCP 	invDiff.z, diffuse.z;
+# MUL 	color, color, invDiff;
+# MUL 	T1, T1, invDiff;
+# MUL 	T2, T2, invDiff;
+# MUL 	T3, T3, invDiff;
+# MUL 	T4, T4, invDiff;
+# MUL 	T5, T5, invDiff;
+# MUL 	T6, T6, invDiff;
+
+MUL		color, color, weight00;
+MAD		color, weight01, T1, color;
+MAD		color, weight02, T2, color;
+MAD		color, weight03, T3, color;
+MAD		color, weight04, T4, color;
+MAD		color, weight05, T5, color;
+MAD		color, weight06, T6, color;
+# ADD		color, color, T1;
+# ADD		color, color, T2;
+# ADD		color, color, T3;
+# ADD		color, color, T4;
+# ADD		color, color, T5;
+# ADD		color, color, T6;
+
+TEX 	T1, R4.xyxy, texture[0], 2D;
+TEX 	T2, R4.zwzw, texture[0], 2D;
+TEX 	T3, R5.xyxy, texture[0], 2D;
+TEX 	T4, R5.zwzw, texture[0], 2D;
+TEX 	T5, R6.xyxy, texture[0], 2D;
+TEX 	T6, R6.zwzw, texture[0], 2D;
+# MUL 	T1, T1, invDiff;
+# MUL 	T2, T2, invDiff;
+# MUL 	T3, T3, invDiff;
+# MUL 	T4, T4, invDiff;
+# MUL 	T5, T5, invDiff;
+# MUL 	T6, T6, invDiff;
+
+MAD		color, weight07, T1, color;
+MAD		color, weight08, T2, color;
+MAD		color, weight09, T3, color;
+MAD		color, weight10, T4, color;
+MAD		color, weight11, T5, color;
+MAD		color, weight12, T6, color;
+# ADD		color, color, T1;
+# ADD		color, color, T2;
+# ADD		color, color, T3;
+# ADD		color, color, T4;
+# ADD		color, color, T5;
+# ADD		color, color, T6;
+
+# MUL 	color, color, invDiff;
+# DP3 	color.w, color, lumVec;
+
+# ADD 	R1, 1.0, -R1;
+# MUL 	R1, R1, R1;
+# MUL 	R1, R1, R1;
+# MAD 	R1, R1, -R1, 1.0;
+# MUL_SAT R1, R1, 0.75;
+# POW 	R1.x, R1.x, 0.25.x;
+# POW 	R1.y, R1.y, 0.25.x;
+# POW 	R1.z, R1.z, 0.25.x;
+
+# MAD 	R1, R1, -R1, R1;
+
+# MUL_SAT	color.xyz, color.w, -diffuse;
+MUL 	sss.xyz, R1, sss;
+# MUL 	sss.xyz, color, sss;
+# ADD 	oColor.xyz, -diffuse, color;
+# ADD 	oColor.xyz, -diffuse, color;
+# ADD 	diffuse, 1.0, -diffuse;
+# MUL 	oColor.xyz, diffuse, color;
+MOV 	oColor.xyz, color;
+
+END

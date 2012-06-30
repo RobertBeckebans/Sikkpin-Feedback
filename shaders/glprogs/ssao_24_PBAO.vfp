@@ -1,0 +1,763 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#--------------------------------
+# texcoord[0]	= TEX0 texcoords
+# 
+# local[0]		= sample radius, angle bias, amount, self occlusion factor
+# local[1]		= field of view
+
+PARAM	DEG2RAD		= 0.017453292519943295769236907684886;
+PARAM	HALFDEG2RAD	= 0.0087266462599716478846184538424431;
+PARAM	inv12		= 0.08333333;
+PARAM	inv3		= 0.33333333;
+
+MOV 	result.texcoord[0], vertex.texcoord[0];
+MUL 	result.texcoord[1].x, program.local[0].x, inv3;
+MUL 	result.texcoord[1].y, program.local[0].x, 1.0;
+MUL 	result.texcoord[2], program.local[0].y, HALFDEG2RAD;
+MUL 	result.texcoord[3], program.local[0].z, inv12;
+MOV 	result.texcoord[4], program.local[0].w;
+MUL 	result.texcoord[5], program.local[1], HALFDEG2RAD;
+
+END
+
+#=====================================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_nicest;
+
+# texture 0	= _depth
+#
+# env[0]	= 1.0 to _currentRender conversion
+# env[1]	= fragment.position to 0.0 - 1.0 conversion
+
+OUTPUT 	oColor 	= result.color;
+
+ATTRIB	fPos	= fragment.position;
+ATTRIB	TC		= fragment.texcoord[0];
+ATTRIB	Radius	= fragment.texcoord[1];
+ATTRIB	Bias	= fragment.texcoord[2];
+ATTRIB	Amount	= fragment.texcoord[3];
+ATTRIB 	SelfOcc	= fragment.texcoord[4];
+ATTRIB	FOV		= fragment.texcoord[5];
+
+PARAM 	nonPoT	= program.env[0];
+PARAM 	invRes	= program.env[1];
+
+PARAM	dcode24	= { 1.0, 0.003921568627450980392156862745098, 0.000015259021896696421759365224689097 };
+PARAM	radOff	= { 0.0, 0.78539816339744830961566084581988, 1.57079632679489661923132169156, 2.356194490192344928846982537457 };	# 45 deg
+PARAM	DEG2RAD	= 0.017453292519943295769236907684886;
+PARAM 	PI		= 3.1415926535897932384626433832795;
+PARAM 	halfPI	= 1.5707963267948966192313216916398;
+PARAM 	near	= 3.0;
+# PARAM	farClip	= 8192.0;
+PARAM	farClip	= 131072.0;
+# PARAM	farClip	= 32768.0;
+# PARAM	farClip	= 65536.0;
+# PARAM	farClip	= 131072.0;
+PARAM 	randUV	= 0.0625;	# 0.25 = 4x4; 0.0625 = 16x16; 0.015625 = 64x64
+PARAM 	uvScale	= {  2.0,  2.0,  0.0 };
+PARAM 	uvBias	= { -1.0, -1.0,  1.0 };
+
+TEMP	depthEnc, depth, normal, pos, random, ssao, focalLen, invFocalLen, invres, aspect;
+TEMP 	angle, radius, dist, contrast, res, uv, invNPoT;
+TEMP 	D0, D1, D2, D3, D4, D5, D6, D7, D8;
+TEMP	R0, R1, R2, R3, R4, R5, R6, R7, R8;
+TEMP	P0, P1, P2, P3, P4, P5, P6, P7, P8;
+
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, invRes.xyxy;
+# MUL 	uv.xy, uv, nonPoT;
+
+# calculate screen width/height
+MOV 	invres, invRes;
+# MUL 	invres, invRes, nonPoT.xyxy;
+MOV 	invres.zw, -invres.xyxy;
+# RCP 	invNPoT.x, nonPoT.x;
+# RCP 	invNPoT.y, nonPoT.y;
+# MOV 	invNPoT.zw, invNPoT.xyxy;
+
+# RCP 	res.x, invres.x;
+# RCP 	res.y, invres.y;
+MOV 	res.xy, invRes.zwzw;
+MUL 	aspect.z, res.x, invRes.y;
+
+# calculate fov focal length
+SCS 	R0.xy, FOV.x;
+RCP 	R0.x, R0.x;
+MUL 	invFocalLen.y, R0.y, R0.x;
+MUL 	invFocalLen.x, invFocalLen.y, aspect.z;
+RCP 	focalLen.x, invFocalLen.x;
+RCP 	focalLen.y, invFocalLen.y;
+
+# load the depth render
+TEX 	depthEnc, uv, texture[0], 2D;
+
+DP3 	depth, depthEnc, dcode24;
+MUL 	depth.x, depth, farClip;
+# ADD 	depth, 1.0, -depthEnc;
+# RCP 	depth.x, depth.x;
+# MUL 	depth, near, depth.x;
+
+RCP 	depth.w, depth.x;
+
+# calculate pixel view-space position
+MAD 	pos.xyz, uv.zwzw, uvScale, uvBias;
+MUL 	pos.xy, pos, invFocalLen;
+MUL 	pos.xyz, pos, depth.x;
+ 
+# load the depth render
+# TEX 	normal, uv, texture[1], 2D;
+
+# calculate face normal
+# MAD 	normal.xyz, normal, 2.0, -1.0;
+# DP3 	normal.w, normal, normal;
+# RSQ 	normal.w, normal.w;
+# MUL 	normal.xyz, normal, normal.w;
+ 
+# calculate face normal
+MOV 	P1.xy, uv;
+MOV 	P2.xy, uv;
+MOV 	P3.xy, uv;
+MOV 	P4.xy, uv;
+# ADD 	P1.x, P1, nonPoT.z;
+# ADD 	P2.x, P2, -nonPoT.z;
+# ADD 	P3.y, P3, nonPoT.w;
+# ADD 	P4.y, P4, -nonPoT.w;
+ADD 	P1.x, P1, invRes.x;
+ADD 	P2.x, P2, -invRes.x;
+ADD 	P3.y, P3, invRes.y;
+ADD 	P4.y, P4, -invRes.y;
+
+TEX 	D1, P1, texture[0], 2D;
+TEX 	D2, P2, texture[0], 2D;
+TEX 	D3, P3, texture[0], 2D;
+TEX 	D4, P4, texture[0], 2D;
+DP3 	D0.x, D1, dcode24;
+DP3 	D0.y, D2, dcode24;
+DP3 	D0.z, D3, dcode24;
+DP3 	D0.w, D4, dcode24;
+MUL 	D0, D0, farClip;
+
+# MOV 	P1.xy, uv.zwzw;
+# MOV 	P2.xy, uv.zwzw;
+# MOV 	P3.xy, uv.zwzw;
+# MOV 	P4.xy, uv.zwzw;
+# ADD 	P1.x, P1, invres.x;
+# ADD 	P2.x, P2, -invres.x;
+# ADD 	P3.y, P3, invres.y;
+# ADD 	P4.y, P4, -invres.y;
+
+MAD 	P1.xyz, P1, uvScale, uvBias;
+MAD 	P2.xyz, P2, uvScale, uvBias;
+MAD 	P3.xyz, P3, uvScale, uvBias;
+MAD 	P4.xyz, P4, uvScale, uvBias;
+MUL 	P1.xy, P1, invFocalLen;
+MUL 	P2.xy, P2, invFocalLen;
+MUL 	P3.xy, P3, invFocalLen;
+MUL 	P4.xy, P4, invFocalLen;
+MUL 	P1.xyz, P1, D0.x;
+MUL 	P2.xyz, P2, D0.y;
+MUL 	P3.xyz, P3, D0.z;
+MUL 	P4.xyz, P4, D0.w;
+
+ADD 	P1, P1, -pos;
+ADD 	P2, pos, -P2;
+ADD 	P3, P3, -pos;
+ADD 	P4, pos, -P4;
+DP3 	P1.w, P1, P1;
+DP3 	P2.w, P2, P2;
+DP3 	P3.w, P3, P3;
+DP3 	P4.w, P4, P4;
+SLT 	P1.w, P1.w, P2.w;
+SLT 	P3.w, P3.w, P4.w;
+CMP 	P1, -P1.w, P1, P2;
+CMP 	P2, -P3.w, P3, P4;
+
+XPD 	normal.xyz, P1, P2;
+DP3 	normal.w, normal, normal;
+RSQ 	normal.w, normal.w;
+MUL 	normal.xyz, normal, normal.w;
+
+# load random vector map
+MUL 	R0.xy, fPos, randUV;
+TEX 	random, R0, texture[2], 2D;
+MAD 	random.w, random.w, 0.9, 0.1;
+
+# calculate radius
+MUL_SAT radius.x, depth.x, 0.0078125;			# make area smaller if distance is less than 128 units
+MAD 	radius.y, depth.x, 0.001953125, 1.0;	# make area larger if distance is more than 512 units
+MUL 	radius.w, radius.x, radius.y;
+MUL 	radius, Radius.xxyy, radius.w;
+RCP 	radius.w, radius.w;
+MUL 	radius.xy, radius, random.w;
+MUL 	radius.xy, radius, focalLen;
+MUL 	radius.xy, radius, depth.w;
+
+# calculate contrast
+MUL 	R0.x, Bias, 2.0;
+SIN_SAT R0.x, R0.x;
+ADD 	R0.x, 1.0, -R0.x;
+RCP 	R0.x, R0.x;
+MUL 	contrast, Amount, R0.x;
+
+# calculate starting angle
+MUL 	angle.xyz, random, radOff.y;
+
+###=================================================
+
+# calculate offsets (Ring 1 = 8 samples)
+ADD 	R0, angle.x, radOff;
+SCS 	R1, R0.x;
+SCS 	R2, R0.y;
+SCS 	R3, R0.z;
+SCS 	R4, R0.w;
+
+ADD 	R0.x, R1.x, -R1.y;
+ADD 	R0.y, R1.x, R1.y;
+ADD 	R0.z, R2.x, -R2.y;
+ADD 	R0.w, R2.x, R2.y;
+MUL 	R0, R0, radius.xyxy;
+MAD 	R0, R0, res.xyxy, 0.5;
+FLR 	R0, R0;
+MAD_SAT R1, R0.xyxy, invres, uv.xyxy;
+MAD_SAT R2, R0.zwzw, invres, uv.xyxy;
+# MAD_SAT R1, R0.xyxy, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+# MAD_SAT R2, R0.zwzw, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+
+ADD 	R0.x, R3.x, -R3.y;
+ADD 	R0.y, R3.x, R3.y;
+ADD 	R0.z, R4.x, -R4.y;
+ADD 	R0.w, R4.x, R4.y;
+MUL 	R0, R0, radius.xyxy;
+MAD 	R0, R0, res.xyxy, 0.5;
+FLR 	R0, R0;
+MAD_SAT R3, R0.xyxy, invres, uv.xyxy;
+MAD_SAT R4, R0.zwzw, invres, uv.xyxy;
+# MAD_SAT R3, R0.xyxy, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+# MAD_SAT R4, R0.zwzw, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+
+# get sample depth
+TEX 	D1, R1.xyxy, texture[0], 2D;
+TEX 	D2, R1.zwzw, texture[0], 2D;
+TEX 	D3, R2.xyxy, texture[0], 2D;
+TEX 	D4, R2.zwzw, texture[0], 2D;
+TEX 	D5, R3.xyxy, texture[0], 2D;
+TEX 	D6, R3.zwzw, texture[0], 2D;
+TEX 	D7, R4.xyxy, texture[0], 2D;
+TEX 	D8, R4.zwzw, texture[0], 2D;
+
+# decode 24-bit depth
+DP3 	D1.x, D1, dcode24;
+DP3 	D1.y, D2, dcode24;
+DP3 	D1.z, D3, dcode24;
+DP3 	D1.w, D4, dcode24;
+DP3 	D2.x, D5, dcode24;
+DP3 	D2.y, D6, dcode24;
+DP3 	D2.z, D7, dcode24;
+DP3 	D2.w, D8, dcode24;
+
+# scale by far-clip
+MUL 	D1, D1, farClip;
+MUL 	D2, D2, farClip;
+
+# TEX 	D1.x, R1.xyxy, texture[0], 2D;
+# TEX 	D1.y, R1.zwzw, texture[0], 2D;
+# TEX 	D1.z, R2.xyxy, texture[0], 2D;
+# TEX 	D1.w, R2.zwzw, texture[0], 2D;
+# TEX 	D2.x, R3.xyxy, texture[0], 2D;
+# TEX 	D2.y, R3.zwzw, texture[0], 2D;
+# TEX 	D2.z, R4.xyxy, texture[0], 2D;
+# TEX 	D2.w, R4.zwzw, texture[0], 2D;
+# ADD 	D1, 1.0, -D1;
+# RCP 	D1.x, D1.x;
+# RCP 	D1.y, D1.y;
+# RCP 	D1.z, D1.z;
+# RCP 	D1.w, D1.w;
+# MUL 	D1, near, D1;
+# ADD 	D2, 1.0, -D2;
+# RCP 	D2.x, D2.x;
+# RCP 	D2.y, D2.y;
+# RCP 	D2.z, D2.z;
+# RCP 	D2.w, D2.w;
+# MUL 	D2, near, D2;
+
+# MUL 	R1, R1, invNPoT.xyxy;
+# MUL 	R2, R2, invNPoT.xyxy;
+# MUL 	R3, R3, invNPoT.xyxy;
+# MUL 	R4, R4, invNPoT.xyxy;
+
+# calculate sample view-space position
+MAD 	P1.xyz, R1.xyxy, uvScale, uvBias;
+MAD 	P2.xyz, R1.zwzw, uvScale, uvBias;
+MAD 	P3.xyz, R2.xyxy, uvScale, uvBias;
+MAD 	P4.xyz, R2.zwzw, uvScale, uvBias;
+MAD 	P5.xyz, R3.xyxy, uvScale, uvBias;
+MAD 	P6.xyz, R3.zwzw, uvScale, uvBias;
+MAD 	P7.xyz, R4.xyxy, uvScale, uvBias;
+MAD 	P8.xyz, R4.zwzw, uvScale, uvBias;
+MUL 	P1.xy, P1, invFocalLen;
+MUL 	P2.xy, P2, invFocalLen;
+MUL 	P3.xy, P3, invFocalLen;
+MUL 	P4.xy, P4, invFocalLen;
+MUL 	P5.xy, P5, invFocalLen;
+MUL 	P6.xy, P6, invFocalLen;
+MUL 	P7.xy, P7, invFocalLen;
+MUL 	P8.xy, P8, invFocalLen;
+MUL 	P1.xyz, P1, D1.x;
+MUL 	P2.xyz, P2, D1.y;
+MUL 	P3.xyz, P3, D1.z;
+MUL 	P4.xyz, P4, D1.w;
+MUL 	P5.xyz, P5, D2.x;
+MUL 	P6.xyz, P6, D2.y;
+MUL 	P7.xyz, P7, D2.z;
+MUL 	P8.xyz, P8, D2.w;
+
+# calculate occlusion
+ADD 	dist, P1, -pos;
+DP3 	D1.x, dist, dist;
+RSQ 	D1.x, D1.x;
+MUL 	dist.xyz, dist, D1.x;
+DP3 	R1.x, normal, -dist;
+ADD 	dist, P2, -pos;
+DP3 	D1.y, dist, dist;
+RSQ 	D1.y, D1.y;
+MUL 	dist.xyz, dist, D1.y;
+DP3 	R1.y, normal, -dist;
+ADD 	dist, P3, -pos;
+DP3 	D1.z, dist, dist;
+RSQ 	D1.z, D1.z;
+MUL 	dist.xyz, dist, D1.z;
+DP3 	R1.z, normal, -dist;
+ADD 	dist, P4, -pos;
+DP3 	D1.w, dist, dist;
+RSQ 	D1.w, D1.w;
+MUL 	dist.xyz, dist, D1.w;
+DP3 	R1.w, normal, -dist;
+ADD 	dist, P5, -pos;
+DP3 	D2.x, dist, dist;
+RSQ 	D2.x, D2.x;
+MUL 	dist.xyz, dist, D2.x;
+DP3 	R2.x, normal, -dist;
+ADD 	dist, P6, -pos;
+DP3 	D2.y, dist, dist;
+RSQ 	D2.y, D2.y;
+MUL 	dist.xyz, dist, D2.y;
+DP3 	R2.y, normal, -dist;
+ADD 	dist, P7, -pos;
+DP3 	D2.z, dist, dist;
+RSQ 	D2.z, D2.z;
+MUL 	dist.xyz, dist, D2.z;
+DP3 	R2.z, normal, -dist;
+ADD 	dist, P8, -pos;
+DP3 	D2.w, dist, dist;
+RSQ 	D2.w, D2.w;
+MUL 	dist.xyz, dist, D2.w;
+DP3 	R2.w, normal, -dist;
+
+RCP 	D1.x, D1.x;
+RCP 	D1.y, D1.y;
+RCP 	D1.z, D1.z;
+RCP 	D1.w, D1.w;
+RCP 	D2.x, D2.x;
+RCP 	D2.y, D2.y;
+RCP 	D2.z, D2.z;
+RCP 	D2.w, D2.w;
+MUL 	D1, D1, radius.w;
+MUL 	D2, D2, radius.w;
+MAD 	D1, D1, D1, 1.0;
+MAD 	D2, D2, D2, 1.0;
+RCP 	D1.x, D1.x;
+RCP 	D1.y, D1.y;
+RCP 	D1.z, D1.z;
+RCP 	D1.w, D1.w;
+RCP 	D2.x, D2.x;
+RCP 	D2.y, D2.y;
+RCP 	D2.z, D2.z;
+RCP 	D2.w, D2.w;
+
+ADD 	R1, R1, -Bias;
+ADD 	R2, R2, -Bias;
+MAX 	R1, R1, -SelfOcc;
+MAX 	R2, R2, -SelfOcc;
+MAD 	ssao, R1, D1, ssao;
+MAD 	ssao, R2, D2, ssao;
+
+###=================================================
+
+# calculate offsets (Ring 2 = 8 samples)
+ADD 	radius.xy, radius, radius;
+
+ADD 	R0, angle.y, radOff;
+SCS 	R1, R0.x;
+SCS 	R2, R0.y;
+SCS 	R3, R0.z;
+SCS 	R4, R0.w;
+
+ADD 	R0.x, R1.x, -R1.y;
+ADD 	R0.y, R1.x, R1.y;
+ADD 	R0.z, R2.x, -R2.y;
+ADD 	R0.w, R2.x, R2.y;
+MUL 	R0, R0, radius.xyxy;
+MAD 	R0, R0, res.xyxy, 0.5;
+FLR 	R0, R0;
+MAD_SAT R1, R0.xyxy, invres, uv.xyxy;
+MAD_SAT R2, R0.zwzw, invres, uv.xyxy;
+# MAD_SAT R1, R0.xyxy, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+# MAD_SAT R2, R0.zwzw, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+
+ADD 	R0.x, R3.x, -R3.y;
+ADD 	R0.y, R3.x, R3.y;
+ADD 	R0.z, R4.x, -R4.y;
+ADD 	R0.w, R4.x, R4.y;
+MUL 	R0, R0, radius.xyxy;
+MAD 	R0, R0, res.xyxy, 0.5;
+FLR 	R0, R0;
+MAD_SAT R3, R0.xyxy, invres, uv.xyxy;
+MAD_SAT R4, R0.zwzw, invres, uv.xyxy;
+# MAD_SAT R3, R0.xyxy, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+# MAD_SAT R4, R0.zwzw, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+
+# get sample depth
+TEX 	D1, R1.xyxy, texture[0], 2D;
+TEX 	D2, R1.zwzw, texture[0], 2D;
+TEX 	D3, R2.xyxy, texture[0], 2D;
+TEX 	D4, R2.zwzw, texture[0], 2D;
+TEX 	D5, R3.xyxy, texture[0], 2D;
+TEX 	D6, R3.zwzw, texture[0], 2D;
+TEX 	D7, R4.xyxy, texture[0], 2D;
+TEX 	D8, R4.zwzw, texture[0], 2D;
+
+# decode 24-bit depth
+DP3 	D1.x, D1, dcode24;
+DP3 	D1.y, D2, dcode24;
+DP3 	D1.z, D3, dcode24;
+DP3 	D1.w, D4, dcode24;
+DP3 	D2.x, D5, dcode24;
+DP3 	D2.y, D6, dcode24;
+DP3 	D2.z, D7, dcode24;
+DP3 	D2.w, D8, dcode24;
+
+# scale by far-clip
+MUL 	D1, D1, farClip;
+MUL 	D2, D2, farClip;
+
+# TEX 	D1.x, R1.xyxy, texture[0], 2D;
+# TEX 	D1.y, R1.zwzw, texture[0], 2D;
+# TEX 	D1.z, R2.xyxy, texture[0], 2D;
+# TEX 	D1.w, R2.zwzw, texture[0], 2D;
+# TEX 	D2.x, R3.xyxy, texture[0], 2D;
+# TEX 	D2.y, R3.zwzw, texture[0], 2D;
+# TEX 	D2.z, R4.xyxy, texture[0], 2D;
+# TEX 	D2.w, R4.zwzw, texture[0], 2D;
+# ADD 	D1, 1.0, -D1;
+# RCP 	D1.x, D1.x;
+# RCP 	D1.y, D1.y;
+# RCP 	D1.z, D1.z;
+# RCP 	D1.w, D1.w;
+# MUL 	D1, near, D1;
+# ADD 	D2, 1.0, -D2;
+# RCP 	D2.x, D2.x;
+# RCP 	D2.y, D2.y;
+# RCP 	D2.z, D2.z;
+# RCP 	D2.w, D2.w;
+# MUL 	D2, near, D2;
+
+# MUL 	R1, R1, invNPoT.xyxy;
+# MUL 	R2, R2, invNPoT.xyxy;
+# MUL 	R3, R3, invNPoT.xyxy;
+# MUL 	R4, R4, invNPoT.xyxy;
+
+# calculate sample view-space position
+MAD 	P1.xyz, R1.xyxy, uvScale, uvBias;
+MAD 	P2.xyz, R1.zwzw, uvScale, uvBias;
+MAD 	P3.xyz, R2.xyxy, uvScale, uvBias;
+MAD 	P4.xyz, R2.zwzw, uvScale, uvBias;
+MAD 	P5.xyz, R3.xyxy, uvScale, uvBias;
+MAD 	P6.xyz, R3.zwzw, uvScale, uvBias;
+MAD 	P7.xyz, R4.xyxy, uvScale, uvBias;
+MAD 	P8.xyz, R4.zwzw, uvScale, uvBias;
+MUL 	P1.xy, P1, invFocalLen;
+MUL 	P2.xy, P2, invFocalLen;
+MUL 	P3.xy, P3, invFocalLen;
+MUL 	P4.xy, P4, invFocalLen;
+MUL 	P5.xy, P5, invFocalLen;
+MUL 	P6.xy, P6, invFocalLen;
+MUL 	P7.xy, P7, invFocalLen;
+MUL 	P8.xy, P8, invFocalLen;
+MUL 	P1.xyz, P1, D1.x;
+MUL 	P2.xyz, P2, D1.y;
+MUL 	P3.xyz, P3, D1.z;
+MUL 	P4.xyz, P4, D1.w;
+MUL 	P5.xyz, P5, D2.x;
+MUL 	P6.xyz, P6, D2.y;
+MUL 	P7.xyz, P7, D2.z;
+MUL 	P8.xyz, P8, D2.w;
+
+# calculate occlusion
+ADD 	dist, P1, -pos;
+DP3 	D1.x, dist, dist;
+RSQ 	D1.x, D1.x;
+MUL 	dist.xyz, dist, D1.x;
+DP3 	R1.x, normal, -dist;
+ADD 	dist, P2, -pos;
+DP3 	D1.y, dist, dist;
+RSQ 	D1.y, D1.y;
+MUL 	dist.xyz, dist, D1.y;
+DP3 	R1.y, normal, -dist;
+ADD 	dist, P3, -pos;
+DP3 	D1.z, dist, dist;
+RSQ 	D1.z, D1.z;
+MUL 	dist.xyz, dist, D1.z;
+DP3 	R1.z, normal, -dist;
+ADD 	dist, P4, -pos;
+DP3 	D1.w, dist, dist;
+RSQ 	D1.w, D1.w;
+MUL 	dist.xyz, dist, D1.w;
+DP3 	R1.w, normal, -dist;
+ADD 	dist, P5, -pos;
+DP3 	D2.x, dist, dist;
+RSQ 	D2.x, D2.x;
+MUL 	dist.xyz, dist, D2.x;
+DP3 	R2.x, normal, -dist;
+ADD 	dist, P6, -pos;
+DP3 	D2.y, dist, dist;
+RSQ 	D2.y, D2.y;
+MUL 	dist.xyz, dist, D2.y;
+DP3 	R2.y, normal, -dist;
+ADD 	dist, P7, -pos;
+DP3 	D2.z, dist, dist;
+RSQ 	D2.z, D2.z;
+MUL 	dist.xyz, dist, D2.z;
+DP3 	R2.z, normal, -dist;
+ADD 	dist, P8, -pos;
+DP3 	D2.w, dist, dist;
+RSQ 	D2.w, D2.w;
+MUL 	dist.xyz, dist, D2.w;
+DP3 	R2.w, normal, -dist;
+
+RCP 	D1.x, D1.x;
+RCP 	D1.y, D1.y;
+RCP 	D1.z, D1.z;
+RCP 	D1.w, D1.w;
+RCP 	D2.x, D2.x;
+RCP 	D2.y, D2.y;
+RCP 	D2.z, D2.z;
+RCP 	D2.w, D2.w;
+MUL 	D1, D1, radius.w;
+MUL 	D2, D2, radius.w;
+MAD 	D1, D1, D1, 1.0;
+MAD 	D2, D2, D2, 1.0;
+RCP 	D1.x, D1.x;
+RCP 	D1.y, D1.y;
+RCP 	D1.z, D1.z;
+RCP 	D1.w, D1.w;
+RCP 	D2.x, D2.x;
+RCP 	D2.y, D2.y;
+RCP 	D2.z, D2.z;
+RCP 	D2.w, D2.w;
+
+ADD 	R1, R1, -Bias;
+ADD 	R2, R2, -Bias;
+MAX 	R1, R1, -SelfOcc;
+MAX 	R2, R2, -SelfOcc;
+MAD 	ssao, R1, D1, ssao;
+MAD 	ssao, R2, D2, ssao;
+
+###=================================================
+
+# calculate offsets (Ring 3 = 8 samples)
+MAD 	radius.xy, radius, 0.5, radius;
+
+ADD 	R0, angle.z, radOff;
+SCS 	R1, R0.x;
+SCS 	R2, R0.y;
+SCS 	R3, R0.z;
+SCS 	R4, R0.w;
+
+ADD 	R0.x, R1.x, -R1.y;
+ADD 	R0.y, R1.x, R1.y;
+ADD 	R0.z, R2.x, -R2.y;
+ADD 	R0.w, R2.x, R2.y;
+MUL 	R0, R0, radius.xyxy;
+MAD 	R0, R0, res.xyxy, 0.5;
+FLR 	R0, R0;
+MAD_SAT R1, R0.xyxy, invres, uv.xyxy;
+MAD_SAT R2, R0.zwzw, invres, uv.xyxy;
+# MAD_SAT R1, R0.xyxy, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+# MAD_SAT R2, R0.zwzw, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+
+ADD 	R0.x, R3.x, -R3.y;
+ADD 	R0.y, R3.x, R3.y;
+ADD 	R0.z, R4.x, -R4.y;
+ADD 	R0.w, R4.x, R4.y;
+MUL 	R0, R0, radius.xyxy;
+MAD 	R0, R0, res.xyxy, 0.5;
+FLR 	R0, R0;
+MAD_SAT R3, R0.xyxy, invres, uv.xyxy;
+MAD_SAT R4, R0.zwzw, invres, uv.xyxy;
+# MAD_SAT R3, R0.xyxy, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+# MAD_SAT R4, R0.zwzw, { 1.0, 1.0, -1.0, -1.0 }, uv.xyxy;
+
+# get sample depth
+TEX 	D1, R1.xyxy, texture[0], 2D;
+TEX 	D2, R1.zwzw, texture[0], 2D;
+TEX 	D3, R2.xyxy, texture[0], 2D;
+TEX 	D4, R2.zwzw, texture[0], 2D;
+TEX 	D5, R3.xyxy, texture[0], 2D;
+TEX 	D6, R3.zwzw, texture[0], 2D;
+TEX 	D7, R4.xyxy, texture[0], 2D;
+TEX 	D8, R4.zwzw, texture[0], 2D;
+
+# decode 24-bit depth
+DP3 	D1.x, D1, dcode24;
+DP3 	D1.y, D2, dcode24;
+DP3 	D1.z, D3, dcode24;
+DP3 	D1.w, D4, dcode24;
+DP3 	D2.x, D5, dcode24;
+DP3 	D2.y, D6, dcode24;
+DP3 	D2.z, D7, dcode24;
+DP3 	D2.w, D8, dcode24;
+
+# scale by far-clip
+MUL 	D1, D1, farClip;
+MUL 	D2, D2, farClip;
+
+# TEX 	D1.x, R1.xyxy, texture[0], 2D;
+# TEX 	D1.y, R1.zwzw, texture[0], 2D;
+# TEX 	D1.z, R2.xyxy, texture[0], 2D;
+# TEX 	D1.w, R2.zwzw, texture[0], 2D;
+# TEX 	D2.x, R3.xyxy, texture[0], 2D;
+# TEX 	D2.y, R3.zwzw, texture[0], 2D;
+# TEX 	D2.z, R4.xyxy, texture[0], 2D;
+# TEX 	D2.w, R4.zwzw, texture[0], 2D;
+# ADD 	D1, 1.0, -D1;
+# RCP 	D1.x, D1.x;
+# RCP 	D1.y, D1.y;
+# RCP 	D1.z, D1.z;
+# RCP 	D1.w, D1.w;
+# MUL 	D1, near, D1;
+# ADD 	D2, 1.0, -D2;
+# RCP 	D2.x, D2.x;
+# RCP 	D2.y, D2.y;
+# RCP 	D2.z, D2.z;
+# RCP 	D2.w, D2.w;
+# MUL 	D2, near, D2;
+
+# MUL 	R1, R1, invNPoT.xyxy;
+# MUL 	R2, R2, invNPoT.xyxy;
+# MUL 	R3, R3, invNPoT.xyxy;
+# MUL 	R4, R4, invNPoT.xyxy;
+
+# calculate sample view-space position
+MAD 	P1.xyz, R1.xyxy, uvScale, uvBias;
+MAD 	P2.xyz, R1.zwzw, uvScale, uvBias;
+MAD 	P3.xyz, R2.xyxy, uvScale, uvBias;
+MAD 	P4.xyz, R2.zwzw, uvScale, uvBias;
+MAD 	P5.xyz, R3.xyxy, uvScale, uvBias;
+MAD 	P6.xyz, R3.zwzw, uvScale, uvBias;
+MAD 	P7.xyz, R4.xyxy, uvScale, uvBias;
+MAD 	P8.xyz, R4.zwzw, uvScale, uvBias;
+MUL 	P1.xy, P1, invFocalLen;
+MUL 	P2.xy, P2, invFocalLen;
+MUL 	P3.xy, P3, invFocalLen;
+MUL 	P4.xy, P4, invFocalLen;
+MUL 	P5.xy, P5, invFocalLen;
+MUL 	P6.xy, P6, invFocalLen;
+MUL 	P7.xy, P7, invFocalLen;
+MUL 	P8.xy, P8, invFocalLen;
+MUL 	P1.xyz, P1, D1.x;
+MUL 	P2.xyz, P2, D1.y;
+MUL 	P3.xyz, P3, D1.z;
+MUL 	P4.xyz, P4, D1.w;
+MUL 	P5.xyz, P5, D2.x;
+MUL 	P6.xyz, P6, D2.y;
+MUL 	P7.xyz, P7, D2.z;
+MUL 	P8.xyz, P8, D2.w;
+
+# calculate occlusion
+ADD 	dist, P1, -pos;
+DP3 	D1.x, dist, dist;
+RSQ 	D1.x, D1.x;
+MUL 	dist.xyz, dist, D1.x;
+DP3 	R1.x, normal, -dist;
+ADD 	dist, P2, -pos;
+DP3 	D1.y, dist, dist;
+RSQ 	D1.y, D1.y;
+MUL 	dist.xyz, dist, D1.y;
+DP3 	R1.y, normal, -dist;
+ADD 	dist, P3, -pos;
+DP3 	D1.z, dist, dist;
+RSQ 	D1.z, D1.z;
+MUL 	dist.xyz, dist, D1.z;
+DP3 	R1.z, normal, -dist;
+ADD 	dist, P4, -pos;
+DP3 	D1.w, dist, dist;
+RSQ 	D1.w, D1.w;
+MUL 	dist.xyz, dist, D1.w;
+DP3 	R1.w, normal, -dist;
+ADD 	dist, P5, -pos;
+DP3 	D2.x, dist, dist;
+RSQ 	D2.x, D2.x;
+MUL 	dist.xyz, dist, D2.x;
+DP3 	R2.x, normal, -dist;
+ADD 	dist, P6, -pos;
+DP3 	D2.y, dist, dist;
+RSQ 	D2.y, D2.y;
+MUL 	dist.xyz, dist, D2.y;
+DP3 	R2.y, normal, -dist;
+ADD 	dist, P7, -pos;
+DP3 	D2.z, dist, dist;
+RSQ 	D2.z, D2.z;
+MUL 	dist.xyz, dist, D2.z;
+DP3 	R2.z, normal, -dist;
+ADD 	dist, P8, -pos;
+DP3 	D2.w, dist, dist;
+RSQ 	D2.w, D2.w;
+MUL 	dist.xyz, dist, D2.w;
+DP3 	R2.w, normal, -dist;
+
+RCP 	D1.x, D1.x;
+RCP 	D1.y, D1.y;
+RCP 	D1.z, D1.z;
+RCP 	D1.w, D1.w;
+RCP 	D2.x, D2.x;
+RCP 	D2.y, D2.y;
+RCP 	D2.z, D2.z;
+RCP 	D2.w, D2.w;
+MUL 	D1, D1, radius.w;
+MUL 	D2, D2, radius.w;
+MAD 	D1, D1, D1, 1.0;
+MAD 	D2, D2, D2, 1.0;
+RCP 	D1.x, D1.x;
+RCP 	D1.y, D1.y;
+RCP 	D1.z, D1.z;
+RCP 	D1.w, D1.w;
+RCP 	D2.x, D2.x;
+RCP 	D2.y, D2.y;
+RCP 	D2.z, D2.z;
+RCP 	D2.w, D2.w;
+
+ADD 	R1, R1, -Bias;
+ADD 	R2, R2, -Bias;
+MAX 	R1, R1, -SelfOcc;
+MAX 	R2, R2, -SelfOcc;
+MAD 	ssao, R1, D1, ssao;
+MAD 	ssao, R2, D2, ssao;
+
+###=================================================
+
+# scale occlusion and add self occlusion factor
+DP4 	ssao.x, ssao, 1.0;
+MAD 	ssao.x, ssao, contrast, SelfOcc;
+
+# invert and ouput
+MOV 	oColor, depthEnc;
+ADD 	oColor.w, 1.0, -ssao.x;
+# MOV 	oColor, depthEnc;
+MOV 	oColor, normal;
+
+END

@@ -1,0 +1,30 @@
+###==============================================================================
+#	Feedback Shadow Extrusion Vertex Program 
+###==============================================================================
+#
+# input:
+#--------------------------------
+# env[4]	= localLightOrigin
+#
+###==============================================================================
+
+!!ARBvp1.0
+
+TEMP 	R0;
+
+# R0 = OPOS - light, assumes light.w = 0
+ADD 	R0, vertex.position, -program.env[4];
+
+# R0 -= OPOS.w * light
+MAD 	R0, program.env[4], R0.w, R0;
+
+# normal transform
+DP4 	result.position.x, R0, state.matrix.mvp.row[0];
+DP4 	result.position.y, R0, state.matrix.mvp.row[1];
+DP4 	result.position.z, R0, state.matrix.mvp.row[2];
+DP4 	result.position.w, R0, state.matrix.mvp.row[3];
+
+# r_showShadows cvar will now draw shadow edges with assigned color
+MOV 	result.color, vertex.color;
+
+END

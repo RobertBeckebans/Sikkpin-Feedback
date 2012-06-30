@@ -1,0 +1,90 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#-----------------------------------------
+# texcoord[0]	= TEX0 texcoords
+#
+# local[0]		= scroll
+#
+# output:
+#-----------------------------------------
+# texCoord[1]	= model surface texture coords
+
+PARAM	scroll	= program.local[0];
+
+# texture 1 takes the texture coordinates and adds a scroll
+ADD		result.texcoord[0], vertex.texcoord[0], scroll;
+
+END
+
+#=====================================================================================
+
+!!ARBfp1.0
+OPTION ARB_precision_hint_fastest;
+
+# texture 0 = _currentRender
+# texture 1 = normal map that we will use to deform texture 0
+#
+# env[0] 	=  1.0 to _currentRender conversion
+# env[1] 	=  fragment.position to 0.0 - 1.0 conversion
+
+OUTPUT 	oColor 		= result.color;
+
+ATTRIB	fPos		= fragment.position;
+ATTRIB 	deformTC	= fragment.texcoord[0];
+
+PARAM 	nonPoT		= program.env[0];
+PARAM 	invRes		= program.env[1];
+
+PARAM	Scale		= program.local[0];
+PARAM	tint		= program.local[1];
+
+PARAM	const		= { 1.0, 2.0, 0.0, 0.0 };
+PARAM	cdParm		= { 0.9, 0.9, 1.1, 1.1 };
+PARAM	lumVec		= { 0.212671, 0.715160, 0.072169 };
+
+TEMP	uv, invres, normalVec, scale, color, R0, R1, R2;
+
+TEMP 	depth, alpha;
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, invRes.xyxy;
+
+# load the filtered normal map and convert to -1.0 to 1.0 range
+TEX 	normalVec, deformTC, texture[1], 2D;
+MAD 	normalVec.xyz, normalVec, const.y, -const.x;
+
+MUL		scale, Scale, invRes.xyxy;
+
+# offset by the scaled normalVec and clamp it to 0.0 - 1.0
+MUL 	R1, normalVec.xyxy, cdParm;
+MAD_SAT	R1, R1, scale, uv;
+MAD_SAT	R2, normalVec, scale, uv;
+
+# sample the RGB values along the displacements
+TEX		color.x, R1.xyxy, texture[0], 2D;
+TEX		color.y, R2.xyxy, texture[0], 2D;
+TEX		color.z, R1.zwzw, texture[0], 2D;
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+TEX		depth, R2, texture[2], 2D;
+SGE 	R2, depth, 1.0;
+
+ADD 	depth, 1.0, -depth;
+RCP 	depth.z, depth.z;
+ADD 	depth, depth, -1.0;
+MUL_SAT depth, depth, 0.01;
+
+# calculate the view space z by deriving w from depth.  This will be negative.
+# MAD 	depth, depth.z, 2.0, -1.0;
+# ADD		depth.z, -depth.z, -proj2view.x;
+# RCP		depth.z, depth.z;
+# MUL		depth, depth.z, proj2view.y;
+
+DP3		R1, color, lumVec;
+MUL		R1, R1, tint;
+LRP 	R1.xyz, tint.w, R1, color;
+LRP 	oColor.xyz, depth.z, tint, R1;
+
+END

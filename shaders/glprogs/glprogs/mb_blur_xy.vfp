@@ -1,0 +1,131 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#--------------------------------
+# texcoord[0]	= TEX0 texcoords
+
+PARAM	invFarClip	= 0.0001220703125;
+
+MOV 	result.texcoord[0], vertex.texcoord[0];
+MOV 	result.texcoord[1], program.local[0];
+MUL 	result.texcoord[2], program.local[1], invFarClip;
+
+END
+
+#=====================================================================================
+
+!!ARBfp1.0
+OPTION ARB_precision_hint_nicest;
+
+# texture 0	= _currentRender
+#
+# env[0]	= 1.0 to _currentRender conversion
+# env[1]	= fragment.position to 0.0 - 1.0 conversion
+
+OUTPUT 	oColor 	= result.color;
+
+ATTRIB	fPos	= fragment.position;
+ATTRIB 	TC		= fragment.texcoord[0];
+ATTRIB 	Dir		= fragment.texcoord[1];
+ATTRIB	Mask	= fragment.texcoord[2];
+
+PARAM 	nonPoT	= program.env[0];
+PARAM 	invRes	= program.env[1];
+
+# linear distribution
+PARAM	d0		= 0.20000000;
+PARAM	d1		= 0.17777778;
+PARAM	d2		= 0.15555556;
+PARAM	d3		= 0.13333333;
+PARAM	d4		= 0.11111111;
+PARAM	d5		= 0.08888889;
+PARAM	d6		= 0.06666667;
+PARAM	d7		= 0.04444444;
+PARAM	d8		= 0.02222222;
+
+# mean distribution
+# PARAM	d0		= 0.11111111;
+# PARAM	d1		= 0.11111111;
+# PARAM	d2		= 0.11111111;
+# PARAM	d3		= 0.11111111;
+# PARAM	d4		= 0.11111111;
+# PARAM	d5		= 0.11111111;
+# PARAM	d6		= 0.11111111;
+# PARAM	d7		= 0.11111111;
+# PARAM	d8		= 0.11111111;
+
+# sample offsets
+PARAM 	off1	= { 1.0, 1.0, 2.0, 2.0 };
+PARAM 	off2	= { 3.0, 3.0, 4.0, 4.0 };
+PARAM 	off3	= { 5.0, 5.0, 6.0, 6.0 };
+PARAM 	off4	= { 7.0, 7.0, 8.0, 8.0 };
+
+PARAM	dcode24	= { 1.0, 0.003921568627450980392156862745098, 0.000015259021896696421759365224689097 };
+PARAM	DEG2RAD	= 0.017453292519943295769236907684886;
+
+TEMP 	uv, color, focalLen, invFocalLen, res;
+TEMP 	R0, R1, R2, R3, R4;
+TEMP 	T0, T1, T2, T3, T4, T5, T6, T7, T8;
+TEMP 	D0, D1, D2, D3, D4, D5, D6, D7, D8;
+
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, invRes.xyxy;
+
+# calculate fov focal length
+# RCP 	res.x, invRes.x;
+# RCP 	res.y, invRes.y;
+# MUL 	res.z, res.x, invRes.y;
+# MUL 	R0, 37.5, DEG2RAD;
+# SCS 	R0, R0.x;
+# RCP 	R0.x, R0.x;
+# MUL 	invFocalLen.y, R0.y, R0.x;
+# MUL 	invFocalLen.x, invFocalLen.y, res.z;
+# MAD 	R0, TC, { 2.0, 2.0, 0.0}, { -1.0, -1.0, 0.0 };
+# MUL 	R0.xy, R0, invFocalLen;
+# DP3 	R0.w, R0, R0;
+# RSQ 	R0.w, R0.w;
+# MUL 	R0.xy, R0, R0.w;
+# MUL 	R0.xy, R0, Dir;
+# ADD 	R0.w, R0.w, 1.0;
+TEX 	D0, uv.xyxy, texture[1], 2D;
+MAD 	D0, D0, 2.0, -1.0;
+
+MOV 	R0, invRes;
+MOV 	R0.z, 0.0;
+DP3 	R0.w, R0, R0;
+RSQ 	R0.w, R0.w;
+RCP 	R0, R0.w;
+MUL 	R0, R0, D0.xyxy;
+MUL 	R0, R0, 4;
+
+MAD_SAT R1, off1, R0, uv;
+MAD_SAT R2, off2, R0, uv;
+MAD_SAT R3, off3, R0, uv;
+MAD_SAT R4, off4, R0, uv;
+
+
+TEX		T0, uv.xyxy, texture[0], 2D;
+TEX 	T1, R1.xyxy, texture[0], 2D;
+TEX 	T2, R1.zwzw, texture[0], 2D;
+TEX 	T3, R2.xyxy, texture[0], 2D;
+TEX 	T4, R2.zwzw, texture[0], 2D;
+TEX 	T5, R3.xyxy, texture[0], 2D;
+TEX 	T6, R3.zwzw, texture[0], 2D;
+TEX 	T7, R4.xyxy, texture[0], 2D;
+TEX 	T8, R4.zwzw, texture[0], 2D;
+
+MUL 	color, T0, d0;
+MAD 	color, T1, d1, color;
+MAD 	color, T2, d2, color;
+MAD 	color, T3, d3, color;
+MAD 	color, T4, d4, color;
+MAD 	color, T5, d5, color;
+MAD 	color, T6, d6, color;
+MAD 	color, T7, d7, color;
+MAD 	color, T8, d8, color;
+
+MOV 	oColor.xyz, color;
+
+END

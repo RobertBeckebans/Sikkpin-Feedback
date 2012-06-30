@@ -1,0 +1,61 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#--------------------------------
+# env[5]	= view position in local coordinates
+
+MOV		result.texcoord[0], vertex.normal;
+ADD		result.texcoord[1], program.env[5], -vertex.position;
+MOV 	result.color, vertex.color;
+
+END
+
+#==========================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# per-pixel cubic reflection map calculation
+
+# texture 0		= environment cube map
+#
+# texcoord[0]	= surface normal
+# texcoord[1]	= view XYZ - the surface XYZ
+
+OUTPUT 	oColor 		= result.color;
+
+ATTRIB 	vColor 		= fragment.color;
+ATTRIB 	normalTC	= fragment.texcoord[0];
+ATTRIB 	viewVecTC 	= fragment.texcoord[1];
+
+PARAM	const		= { 1.0, 2.0, 4.0, 0.5 };
+
+TEMP	viewVec, reflectVec, color; 
+TEMP	NdotV, fresnel;
+
+
+# normalize vector to the viewer
+DP3		viewVec.w, viewVecTC, viewVecTC;
+RSQ		viewVec.w, viewVec.w;
+MUL		viewVec.xyz, viewVecTC, viewVec.w;
+
+# calculate reflection vector
+DP3 	reflectVec, normalTC, viewVec;
+MUL		reflectVec, reflectVec, normalTC;
+MAD		reflectVec.xyz, reflectVec, const.y, -viewVec;
+
+# sample cube map
+TEX		color, reflectVec, texture[0], CUBE;
+
+# calculate Fresnel
+DP3 	NdotV.x, normalTC, viewVec;
+ABS 	NdotV.x, NdotV.x;
+ADD 	fresnel.w, 1.5, -NdotV.x;
+POW_SAT fresnel.w, fresnel.w, const.z;
+MUL_SAT color.xyz, color, fresnel.w;
+
+# modify by the vertex color
+MUL		oColor.xyz, color, vColor;
+
+END

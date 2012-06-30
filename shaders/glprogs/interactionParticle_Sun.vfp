@@ -1,0 +1,79 @@
+###==============================================================================
+#	Feedback Interaction Particle Sun Vertex/Fragment Program 
+#
+#	Simple Additive Lighting
+###==============================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+# Instruction Count: ALU: 97 TEX: 6 Total: 103
+
+OUTPUT 	oColor 		= result.color;
+ATTRIB 	vColor 		= fragment.color;
+ATTRIB 	fPos 		= fragment.position;
+
+ATTRIB 	lightProjTC = fragment.texcoord[0];
+ATTRIB 	diffuseTC 	= fragment.texcoord[1];
+
+PARAM 	nonPoT		= program.env[0];
+PARAM 	invRes		= program.env[1];
+PARAM 	lightColor 	= program.env[2];
+
+PARAM	const		= { 1.0,  2.0,  4.0,  5.0  };
+PARAM 	gamma		= { 2.4, 0.94786729857819905213270142180095, 0.41666666666666666666666666666667, 0.077399380804953560371517027863777 };
+
+TEMP	diffuse, color; 
+TEMP	atten, lightCube;
+TEMP	R1, R2;
+
+
+# calculate point light tc
+MAD 	R1.xyz, lightProjTC, 2.0, -1.0;
+
+# sample projection cube map
+TEX 	lightCube, R1, texture[0], CUBE;
+
+# calculate attenuation
+SGE 	R1, 1.0, lightProjTC;
+SGE 	R2, lightProjTC, 0.0;
+DP3 	R1.w, R1, R2;
+SGE 	R1.w, R1.w, 3.0;
+MUL 	atten, lightCube, R1.w;
+
+# early out - attenuation
+DP3 	atten.w, atten, const.x;
+SGE 	atten.w, 0.0, atten.w;
+KIL 	-atten.w;
+
+# load texture maps
+TEX		diffuse, diffuseTC, texture[3], 2D;
+
+# sRGB -> Linear
+MUL 	R1, diffuse, gamma.w;
+ADD 	R2, diffuse, 0.055;
+MUL 	R2, R2, gamma.y;
+POW 	R2.x, R2.x, gamma.x;
+POW 	R2.y, R2.y, gamma.x;
+POW 	R2.z, R2.z, gamma.x;
+SGE 	diffuse.xyz, 0.04045, diffuse;
+CMP 	diffuse.xyz, -diffuse, R1, R2;
+
+# final modulation
+MUL 	color, diffuse, lightColor;
+MUL 	color, color, atten;
+
+# Linear -> sRGB
+MUL 	R1, color, 12.92;
+POW 	R2.x, color.x, gamma.z;
+POW 	R2.y, color.y, gamma.z;
+POW 	R2.z, color.z, gamma.z;
+MAD 	R2, R2, 1.055, -0.055;
+SGE 	color, 0.0031308, color;
+CMP 	color.xyz, -color, R1, R2;
+
+# modify by the vertex color
+MUL 	oColor.xyz, color, vColor;
+MOV 	oColor.w, diffuse.w;
+
+END

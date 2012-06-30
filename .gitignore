@@ -1,0 +1,12 @@
+build
+SConstruct
+Thumbs.db
+D3 GPL Workspace.bat
+*.filters
+*.props
+*.user
+*.ncb
+*.vcproj
+*.vcxproj
+*.suo
+*.sln

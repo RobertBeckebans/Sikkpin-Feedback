@@ -1,0 +1,66 @@
+!!ARBvp1.0
+OPTION ARB_position_invariant;
+
+# input:
+#--------------------------------
+# texcoord[0]	= TEX0 texcoords
+# 
+# local[0]		= blend factor
+# local[1]		= mask distance
+
+PARAM	invFarClip	= 0.0001220703125;
+
+MOV 	result.texcoord[0], vertex.texcoord[0];
+MOV 	result.texcoord[1], program.local[0];
+MUL 	result.texcoord[2], program.local[1], invFarClip;
+
+END
+
+#=====================================================================================
+
+!!ARBfp1.0
+OPTION ARB_precision_hint_nicest;
+
+# texture 0	= _currentRender
+#
+# env[0]	= 1.0 to _currentRender conversion
+# env[1]	= fragment.position to 0.0 - 1.0 conversion
+
+OUTPUT 	oColor 	= result.color;
+
+ATTRIB	fPos	= fragment.position;
+ATTRIB 	TC		= fragment.texcoord[0];
+ATTRIB 	Blend	= fragment.texcoord[1];
+ATTRIB	Mask	= fragment.texcoord[2];
+
+PARAM 	nonPoT	= program.env[0];
+PARAM 	invRes	= program.env[1];
+
+PARAM	dcode24	= { 1.0, 0.003921568627450980392156862745098, 0.000015259021896696421759365224689097 };
+
+TEMP 	uv, invres, color, blur, blur1, blur2, depth;
+
+
+# calculate the non-power-of-two inverse resolution
+MUL 	invres, invRes.xyxy, nonPoT.xyxy;
+MOV 	invres.zw, invRes.xyxy;
+
+# calculate the screen texcoord in the 0.0 to 1.0 range
+MUL 	uv, fPos.xyxy, invres;
+
+TEX 	color, uv.xyxy, texture[0], 2D;
+TEX 	blur1, uv.zwzw, texture[1], 2D;
+# TEX 	blur2, uv.zwzw, texture[2], 2D;
+# TEX 	depth, uv.zwzw, texture[3], 2D;
+# DP3 	depth, depth, dcode24;
+
+# SLT 	depth, depth, Mask;
+# CMP 	blur1, -depth, color, blur1;
+# CMP 	blur2, -depth, color, blur2;
+
+# LRP		blur, Blend.x, blur2, blur1;
+LRP		color, Blend.y, blur1, color;
+
+MOV 	oColor.xyz, color;
+
+END

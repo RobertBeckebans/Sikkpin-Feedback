@@ -1,0 +1,101 @@
+###==============================================================================
+#	Feedback Interaction Directional (2D/3D/Sun) Vertex Program 
+###==============================================================================
+#
+# --------------------------------------
+# vertex attributes:
+# 
+# attrib[8]		= texture coordinates
+# attrib[9]		= global tangent
+# attrib[10]	= global bitangent
+# attrib[11]	= global normal
+#
+# --------------------------------------
+# environment variables:
+#
+# env[0]  		= 1.0 to _currentRender conversion
+# env[1]  		= fragment.position to 0.0 - 1.0 conversion
+# env[2]  		= diffuse light color
+# env[3]  		= specular exponent scale/bias
+# env[4]  		= localLightOrigin
+# env[5]		= localViewOrigin
+# env[6]		= lightProjection S
+# env[7]		= lightProjection T
+# env[8]		= lightFalloff S
+# env[9]		= lightProjection Q
+# env[10]		= bumpMatrix S
+# env[11]		= bumpMatrix T
+# env[12]		= diffuseMatrix S
+# env[13]		= diffuseMatrix T
+# env[14]		= specularMatrix S
+# env[15]		= specularMatrix T
+# env[16]		= modelMatrix[0]
+# env[17]		= modelMatrix[1]
+# env[18]		= modelMatrix[2]
+# env[19]		= vertex color modulate/add
+#
+#--------------------------------------
+# textures binds:
+# 
+# texture 0		= 2D/cubemap light projection texture
+# texture 1		= 1D ambient light falloff texture
+# texture 2		= per-surface normal map
+# texture 3		= per-surface diffuse map
+# texture 4		= per-surface specular map
+# texture 5		= global ssao buffer
+# texture 6		= aux interaction map 0
+# texture 7		= aux interaction map 1
+# texture 8		= aux interaction map 2
+# texture 9		= aux interaction map 3
+# texture 10	= aux interaction map 4
+# texture 11	= aux interaction map 5
+# texture 12	= aux interaction map 6
+# texture 13	= aux interaction map 7
+# texture 14	= aux interaction map 8
+# texture 15	= aux interaction map 9
+#
+#--------------------------------------
+###==============================================================================
+
+!!ARBvp1.0
+OPTION	ARB_position_invariant;
+
+# Instruction Count: 18
+
+TEMP	R0;
+
+# calculate vector to light in R0
+ADD		R0, program.env[4], -vertex.position;
+DP3		result.texcoord[0].x, vertex.attrib[9], R0;
+DP3		result.texcoord[0].y, vertex.attrib[10], R0;
+DP3		result.texcoord[0].z, vertex.attrib[11], R0;
+
+# calculate vector to viewer in R0
+ADD		R0, program.env[5], -vertex.position;
+DP3		result.texcoord[1].x, vertex.attrib[9], R0;
+DP3		result.texcoord[1].y, vertex.attrib[10], R0;
+DP3		result.texcoord[1].z, vertex.attrib[11], R0;
+
+# light projection/falloff texture coordinates
+DP4		result.texcoord[2].x, vertex.position, program.env[6];
+DP4		result.texcoord[2].y, vertex.position, program.env[7];
+DP4		result.texcoord[2].z, vertex.position, program.env[8];
+DP4		result.texcoord[2].w, vertex.position, program.env[9];
+
+# normal map texture coordinates
+DP4 	result.texcoord[3].x, vertex.attrib[8], program.env[10];
+DP4 	result.texcoord[3].y, vertex.attrib[8], program.env[11];
+
+# diffuse and specular map texture coordinates
+DP4		result.texcoord[4].x, vertex.attrib[8], program.env[12];
+DP4		result.texcoord[4].y, vertex.attrib[8], program.env[13];
+DP4		result.texcoord[4].z, vertex.attrib[8], program.env[14];
+DP4		result.texcoord[4].w, vertex.attrib[8], program.env[15];
+
+# generate the vertex color, which can be 1.0, color, or 1.0 - color
+# for 1.0 			: env[19].x =  0.0, env[19].y = 1.0
+# for color			: env[19].x =  1.0, env[19].y = 0.0
+# for 1.0 - color	: env[19].x = -1.0, env[19].y = 1.0
+MAD		result.color, vertex.color, program.env[19].x, program.env[19].y;
+
+END
