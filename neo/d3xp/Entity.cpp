@@ -503,7 +503,7 @@ void idEntity::FixupLocalizedStrings()
 idEntity::Spawn
 ================
 */
-void idEntity::Spawn( void )
+void idEntity::Spawn()
 {
 	int					i;
 	const char*			temp;
@@ -659,7 +659,7 @@ void idEntity::Spawn( void )
 idEntity::~idEntity
 ================
 */
-idEntity::~idEntity( void )
+idEntity::~idEntity()
 {
 
 	if( gameLocal.GameState() != GAMESTATE_SHUTDOWN && !gameLocal.isClient && fl.networkSync && entityNumber >= MAX_CLIENTS )
@@ -914,7 +914,7 @@ void idEntity::Restore( idRestoreGame* savefile )
 idEntity::GetEntityDefName
 ================
 */
-const char* idEntity::GetEntityDefName( void ) const
+const char* idEntity::GetEntityDefName() const
 {
 	if( entityDefNumber < 0 )
 	{
@@ -953,7 +953,7 @@ void idEntity::SetName( const char* newname )
 idEntity::GetName
 ================
 */
-const char* idEntity::GetName( void ) const
+const char* idEntity::GetName() const
 {
 	return name.c_str();
 }
@@ -970,7 +970,7 @@ const char* idEntity::GetName( void ) const
 idEntity::Think
 ================
 */
-void idEntity::Think( void )
+void idEntity::Think()
 {
 	RunPhysics();
 	Present();
@@ -984,7 +984,7 @@ Monsters and other expensive entities that are completely closed
 off from the player can skip all of their work
 ================
 */
-bool idEntity::DoDormantTests( void )
+bool idEntity::DoDormantTests()
 {
 
 	if( fl.neverDormant )
@@ -1035,7 +1035,7 @@ Monsters and other expensive entities that are completely closed
 off from the player can skip all of their work
 ================
 */
-bool idEntity::CheckDormant( void )
+bool idEntity::CheckDormant()
 {
 	bool dormant;
 
@@ -1061,7 +1061,7 @@ idEntity::DormantBegin
 called when entity becomes dormant
 ================
 */
-void idEntity::DormantBegin( void )
+void idEntity::DormantBegin()
 {
 }
 
@@ -1072,7 +1072,7 @@ idEntity::DormantEnd
 called when entity wakes from being dormant
 ================
 */
-void idEntity::DormantEnd( void )
+void idEntity::DormantEnd()
 {
 }
 
@@ -1081,7 +1081,7 @@ void idEntity::DormantEnd( void )
 idEntity::IsActive
 ================
 */
-bool idEntity::IsActive( void ) const
+bool idEntity::IsActive() const
 {
 	return activeNode.InList();
 }
@@ -1263,7 +1263,7 @@ void idEntity::GetColor( idVec4& out ) const
 idEntity::UpdateAnimationControllers
 ================
 */
-bool idEntity::UpdateAnimationControllers( void )
+bool idEntity::UpdateAnimationControllers()
 {
 	// any ragdoll and IK animation controllers should be updated here
 	return false;
@@ -1318,7 +1318,7 @@ void idEntity::SetSkin( const idDeclSkin* skin )
 idEntity::GetSkin
 ================
 */
-const idDeclSkin* idEntity::GetSkin( void ) const
+const idDeclSkin* idEntity::GetSkin() const
 {
 	return renderEntity.customSkin;
 }
@@ -1328,7 +1328,7 @@ const idDeclSkin* idEntity::GetSkin( void ) const
 idEntity::FreeModelDef
 ================
 */
-void idEntity::FreeModelDef( void )
+void idEntity::FreeModelDef()
 {
 	if( modelDefHandle != -1 )
 	{
@@ -1342,7 +1342,7 @@ void idEntity::FreeModelDef( void )
 idEntity::FreeLightDef
 ================
 */
-void idEntity::FreeLightDef( void )
+void idEntity::FreeLightDef()
 {
 }
 
@@ -1351,7 +1351,7 @@ void idEntity::FreeLightDef( void )
 idEntity::IsHidden
 ================
 */
-bool idEntity::IsHidden( void ) const
+bool idEntity::IsHidden() const
 {
 	return fl.hidden;
 }
@@ -1361,7 +1361,7 @@ bool idEntity::IsHidden( void ) const
 idEntity::Hide
 ================
 */
-void idEntity::Hide( void )
+void idEntity::Hide()
 {
 	if( !IsHidden() )
 	{
@@ -1376,7 +1376,7 @@ void idEntity::Hide( void )
 idEntity::Show
 ================
 */
-void idEntity::Show( void )
+void idEntity::Show()
 {
 	if( IsHidden() )
 	{
@@ -1390,7 +1390,7 @@ void idEntity::Show( void )
 idEntity::UpdateModelTransform
 ================
 */
-void idEntity::UpdateModelTransform( void )
+void idEntity::UpdateModelTransform()
 {
 	idVec3 origin;
 	idMat3 axis;
@@ -1412,7 +1412,7 @@ void idEntity::UpdateModelTransform( void )
 idEntity::UpdateModel
 ================
 */
-void idEntity::UpdateModel( void )
+void idEntity::UpdateModel()
 {
 #ifdef _D3XP
 	renderEntity.timeGroup = timeGroup;
@@ -1459,7 +1459,7 @@ void idEntity::UpdateModel( void )
 idEntity::UpdateVisuals
 ================
 */
-void idEntity::UpdateVisuals( void )
+void idEntity::UpdateVisuals()
 {
 	UpdateModel();
 	UpdateSound();
@@ -1470,7 +1470,7 @@ void idEntity::UpdateVisuals( void )
 idEntity::UpdatePVSAreas
 ================
 */
-void idEntity::UpdatePVSAreas( void )
+void idEntity::UpdatePVSAreas()
 {
 	int localNumPVSAreas, localPVSAreas[32];
 	idBounds modelAbsBounds;
@@ -1519,7 +1519,7 @@ void idEntity::UpdatePVSAreas( const idVec3& pos )
 idEntity::GetNumPVSAreas
 ================
 */
-int idEntity::GetNumPVSAreas( void )
+int idEntity::GetNumPVSAreas()
 {
 	if( numPVSAreas < 0 )
 	{
@@ -1533,7 +1533,7 @@ int idEntity::GetNumPVSAreas( void )
 idEntity::GetPVSAreas
 ================
 */
-const int* idEntity::GetPVSAreas( void )
+const int* idEntity::GetPVSAreas()
 {
 	if( numPVSAreas < 0 )
 	{
@@ -1547,7 +1547,7 @@ const int* idEntity::GetPVSAreas( void )
 idEntity::ClearPVSAreas
 ================
 */
-void idEntity::ClearPVSAreas( void )
+void idEntity::ClearPVSAreas()
 {
 	numPVSAreas = -1;
 }
@@ -1641,7 +1641,7 @@ idEntity::Present
 Present is called to allow entities to generate refEntities, lights, etc for the renderer.
 ================
 */
-void idEntity::Present( void )
+void idEntity::Present()
 {
 
 	if( !gameLocal.isNewFrame )
@@ -1684,7 +1684,7 @@ void idEntity::Present( void )
 idEntity::GetRenderEntity
 ================
 */
-renderEntity_t* idEntity::GetRenderEntity( void )
+renderEntity_t* idEntity::GetRenderEntity()
 {
 	return &renderEntity;
 }
@@ -1694,7 +1694,7 @@ renderEntity_t* idEntity::GetRenderEntity( void )
 idEntity::GetModelDefHandle
 ================
 */
-int idEntity::GetModelDefHandle( void )
+int idEntity::GetModelDefHandle()
 {
 	return modelDefHandle;
 }
@@ -1751,7 +1751,7 @@ idEntity::GetAnimator
 Subclasses will be responsible for allocating animator.
 ================
 */
-idAnimator* idEntity::GetAnimator( void )
+idAnimator* idEntity::GetAnimator()
 {
 	return NULL;
 }
@@ -1763,7 +1763,7 @@ idEntity::GetRenderView
 This is used by remote camera views to look from an entity
 =============
 */
-renderView_t* idEntity::GetRenderView( void )
+renderView_t* idEntity::GetRenderView()
 {
 	if( !renderView )
 	{
@@ -1802,7 +1802,7 @@ idEntity::CanPlayChatterSounds
 Used for playing chatter sounds on monsters.
 ================
 */
-bool idEntity::CanPlayChatterSounds( void ) const
+bool idEntity::CanPlayChatterSounds() const
 {
 	return true;
 }
@@ -1959,7 +1959,7 @@ void idEntity::SetSoundVolume( float volume )
 idEntity::UpdateSound
 ================
 */
-void idEntity::UpdateSound( void )
+void idEntity::UpdateSound()
 {
 	if( refSound.referenceSound )
 	{
@@ -1984,7 +1984,7 @@ void idEntity::UpdateSound( void )
 idEntity::GetListenerId
 ================
 */
-int idEntity::GetListenerId( void ) const
+int idEntity::GetListenerId() const
 {
 	return refSound.listenerId;
 }
@@ -1994,7 +1994,7 @@ int idEntity::GetListenerId( void ) const
 idEntity::GetSoundEmitter
 ================
 */
-idSoundEmitter* idEntity::GetSoundEmitter( void ) const
+idSoundEmitter* idEntity::GetSoundEmitter() const
 {
 	return refSound.referenceSound;
 }
@@ -2024,7 +2024,7 @@ void idEntity::FreeSoundEmitter( bool immediate )
 idEntity::PreBind
 ================
 */
-void idEntity::PreBind( void )
+void idEntity::PreBind()
 {
 }
 
@@ -2033,7 +2033,7 @@ void idEntity::PreBind( void )
 idEntity::PostBind
 ================
 */
-void idEntity::PostBind( void )
+void idEntity::PostBind()
 {
 }
 
@@ -2042,7 +2042,7 @@ void idEntity::PostBind( void )
 idEntity::PreUnbind
 ================
 */
-void idEntity::PreUnbind( void )
+void idEntity::PreUnbind()
 {
 }
 
@@ -2051,7 +2051,7 @@ void idEntity::PreUnbind( void )
 idEntity::PostUnbind
 ================
 */
-void idEntity::PostUnbind( void )
+void idEntity::PostUnbind()
 {
 }
 
@@ -2098,7 +2098,7 @@ bool idEntity::InitBind( idEntity* master )
 idEntity::FinishBind
 ================
 */
-void idEntity::FinishBind( void )
+void idEntity::FinishBind()
 {
 
 	// set the master on the physics object
@@ -2251,7 +2251,7 @@ void idEntity::BindToBody( idEntity* master, int bodyId, bool orientated )
 idEntity::Unbind
 ================
 */
-void idEntity::Unbind( void )
+void idEntity::Unbind()
 {
 	idEntity* 	prev;
 	idEntity* 	next;
@@ -2357,7 +2357,7 @@ void idEntity::Unbind( void )
 idEntity::RemoveBinds
 ================
 */
-void idEntity::RemoveBinds( void )
+void idEntity::RemoveBinds()
 {
 	idEntity* ent;
 	idEntity* next;
@@ -2379,7 +2379,7 @@ void idEntity::RemoveBinds( void )
 idEntity::IsBound
 ================
 */
-bool idEntity::IsBound( void ) const
+bool idEntity::IsBound() const
 {
 	if( bindMaster )
 	{
@@ -2418,7 +2418,7 @@ bool idEntity::IsBoundTo( idEntity* master ) const
 idEntity::GetBindMaster
 ================
 */
-idEntity* idEntity::GetBindMaster( void ) const
+idEntity* idEntity::GetBindMaster() const
 {
 	return bindMaster;
 }
@@ -2428,7 +2428,7 @@ idEntity* idEntity::GetBindMaster( void ) const
 idEntity::GetBindJoint
 ================
 */
-jointHandle_t idEntity::GetBindJoint( void ) const
+jointHandle_t idEntity::GetBindJoint() const
 {
 	return bindJoint;
 }
@@ -2438,7 +2438,7 @@ jointHandle_t idEntity::GetBindJoint( void ) const
 idEntity::GetBindBody
 ================
 */
-int idEntity::GetBindBody( void ) const
+int idEntity::GetBindBody() const
 {
 	return bindBody;
 }
@@ -2448,7 +2448,7 @@ int idEntity::GetBindBody( void ) const
 idEntity::GetTeamMaster
 ================
 */
-idEntity* idEntity::GetTeamMaster( void ) const
+idEntity* idEntity::GetTeamMaster() const
 {
 	return teamMaster;
 }
@@ -2458,7 +2458,7 @@ idEntity* idEntity::GetTeamMaster( void ) const
 idEntity::GetNextTeamEntity
 ================
 */
-idEntity* idEntity::GetNextTeamEntity( void ) const
+idEntity* idEntity::GetNextTeamEntity() const
 {
 	return teamChain;
 }
@@ -2753,7 +2753,7 @@ void idEntity::JoinTeam( idEntity* teammember )
 idEntity::QuitTeam
 ================
 */
-void idEntity::QuitTeam( void )
+void idEntity::QuitTeam()
 {
 	idEntity* ent;
 
@@ -2949,7 +2949,7 @@ void idEntity::RestorePhysics( idPhysics* phys )
 idEntity::GetPhysics
 ================
 */
-idPhysics* idEntity::GetPhysics( void ) const
+idPhysics* idEntity::GetPhysics() const
 {
 	return physics;
 }
@@ -2959,7 +2959,7 @@ idPhysics* idEntity::GetPhysics( void ) const
 idEntity::RunPhysics
 ================
 */
-bool idEntity::RunPhysics( void )
+bool idEntity::RunPhysics()
 {
 	int			i, reachedTime, startTime, endTime;
 	idEntity* 	part, *blockedPart, *blockingEntity;
@@ -3311,7 +3311,7 @@ void idEntity::ActivatePhysics( idEntity* ent )
 idEntity::IsAtRest
 ================
 */
-bool idEntity::IsAtRest( void ) const
+bool idEntity::IsAtRest() const
 {
 	return GetPhysics()->IsAtRest();
 }
@@ -3321,7 +3321,7 @@ bool idEntity::IsAtRest( void ) const
 idEntity::GetRestStartTime
 ================
 */
-int idEntity::GetRestStartTime( void ) const
+int idEntity::GetRestStartTime() const
 {
 	return GetPhysics()->GetRestStartTime();
 }
@@ -3610,7 +3610,7 @@ Called during idEntity::Spawn to see if it should construct the script object or
 Overridden by subclasses that need to spawn the script object themselves.
 ================
 */
-bool idEntity::ShouldConstructScriptObjectAtSpawn( void ) const
+bool idEntity::ShouldConstructScriptObjectAtSpawn() const
 {
 	return true;
 }
@@ -3623,7 +3623,7 @@ Called during idEntity::Spawn.  Calls the constructor on the script object.
 Can be overridden by subclasses when a thread doesn't need to be allocated.
 ================
 */
-idThread* idEntity::ConstructScriptObject( void )
+idThread* idEntity::ConstructScriptObject()
 {
 	idThread*		thread;
 	const function_t* constructor;
@@ -3661,7 +3661,7 @@ Can be overridden by subclasses when a thread doesn't need to be allocated.
 Not called during idGameLocal::MapShutdown.
 ================
 */
-void idEntity::DeconstructScriptObject( void )
+void idEntity::DeconstructScriptObject()
 {
 	idThread*		thread;
 	const function_t* destructor;
@@ -3874,7 +3874,7 @@ void idEntity::SignalEvent( idThread* thread, signalNum_t signalnum )
 idEntity::TriggerGuis
 ================
 */
-void idEntity::TriggerGuis( void )
+void idEntity::TriggerGuis()
 {
 	int i;
 	for( i = 0; i < MAX_RENDERENTITY_GUI; i++ )
@@ -4119,7 +4119,7 @@ Used to build lists of targets after the entity is spawned.  Since not all entit
 have been spawned when the entity is created at map load time, we have to wait
 ===============
 */
-void idEntity::FindTargets( void )
+void idEntity::FindTargets()
 {
 	int			i;
 
@@ -4141,7 +4141,7 @@ void idEntity::FindTargets( void )
 idEntity::RemoveNullTargets
 ================
 */
-void idEntity::RemoveNullTargets( void )
+void idEntity::RemoveNullTargets()
 {
 	int i;
 
@@ -4214,7 +4214,7 @@ idEntity::TouchTriggers
   Activate all trigger entities touched at the current position.
 ============
 */
-bool idEntity::TouchTriggers( void ) const
+bool idEntity::TouchTriggers() const
 {
 	int				i, numClipModels, numEntities;
 	idClipModel* 	cm;
@@ -4279,7 +4279,7 @@ bool idEntity::TouchTriggers( void ) const
 idEntity::GetSpline
 ================
 */
-idCurve_Spline<idVec3>* idEntity::GetSpline( void ) const
+idCurve_Spline<idVec3>* idEntity::GetSpline() const
 {
 	int i, numPoints, t;
 	const idKeyValue* kv;
@@ -4334,7 +4334,7 @@ idCurve_Spline<idVec3>* idEntity::GetSpline( void ) const
 idEntity::ShowEditingDialog
 ===============
 */
-void idEntity::ShowEditingDialog( void )
+void idEntity::ShowEditingDialog()
 {
 }
 
@@ -4349,7 +4349,7 @@ void idEntity::ShowEditingDialog( void )
 idEntity::Event_GetName
 ================
 */
-void idEntity::Event_GetName( void )
+void idEntity::Event_GetName()
 {
 	idThread::ReturnString( name.c_str() );
 }
@@ -4369,7 +4369,7 @@ void idEntity::Event_SetName( const char* newname )
 idEntity::Event_FindTargets
 ===============
 */
-void idEntity::Event_FindTargets( void )
+void idEntity::Event_FindTargets()
 {
 	FindTargets();
 }
@@ -4392,7 +4392,7 @@ void idEntity::Event_ActivateTargets( idEntity* activator )
 idEntity::Event_NumTargets
 ================
 */
-void idEntity::Event_NumTargets( void )
+void idEntity::Event_NumTargets()
 {
 	idThread::ReturnFloat( targets.Num() );
 }
@@ -4482,7 +4482,7 @@ void idEntity::Event_BindToJoint( idEntity* master, const char* jointname, float
 idEntity::Event_RemoveBinds
 ================
 */
-void idEntity::Event_RemoveBinds( void )
+void idEntity::Event_RemoveBinds()
 {
 	RemoveBinds();
 }
@@ -4512,7 +4512,7 @@ void idEntity::Event_BindPosition( idEntity* master )
 idEntity::Event_Unbind
 ================
 */
-void idEntity::Event_Unbind( void )
+void idEntity::Event_Unbind()
 {
 	Unbind();
 }
@@ -4522,7 +4522,7 @@ void idEntity::Event_Unbind( void )
 idEntity::Event_SpawnBind
 ================
 */
-void idEntity::Event_SpawnBind( void )
+void idEntity::Event_SpawnBind()
 {
 	idEntity*		parent;
 	const char*		bind, *joint, *bindanim;
@@ -4695,7 +4695,7 @@ void idEntity::Event_SetColor( float red, float green, float blue )
 idEntity::Event_GetColor
 ================
 */
-void idEntity::Event_GetColor( void )
+void idEntity::Event_GetColor()
 {
 	idVec3 out;
 
@@ -4708,7 +4708,7 @@ void idEntity::Event_GetColor( void )
 idEntity::Event_IsHidden
 ================
 */
-void idEntity::Event_IsHidden( void )
+void idEntity::Event_IsHidden()
 {
 	idThread::ReturnInt( fl.hidden );
 }
@@ -4718,7 +4718,7 @@ void idEntity::Event_IsHidden( void )
 idEntity::Event_Hide
 ================
 */
-void idEntity::Event_Hide( void )
+void idEntity::Event_Hide()
 {
 	Hide();
 }
@@ -4728,7 +4728,7 @@ void idEntity::Event_Hide( void )
 idEntity::Event_Show
 ================
 */
-void idEntity::Event_Show( void )
+void idEntity::Event_Show()
 {
 	Show();
 }
@@ -4797,7 +4797,7 @@ void idEntity::Event_FadeSound( int channel, float to, float over )
 idEntity::Event_GetWorldOrigin
 ================
 */
-void idEntity::Event_GetWorldOrigin( void )
+void idEntity::Event_GetWorldOrigin()
 {
 	idThread::ReturnVector( GetPhysics()->GetOrigin() );
 }
@@ -4828,7 +4828,7 @@ void idEntity::Event_SetOrigin( idVec3 const& org )
 idEntity::Event_GetOrigin
 ================
 */
-void idEntity::Event_GetOrigin( void )
+void idEntity::Event_GetOrigin()
 {
 	idThread::ReturnVector( GetLocalCoordinates( GetPhysics()->GetOrigin() ) );
 }
@@ -4848,7 +4848,7 @@ void idEntity::Event_SetAngles( idAngles const& ang )
 idEntity::Event_GetAngles
 ================
 */
-void idEntity::Event_GetAngles( void )
+void idEntity::Event_GetAngles()
 {
 	idAngles ang = GetPhysics()->GetAxis().ToAngles();
 	idThread::ReturnVector( idVec3( ang[0], ang[1], ang[2] ) );
@@ -4869,7 +4869,7 @@ void idEntity::Event_SetLinearVelocity( const idVec3& velocity )
 idEntity::Event_GetLinearVelocity
 ================
 */
-void idEntity::Event_GetLinearVelocity( void )
+void idEntity::Event_GetLinearVelocity()
 {
 	idThread::ReturnVector( GetPhysics()->GetLinearVelocity() );
 }
@@ -4889,7 +4889,7 @@ void idEntity::Event_SetAngularVelocity( const idVec3& velocity )
 idEntity::Event_GetAngularVelocity
 ================
 */
-void idEntity::Event_GetAngularVelocity( void )
+void idEntity::Event_GetAngularVelocity()
 {
 	idThread::ReturnVector( GetPhysics()->GetAngularVelocity() );
 }
@@ -4909,7 +4909,7 @@ void idEntity::Event_SetSize( idVec3 const& mins, idVec3 const& maxs )
 idEntity::Event_GetSize
 ================
 */
-void idEntity::Event_GetSize( void )
+void idEntity::Event_GetSize()
 {
 	idBounds bounds;
 
@@ -4922,7 +4922,7 @@ void idEntity::Event_GetSize( void )
 idEntity::Event_GetMins
 ================
 */
-void idEntity::Event_GetMins( void )
+void idEntity::Event_GetMins()
 {
 	idThread::ReturnVector( GetPhysics()->GetBounds()[0] );
 }
@@ -4932,7 +4932,7 @@ void idEntity::Event_GetMins( void )
 idEntity::Event_GetMaxs
 ================
 */
-void idEntity::Event_GetMaxs( void )
+void idEntity::Event_GetMaxs()
 {
 	idThread::ReturnVector( GetPhysics()->GetBounds()[1] );
 }
@@ -5121,7 +5121,7 @@ void idEntity::Event_GetEntityKey( const char* key )
 idEntity::Event_RestorePosition
 ================
 */
-void idEntity::Event_RestorePosition( void )
+void idEntity::Event_RestorePosition()
 {
 	idVec3		org;
 	idAngles	angles;
@@ -5169,7 +5169,7 @@ void idEntity::Event_RestorePosition( void )
 idEntity::Event_UpdateCameraTarget
 ================
 */
-void idEntity::Event_UpdateCameraTarget( void )
+void idEntity::Event_UpdateCameraTarget()
 {
 	const char* target;
 	const idKeyValue* kv;
@@ -5244,7 +5244,7 @@ void idEntity::Event_StartFx( const char* fx )
 idEntity::Event_WaitFrame
 ================
 */
-void idEntity::Event_WaitFrame( void )
+void idEntity::Event_WaitFrame()
 {
 	idThread* thread;
 
@@ -5423,7 +5423,7 @@ void idEntity::Event_GuiNamedEvent( int guiNum, const char* event )
 idEntity::ClientPredictionThink
 ================
 */
-void idEntity::ClientPredictionThink( void )
+void idEntity::ClientPredictionThink()
 {
 	RunPhysics();
 	Present();
@@ -5891,7 +5891,7 @@ void idAnimatedEntity::Restore( idRestoreGame* savefile )
 idAnimatedEntity::ClientPredictionThink
 ================
 */
-void idAnimatedEntity::ClientPredictionThink( void )
+void idAnimatedEntity::ClientPredictionThink()
 {
 	RunPhysics();
 	UpdateAnimation();
@@ -5903,7 +5903,7 @@ void idAnimatedEntity::ClientPredictionThink( void )
 idAnimatedEntity::Think
 ================
 */
-void idAnimatedEntity::Think( void )
+void idAnimatedEntity::Think()
 {
 	RunPhysics();
 	UpdateAnimation();
@@ -5916,7 +5916,7 @@ void idAnimatedEntity::Think( void )
 idAnimatedEntity::UpdateAnimation
 ================
 */
-void idAnimatedEntity::UpdateAnimation( void )
+void idAnimatedEntity::UpdateAnimation()
 {
 	// don't do animations if they're not enabled
 	if( !( thinkFlags & TH_ANIMATE ) )
@@ -5963,7 +5963,7 @@ void idAnimatedEntity::UpdateAnimation( void )
 idAnimatedEntity::GetAnimator
 ================
 */
-idAnimator* idAnimatedEntity::GetAnimator( void )
+idAnimator* idAnimatedEntity::GetAnimator()
 {
 	return &animator;
 }
@@ -6113,7 +6113,7 @@ void idAnimatedEntity::AddDamageEffect( const trace_t& collision, const idVec3& 
 idAnimatedEntity::GetDefaultSurfaceType
 ==============
 */
-int	idAnimatedEntity::GetDefaultSurfaceType( void ) const
+int	idAnimatedEntity::GetDefaultSurfaceType() const
 {
 	return SURFTYPE_METAL;
 }
@@ -6214,7 +6214,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 idAnimatedEntity::UpdateDamageEffects
 ==============
 */
-void idAnimatedEntity::UpdateDamageEffects( void )
+void idAnimatedEntity::UpdateDamageEffects()
 {
 	damageEffect_t*	de, **prev;
 
@@ -6315,7 +6315,7 @@ idAnimatedEntity::Event_ClearAllJoints
 removes any custom transforms on all joints
 ================
 */
-void idAnimatedEntity::Event_ClearAllJoints( void )
+void idAnimatedEntity::Event_ClearAllJoints()
 {
 	animator.ClearAllJoints();
 }

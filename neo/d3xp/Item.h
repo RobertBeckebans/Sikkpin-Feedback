@@ -49,11 +49,11 @@ public:
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
 
-	void					Spawn( void );
+	void					Spawn();
 	void					GetAttributes( idDict& attributes );
 	virtual bool			GiveToPlayer( idPlayer* player );
 	virtual bool			Pickup( idPlayer* player );
-	virtual void			Think( void );
+	virtual void			Think();
 	virtual void			Present();
 
 	enum
@@ -70,7 +70,7 @@ public:
 		EVENT_MAXEVENTS
 	};
 
-	virtual void			ClientPredictionThink( void );
+	virtual void			ClientPredictionThink();
 	virtual bool			ClientReceiveEvent( int event, int time, const idBitMsg& msg );
 
 	// networking
@@ -96,11 +96,11 @@ private:
 	bool					UpdateRenderEntity( renderEntity_s* renderEntity, const renderView_t* renderView ) const;
 	static bool				ModelCallback( renderEntity_s* renderEntity, const renderView_t* renderView );
 
-	void					Event_DropToFloor( void );
+	void					Event_DropToFloor();
 	void					Event_Touch( idEntity* other, trace_t* trace );
 	void					Event_Trigger( idEntity* activator );
-	void					Event_Respawn( void );
-	void					Event_RespawnFx( void );
+	void					Event_Respawn();
+	void					Event_RespawnFx();
 };
 
 class idItemPowerup : public idItem
@@ -170,8 +170,8 @@ public:
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
 
-	void					Spawn( void );
-	virtual void			Think( void );
+	void					Spawn();
+	virtual void			Think();
 #ifdef _D3XP
 	virtual bool			Collide( const trace_t& collision, const idVec3& velocity );
 #endif
@@ -202,7 +202,7 @@ private:
 
 	void					Gib( const idVec3& dir, const char* damageDefName );
 
-	void					Event_DropToFloor( void );
+	void					Event_DropToFloor();
 	void					Event_Gib( const char* damageDefName );
 };
 
@@ -219,14 +219,14 @@ public:
 	void                    Spawn();
 	virtual bool			Pickup( idPlayer* player );
 	virtual bool			ClientReceiveEvent( int event, int time, const idBitMsg& msg );
-	virtual void			Think( void );
+	virtual void			Think();
 
 	void					Drop( bool death = false );	// was the drop caused by death of carrier?
 	void					Return( idPlayer* player = NULL );
-	void					Capture( void );
+	void					Capture();
 
-	virtual void			FreeLightDef( void );
-	virtual void			Present( void );
+	virtual void			FreeLightDef();
+	virtual void			Present();
 
 	// networking
 	virtual void			WriteToSnapshot( idBitMsgDelta& msg ) const;
@@ -262,13 +262,13 @@ private:
 	void					Event_TakeFlag( idPlayer* player );
 	void					Event_DropFlag( bool death );
 	void					Event_FlagReturn( idPlayer* player = NULL );
-	void					Event_FlagCapture( void );
+	void					Event_FlagCapture();
 
-	void					PrivateReturn( void );
+	void					PrivateReturn();
 	function_t* 			LoadScript( char* script );
 
 	void					SpawnNugget( idVec3 pos );
-	void                    UpdateGuis( void );
+	void                    UpdateGuis();
 };
 
 #endif

@@ -46,8 +46,8 @@ public:
 	void				Save( idSaveGame* savefile ) const;
 	void				Restore( idRestoreGame* savefile );
 
-	idForce_Grab( void );
-	virtual				~idForce_Grab( void );
+	idForce_Grab();
+	virtual				~idForce_Grab();
 	// initialize the drag force
 	void				Init( float damping );
 	// set physics object being dragged
@@ -61,7 +61,7 @@ public: // common force interface
 	virtual void		RemovePhysics( const idPhysics* phys );
 
 	// Get the distance from object to goal position
-	float				GetDistanceToGoal( void );
+	float				GetDistanceToGoal();
 
 private:
 

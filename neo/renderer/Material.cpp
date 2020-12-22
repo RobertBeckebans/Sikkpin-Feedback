@@ -223,7 +223,7 @@ void idMaterial::FreeData()
 idMaterial::GetEditorImage
 ==============
 */
-idImage* idMaterial::GetEditorImage( void ) const
+idImage* idMaterial::GetEditorImage() const
 {
 	if( editorImage )
 	{
@@ -499,7 +499,7 @@ int idMaterial::GetExpressionConstant( float f )
 idMaterial::GetExpressionTemporary
 =============
 */
-int idMaterial::GetExpressionTemporary( void )
+int idMaterial::GetExpressionTemporary()
 {
 	if( numRegisters == MAX_EXPRESSION_REGISTERS )
 	{
@@ -517,7 +517,7 @@ int idMaterial::GetExpressionTemporary( void )
 idMaterial::GetExpressionOp
 =============
 */
-expOp_t*	idMaterial::GetExpressionOp( void )
+expOp_t*	idMaterial::GetExpressionOp()
 {
 	if( numOps == MAX_EXPRESSION_OPS )
 	{
@@ -3311,7 +3311,7 @@ texgen_t idMaterial::Texgen() const
 idMaterial::GetImageWidth
 =============
 */
-int idMaterial::GetImageWidth( void ) const
+int idMaterial::GetImageWidth() const
 {
 	assert( GetStage( 0 ) && GetStage( 0 )->texture.image );
 	return GetStage( 0 )->texture.image->uploadWidth;
@@ -3322,7 +3322,7 @@ int idMaterial::GetImageWidth( void ) const
 idMaterial::GetImageHeight
 =============
 */
-int idMaterial::GetImageHeight( void ) const
+int idMaterial::GetImageHeight() const
 {
 	assert( GetStage( 0 ) && GetStage( 0 )->texture.image );
 	return GetStage( 0 )->texture.image->uploadHeight;
@@ -3361,7 +3361,7 @@ void idMaterial::UpdateCinematic( int time ) const
 idMaterial::CloseCinematic
 =============
 */
-void idMaterial::CloseCinematic( void ) const
+void idMaterial::CloseCinematic() const
 {
 	for( int i = 0; i < numStages; i++ )
 	{
@@ -3437,7 +3437,7 @@ void idMaterial::CheckForConstantRegisters()
 idMaterial::ImageName
 ===================
 */
-const char* idMaterial::ImageName( void ) const
+const char* idMaterial::ImageName() const
 {
 	if( numStages == 0 )
 	{
@@ -3475,7 +3475,7 @@ void idMaterial::SetImageClassifications( int tag ) const
 idMaterial::Size
 =================
 */
-size_t idMaterial::Size( void ) const
+size_t idMaterial::Size() const
 {
 	return sizeof( idMaterial );
 }
@@ -3485,7 +3485,7 @@ size_t idMaterial::Size( void ) const
 idMaterial::SetDefaultText
 ===================
 */
-bool idMaterial::SetDefaultText( void )
+bool idMaterial::SetDefaultText()
 {
 	// if there exists an image with the same name
 	if( 1 )    //fileSystem->ReadFile( GetName(), NULL ) != -1 ) {
@@ -3532,7 +3532,7 @@ const char* idMaterial::DefaultDefinition() const
 idMaterial::GetBumpStage
 ===================
 */
-const shaderStage_t* idMaterial::GetBumpStage( void ) const
+const shaderStage_t* idMaterial::GetBumpStage() const
 {
 	for( int i = 0 ; i < numStages ; i++ )
 	{

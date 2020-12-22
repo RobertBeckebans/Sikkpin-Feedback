@@ -168,7 +168,7 @@ idWeapon::~idWeapon()
 idWeapon::Spawn
 ================
 */
-void idWeapon::Spawn( void )
+void idWeapon::Spawn()
 {
 // sikk - removed multiplayer
 	//if ( !gameLocal.isClient ) {
@@ -209,7 +209,7 @@ Called during idEntity::Spawn to see if it should construct the script object or
 Overridden by subclasses that need to spawn the script object themselves.
 ================
 */
-bool idWeapon::ShouldConstructScriptObjectAtSpawn( void ) const
+bool idWeapon::ShouldConstructScriptObjectAtSpawn() const
 {
 	return false;
 }
@@ -558,7 +558,7 @@ void idWeapon::Restore( idRestoreGame* savefile )
 idWeapon::Clear
 ================
 */
-void idWeapon::Clear( void )
+void idWeapon::Clear()
 {
 	CancelEvents( &EV_Weapon_Clear );
 
@@ -1098,7 +1098,7 @@ void idWeapon::GetWeaponDef( const char* objectname, int ammoinclip )
 idWeapon::UpdateGUI
 ================
 */
-void idWeapon::UpdateGUI( void )
+void idWeapon::UpdateGUI()
 {
 	if( !renderEntity.gui[ 0 ] )
 	{
@@ -1140,7 +1140,7 @@ void idWeapon::UpdateGUI( void )
 idWeapon::UpdateFlashPosition
 ================
 */
-void idWeapon::UpdateFlashPosition( void )
+void idWeapon::UpdateFlashPosition()
 {
 	// the flash has an explicit joint for locating it
 	GetGlobalJointTransform( true, flashJointView, muzzleFlash.origin, muzzleFlash.axis );
@@ -1162,7 +1162,7 @@ void idWeapon::UpdateFlashPosition( void )
 idWeapon::MuzzleFlashLight
 ================
 */
-void idWeapon::MuzzleFlashLight( void )
+void idWeapon::MuzzleFlashLight()
 {
 
 	if( !lightOn && ( !g_muzzleFlash.GetBool() || !muzzleFlash.lightRadius[0] ) )
@@ -1204,7 +1204,7 @@ void idWeapon::MuzzleFlashLight( void )
 idWeapon::UpdateSkin
 ================
 */
-bool idWeapon::UpdateSkin( void )
+bool idWeapon::UpdateSkin()
 {
 	const function_t* func;
 
@@ -1315,7 +1315,7 @@ void idWeapon::SetPushVelocity( const idVec3& pushVelocity )
 idWeapon::Think
 ================
 */
-void idWeapon::Think( void )
+void idWeapon::Think()
 {
 	// do nothing because the present is called from the player through PresentWeapon
 
@@ -1384,7 +1384,7 @@ void idWeapon::Think( void )
 idWeapon::Raise
 ================
 */
-void idWeapon::Raise( void )
+void idWeapon::Raise()
 {
 	if( isLinked )
 	{
@@ -1397,7 +1397,7 @@ void idWeapon::Raise( void )
 idWeapon::PutAway
 ================
 */
-void idWeapon::PutAway( void )
+void idWeapon::PutAway()
 {
 	hasBloodSplat = false;
 	if( isLinked )
@@ -1412,7 +1412,7 @@ idWeapon::Reload
 NOTE: this is only for impulse-triggered reload, auto reload is scripted
 ================
 */
-void idWeapon::Reload( void )
+void idWeapon::Reload()
 {
 	if( isLinked )
 	{
@@ -1425,7 +1425,7 @@ void idWeapon::Reload( void )
 idWeapon::LowerWeapon
 ================
 */
-void idWeapon::LowerWeapon( void )
+void idWeapon::LowerWeapon()
 {
 	if( !hide )
 	{
@@ -1448,7 +1448,7 @@ void idWeapon::LowerWeapon( void )
 idWeapon::RaiseWeapon
 ================
 */
-void idWeapon::RaiseWeapon( void )
+void idWeapon::RaiseWeapon()
 {
 	Show();
 
@@ -1473,7 +1473,7 @@ void idWeapon::RaiseWeapon( void )
 idWeapon::HideWeapon
 ================
 */
-void idWeapon::HideWeapon( void )
+void idWeapon::HideWeapon()
 {
 	Hide();
 	if( worldModel.GetEntity() )
@@ -1488,7 +1488,7 @@ void idWeapon::HideWeapon( void )
 idWeapon::ShowWeapon
 ================
 */
-void idWeapon::ShowWeapon( void )
+void idWeapon::ShowWeapon()
 {
 	Show();
 	if( worldModel.GetEntity() )
@@ -1506,7 +1506,7 @@ void idWeapon::ShowWeapon( void )
 idWeapon::HideWorldModel
 ================
 */
-void idWeapon::HideWorldModel( void )
+void idWeapon::HideWorldModel()
 {
 	if( worldModel.GetEntity() )
 	{
@@ -1519,7 +1519,7 @@ void idWeapon::HideWorldModel( void )
 idWeapon::ShowWorldModel
 ================
 */
-void idWeapon::ShowWorldModel( void )
+void idWeapon::ShowWorldModel()
 {
 	if( worldModel.GetEntity() )
 	{
@@ -1532,7 +1532,7 @@ void idWeapon::ShowWorldModel( void )
 idWeapon::OwnerDied
 ================
 */
-void idWeapon::OwnerDied( void )
+void idWeapon::OwnerDied()
 {
 	if( isLinked )
 	{
@@ -1588,7 +1588,7 @@ void idWeapon::BeginAttack( bool primary )
 idWeapon::EndAttack
 ================
 */
-void idWeapon::EndAttack( void )
+void idWeapon::EndAttack()
 {
 // sikk - Secondary Attack
 	if( !WEAPON_PRIMARY.IsLinked() || !WEAPON_SECONDARY.IsLinked() )
@@ -1614,7 +1614,7 @@ void idWeapon::EndAttack( void )
 idWeapon::isReady
 ================
 */
-bool idWeapon::IsReady( void ) const
+bool idWeapon::IsReady() const
 {
 // sikk - Modified
 	//return !hide && !IsHidden() && ( ( status == WP_RELOAD ) || ( status == WP_READY ) || ( status == WP_OUTOFAMMO ) );
@@ -1626,7 +1626,7 @@ bool idWeapon::IsReady( void ) const
 idWeapon::IsReloading
 ================
 */
-bool idWeapon::IsReloading( void ) const
+bool idWeapon::IsReloading() const
 {
 	return ( status == WP_RELOAD );
 }
@@ -1636,7 +1636,7 @@ bool idWeapon::IsReloading( void ) const
 idWeapon::IsHolstered
 ================
 */
-bool idWeapon::IsHolstered( void ) const
+bool idWeapon::IsHolstered() const
 {
 	return ( status == WP_HOLSTERED );
 }
@@ -1646,7 +1646,7 @@ bool idWeapon::IsHolstered( void ) const
 idWeapon::ShowCrosshair
 ================
 */
-bool idWeapon::ShowCrosshair( void ) const
+bool idWeapon::ShowCrosshair() const
 {
 	return !( state == idStr( WP_RISING ) || state == idStr( WP_LOWERING ) || state == idStr( WP_HOLSTERED ) );
 }
@@ -1657,7 +1657,7 @@ idWeapon::CanDrop
 =====================
 */
 // sikk - removed multiplayer
-//bool idWeapon::CanDrop( void ) const {
+//bool idWeapon::CanDrop() const {
 //	if ( !weaponDef || !worldModel.GetEntity() ) {
 //		return false;
 //	}
@@ -1674,7 +1674,7 @@ idWeapon::WeaponStolen
 ================
 */
 // sikk - removed multiplayer
-//void idWeapon::WeaponStolen( void ) {
+//void idWeapon::WeaponStolen() {
 //	assert( !gameLocal.isClient );
 //	if ( projectileEnt ) {
 //		if ( isLinked ) {
@@ -1764,7 +1764,7 @@ void idWeapon::SetState( const char* statename, int blendFrames )
 idWeapon::UpdateNozzelFx
 ================
 */
-void idWeapon::UpdateNozzleFx( void )
+void idWeapon::UpdateNozzleFx()
 {
 	if( !nozzleFx )
 	{
@@ -1938,7 +1938,7 @@ Called during idEntity::Spawn.  Calls the constructor on the script object.
 Can be overridden by subclasses when a thread doesn't need to be allocated.
 ================
 */
-idThread* idWeapon::ConstructScriptObject( void )
+idThread* idWeapon::ConstructScriptObject()
 {
 	const function_t* constructor;
 
@@ -1968,7 +1968,7 @@ Can be overridden by subclasses when a thread doesn't need to be allocated.
 Not called during idGameLocal::MapShutdown.
 ================
 */
-void idWeapon::DeconstructScriptObject( void )
+void idWeapon::DeconstructScriptObject()
 {
 	const function_t* destructor;
 
@@ -2004,7 +2004,7 @@ void idWeapon::DeconstructScriptObject( void )
 idWeapon::UpdateScript
 ================
 */
-void idWeapon::UpdateScript( void )
+void idWeapon::UpdateScript()
 {
 	int	count;
 
@@ -2043,7 +2043,7 @@ void idWeapon::UpdateScript( void )
 idWeapon::AlertMonsters
 ================
 */
-void idWeapon::AlertMonsters( void )
+void idWeapon::AlertMonsters()
 {
 	trace_t	tr;
 	idEntity* ent;
@@ -2275,7 +2275,7 @@ void idWeapon::PresentWeapon( bool showViewModel )
 idWeapon::EnterCinematic
 ================
 */
-void idWeapon::EnterCinematic( void )
+void idWeapon::EnterCinematic()
 {
 	StopSound( SND_CHANNEL_ANY, false );
 
@@ -2305,7 +2305,7 @@ void idWeapon::EnterCinematic( void )
 idWeapon::ExitCinematic
 ================
 */
-void idWeapon::ExitCinematic( void )
+void idWeapon::ExitCinematic()
 {
 	disabled = false;
 
@@ -2324,7 +2324,7 @@ idWeapon::NetCatchup
 ================
 */
 // sikk - removed multiplayer
-//void idWeapon::NetCatchup( void ) {
+//void idWeapon::NetCatchup() {
 //	if ( isLinked ) {
 //		SetState( "NetCatchup", 0 );
 //		thread->Execute();
@@ -2336,7 +2336,7 @@ idWeapon::NetCatchup
 idWeapon::GetZoomFov
 ================
 */
-int	idWeapon::GetZoomFov( void )
+int	idWeapon::GetZoomFov()
 {
 	return zoomFov;
 }
@@ -2466,7 +2466,7 @@ idWeapon::ClientReceiveEvent
 idWeapon::Event_Clear
 ===============
 */
-void idWeapon::Event_Clear( void )
+void idWeapon::Event_Clear()
 {
 	Clear();
 }
@@ -2476,7 +2476,7 @@ void idWeapon::Event_Clear( void )
 idWeapon::Event_GetOwner
 ===============
 */
-void idWeapon::Event_GetOwner( void )
+void idWeapon::Event_GetOwner()
 {
 	idThread::ReturnEntity( owner );
 }
@@ -2517,7 +2517,7 @@ void idWeapon::Event_WeaponState( const char* statename, int blendFrames )
 idWeapon::Event_WeaponReady
 ===============
 */
-void idWeapon::Event_WeaponReady( void )
+void idWeapon::Event_WeaponReady()
 {
 	status = WP_READY;
 	if( isLinked )
@@ -2536,7 +2536,7 @@ void idWeapon::Event_WeaponReady( void )
 idWeapon::Event_WeaponOutOfAmmo
 ===============
 */
-void idWeapon::Event_WeaponOutOfAmmo( void )
+void idWeapon::Event_WeaponOutOfAmmo()
 {
 	status = WP_OUTOFAMMO;
 	if( isLinked )
@@ -2550,7 +2550,7 @@ void idWeapon::Event_WeaponOutOfAmmo( void )
 idWeapon::Event_WeaponReloading
 ===============
 */
-void idWeapon::Event_WeaponReloading( void )
+void idWeapon::Event_WeaponReloading()
 {
 	status = WP_RELOAD;
 }
@@ -2560,7 +2560,7 @@ void idWeapon::Event_WeaponReloading( void )
 idWeapon::Event_WeaponHolstered
 ===============
 */
-void idWeapon::Event_WeaponHolstered( void )
+void idWeapon::Event_WeaponHolstered()
 {
 	status = WP_HOLSTERED;
 	if( isLinked )
@@ -2574,7 +2574,7 @@ void idWeapon::Event_WeaponHolstered( void )
 idWeapon::Event_WeaponRising
 ===============
 */
-void idWeapon::Event_WeaponRising( void )
+void idWeapon::Event_WeaponRising()
 {
 	status = WP_RISING;
 	if( isLinked )
@@ -2589,7 +2589,7 @@ void idWeapon::Event_WeaponRising( void )
 idWeapon::Event_WeaponLowering
 ===============
 */
-void idWeapon::Event_WeaponLowering( void )
+void idWeapon::Event_WeaponLowering()
 {
 	status = WP_LOWERING;
 	if( isLinked )
@@ -2604,7 +2604,7 @@ void idWeapon::Event_WeaponLowering( void )
 idWeapon::Event_TotalEnergy
 ===============
 */
-void idWeapon::Event_TotalEnergy( void )
+void idWeapon::Event_TotalEnergy()
 {
 	idThread::ReturnFloat( owner->GetEnergy() ); // sikk - Universal Energy Pool
 }
@@ -2615,7 +2615,7 @@ idWeapon::Event_NetReload
 ===============
 */
 // sikk - removed multiplayer
-//void idWeapon::Event_NetReload( void ) {
+//void idWeapon::Event_NetReload() {
 //	assert( owner );
 //	if ( gameLocal.isServer ) {
 //		ServerSendEvent( EVENT_RELOAD, NULL, false, -1 );
@@ -2628,7 +2628,7 @@ idWeapon::Event_NetEndReload
 ===============
 */
 // sikk - removed multiplayer
-//void idWeapon::Event_NetEndReload( void ) {
+//void idWeapon::Event_NetEndReload() {
 //	assert( owner );
 //	if ( gameLocal.isServer ) {
 //		ServerSendEvent( EVENT_ENDRELOAD, NULL, false, -1 );
@@ -2748,7 +2748,7 @@ void idWeapon::Event_GetBlendFrames( int channel )
 idWeapon::Event_Next
 ================
 */
-void idWeapon::Event_Next( void )
+void idWeapon::Event_Next()
 {
 	// change to another weapon if possible
 	owner->NextBestWeapon();
@@ -3364,7 +3364,7 @@ void idWeapon::Event_Melee( int primary )
 idWeapon::Event_GetWorldModel
 =====================
 */
-void idWeapon::Event_GetWorldModel( void )
+void idWeapon::Event_GetWorldModel()
 {
 	idThread::ReturnEntity( worldModel.GetEntity() );
 }
@@ -3376,7 +3376,7 @@ idWeapon::Event_EjectBrass
 Toss a shell model out from the breach if the bone is present
 ================
 */
-void idWeapon::Event_EjectBrass( void )
+void idWeapon::Event_EjectBrass()
 {
 	if( !g_showBrass.GetBool() || !owner->CanShowWeaponViewmodel() )
 	{
@@ -3424,7 +3424,7 @@ void idWeapon::Event_EjectBrass( void )
 idWeapon::Event_IsMegadamage
 ===============
 */
-void idWeapon::Event_IsMegadamage( void )
+void idWeapon::Event_IsMegadamage()
 {
 	if( !owner )
 	{
@@ -3439,7 +3439,7 @@ void idWeapon::Event_IsMegadamage( void )
 idWeapon::Event_IsMegashield
 ===============
 */
-void idWeapon::Event_IsMegashield( void )
+void idWeapon::Event_IsMegashield()
 {
 	if( !owner )
 	{
@@ -3455,7 +3455,7 @@ void idWeapon::Event_IsMegashield( void )
 idWeapon::Event_IsInvisible
 ===============
 */
-void idWeapon::Event_IsInvisible( void )
+void idWeapon::Event_IsInvisible()
 {
 	if( !owner )
 	{
@@ -3471,6 +3471,6 @@ idWeapon::ClientPredictionThink
 ===============
 */
 // sikk - removed multiplayer
-//void idWeapon::ClientPredictionThink( void ) {
+//void idWeapon::ClientPredictionThink() {
 //	UpdateAnimation();
 //}

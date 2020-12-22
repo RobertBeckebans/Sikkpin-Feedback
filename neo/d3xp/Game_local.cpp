@@ -165,7 +165,7 @@ extern "C" gameExport_t* GetGameAPI( gameImport_t* import )
 TestGameAPI
 ============
 */
-void TestGameAPI( void )
+void TestGameAPI()
 {
 	gameImport_t testImport;
 	gameExport_t testExport;
@@ -202,7 +202,7 @@ idGameLocal::idGameLocal()
 idGameLocal::Clear
 ============
 */
-void idGameLocal::Clear( void )
+void idGameLocal::Clear()
 {
 	int i;
 
@@ -301,7 +301,7 @@ idGameLocal::Init
   initialize the game object, only happens once at startup, not each level load
 ============
 */
-void idGameLocal::Init( void )
+void idGameLocal::Init()
 {
 	const idDict* dict;
 	idAAS* aas;
@@ -423,7 +423,7 @@ idGameLocal::Shutdown
   shut down the entire game
 ============
 */
-void idGameLocal::Shutdown( void )
+void idGameLocal::Shutdown()
 {
 
 	if( !common )
@@ -1297,7 +1297,7 @@ void idGameLocal::MapRestart_f( const idCmdArgs& args )
 idGameLocal::NextMap
 ===================
 */
-bool idGameLocal::NextMap( void )
+bool idGameLocal::NextMap()
 {
 	const function_t*	func;
 	idThread*			thread;
@@ -1375,7 +1375,7 @@ void idGameLocal::NextMap_f( const idCmdArgs& args )
 idGameLocal::MapPopulate
 ===================
 */
-void idGameLocal::MapPopulate( void )
+void idGameLocal::MapPopulate()
 {
 
 	if( isMultiplayer )
@@ -1771,7 +1771,7 @@ void idGameLocal::MapClear( bool clearClients )
 idGameLocal::MapShutdown
 ============
 */
-void idGameLocal::MapShutdown( void )
+void idGameLocal::MapShutdown()
 {
 	Printf( "--------- Game Map Shutdown ----------\n" );
 
@@ -1823,7 +1823,7 @@ void idGameLocal::MapShutdown( void )
 idGameLocal::DumpOggSounds
 ===================
 */
-void idGameLocal::DumpOggSounds( void )
+void idGameLocal::DumpOggSounds()
 {
 	int i, j, k, size, totalSize;
 	idFile* file;
@@ -2189,7 +2189,7 @@ void idGameLocal::CacheDictionaryMedia( const idDict* dict )
 idGameLocal::InitScriptForMap
 ============
 */
-void idGameLocal::InitScriptForMap( void )
+void idGameLocal::InitScriptForMap()
 {
 	// create a thread to run frame commands on
 	frameCommandThread = new idThread();
@@ -2402,7 +2402,7 @@ pvsHandle_t idGameLocal::GetClientPVS( idPlayer* player, pvsType_t type )
 idGameLocal::SetupPlayerPVS
 ================
 */
-void idGameLocal::SetupPlayerPVS( void )
+void idGameLocal::SetupPlayerPVS()
 {
 	int			i;
 	idEntity* 	ent;
@@ -2473,7 +2473,7 @@ void idGameLocal::SetupPlayerPVS( void )
 idGameLocal::FreePlayerPVS
 ================
 */
-void idGameLocal::FreePlayerPVS( void )
+void idGameLocal::FreePlayerPVS()
 {
 	if( playerPVS.i != -1 )
 	{
@@ -2524,7 +2524,7 @@ bool idGameLocal::InPlayerConnectedArea( idEntity* ent ) const
 idGameLocal::UpdateGravity
 ================
 */
-void idGameLocal::UpdateGravity( void )
+void idGameLocal::UpdateGravity()
 {
 	idEntity* ent;
 
@@ -2557,7 +2557,7 @@ void idGameLocal::UpdateGravity( void )
 idGameLocal::GetGravity
 ================
 */
-const idVec3& idGameLocal::GetGravity( void ) const
+const idVec3& idGameLocal::GetGravity() const
 {
 	return gravity;
 }
@@ -2570,7 +2570,7 @@ idGameLocal::SortActiveEntityList
   actors come next and physics team slaves appear after their master.
 ================
 */
-void idGameLocal::SortActiveEntityList( void )
+void idGameLocal::SortActiveEntityList()
 {
 	idEntity* ent, *next_ent, *master, *part;
 
@@ -3085,7 +3085,7 @@ escReply_t idGameLocal::HandleESC( idUserInterface** gui )
 idGameLocal::StartMenu
 ================
 */
-idUserInterface* idGameLocal::StartMenu( void )
+idUserInterface* idGameLocal::StartMenu()
 {
 	if( !isMultiplayer )
 	{
@@ -3122,7 +3122,7 @@ idGameLocal::GetLevelMap
   should only be used for in-game level editing
 ================
 */
-idMapFile* idGameLocal::GetLevelMap( void )
+idMapFile* idGameLocal::GetLevelMap()
 {
 	if( mapFile && mapFile->HasPrimitiveData() )
 	{
@@ -3153,7 +3153,7 @@ idMapFile* idGameLocal::GetLevelMap( void )
 idGameLocal::GetMapName
 ================
 */
-const char* idGameLocal::GetMapName( void ) const
+const char* idGameLocal::GetMapName() const
 {
 	return mapFileName.c_str();
 }
@@ -3198,7 +3198,7 @@ void idGameLocal::CallObjectFrameCommand( idEntity* ent, const char* frameComman
 idGameLocal::ShowTargets
 ================
 */
-void idGameLocal::ShowTargets( void )
+void idGameLocal::ShowTargets()
 {
 	idMat3		axis = GetLocalPlayer()->viewAngles.ToMat3();
 	idVec3		up = axis[ 2 ] * 5.0f;
@@ -3266,7 +3266,7 @@ void idGameLocal::ShowTargets( void )
 idGameLocal::RunDebugInfo
 ================
 */
-void idGameLocal::RunDebugInfo( void )
+void idGameLocal::RunDebugInfo()
 {
 	idEntity* ent;
 	idPlayer* player;
@@ -3443,7 +3443,7 @@ void idGameLocal::RunDebugInfo( void )
 idGameLocal::NumAAS
 ==================
 */
-int	idGameLocal::NumAAS( void ) const
+int	idGameLocal::NumAAS() const
 {
 	return aasList.Num();
 }
@@ -3552,7 +3552,7 @@ void idGameLocal::RemoveAASObstacle( const aasHandle_t handle )
 idGameLocal::RemoveAllAASObstacles
 ==================
 */
-void idGameLocal::RemoveAllAASObstacles( void )
+void idGameLocal::RemoveAllAASObstacles()
 {
 	int i;
 
@@ -3936,7 +3936,7 @@ idGameLocal::GameState
 Used to allow entities to know if they're being spawned during the initial spawn.
 ==============
 */
-gameState_t	idGameLocal::GameState( void ) const
+gameState_t	idGameLocal::GameState() const
 {
 	return gamestate;
 }
@@ -3948,7 +3948,7 @@ idGameLocal::SpawnMapEntities
 Parses textual entity definitions out of an entstring and spawns gentities.
 ==============
 */
-void idGameLocal::SpawnMapEntities( void )
+void idGameLocal::SpawnMapEntities()
 {
 	int			i;
 	int			num;
@@ -4353,7 +4353,7 @@ void idGameLocal::AlertAI( idEntity* ent )
 idGameLocal::GetAlertEntity
 ============
 */
-idActor* idGameLocal::GetAlertEntity( void )
+idActor* idGameLocal::GetAlertEntity()
 {
 #ifdef _D3XP
 	int timeGroup = 0;
@@ -4851,7 +4851,7 @@ void idGameLocal::SetCamera( idCamera* cam )
 idGameLocal::GetCamera
 =============
 */
-idCamera* idGameLocal::GetCamera( void ) const
+idCamera* idGameLocal::GetCamera() const
 {
 	return camera;
 }
@@ -4861,7 +4861,7 @@ idCamera* idGameLocal::GetCamera( void ) const
 idGameLocal::SkipCinematic
 =============
 */
-bool idGameLocal::SkipCinematic( void )
+bool idGameLocal::SkipCinematic()
 {
 	if( camera )
 	{
@@ -5032,7 +5032,7 @@ randomize the order of the initial spawns
 prepare for a sequence of initial player spawns
 ============
 */
-void idGameLocal::RandomizeInitialSpawns( void )
+void idGameLocal::RandomizeInitialSpawns()
 {
 	spawnSpot_t	spot;
 	int i, j;
@@ -5437,7 +5437,7 @@ int idGameLocal::GetSpawnId( const idEntity* ent ) const
 idGameLocal::ThrottleUserInfo
 ================
 */
-void idGameLocal::ThrottleUserInfo( void )
+void idGameLocal::ThrottleUserInfo()
 {
 	mpGame.ThrottleUserInfo();
 }

@@ -141,7 +141,7 @@ idMultiplayerGame::idMultiplayerGame()
 idMultiplayerGame::Shutdown
 ================
 */
-void idMultiplayerGame::Shutdown( void )
+void idMultiplayerGame::Shutdown()
 {
 	Clear();
 }
@@ -151,7 +151,7 @@ void idMultiplayerGame::Shutdown( void )
 idMultiplayerGame::SetMenuSkin
 ================
 */
-void idMultiplayerGame::SetMenuSkin( void )
+void idMultiplayerGame::SetMenuSkin()
 {
 	// skins
 	idStr str = cvarSystem->GetCVarString( "mod_validSkins" );
@@ -355,7 +355,7 @@ void idMultiplayerGame::ClearGuis()
 idMultiplayerGame::ClearHUDStatus
 ================
 */
-void idMultiplayerGame::ClearHUDStatus( void )
+void idMultiplayerGame::ClearHUDStatus()
 {
 	int i;
 
@@ -1228,7 +1228,7 @@ return winning team
 -1 if tied or no players
 ================
 */
-int idMultiplayerGame::WinningTeam( void )
+int idMultiplayerGame::WinningTeam()
 {
 	if( teamPoints[0] > teamPoints[1] )
 	{
@@ -1246,7 +1246,7 @@ int idMultiplayerGame::WinningTeam( void )
 idMultiplayerGame::PointLimitHit
 ================
 */
-bool idMultiplayerGame::PointLimitHit( void )
+bool idMultiplayerGame::PointLimitHit()
 {
 	int pointLimit = gameLocal.serverInfo.GetInt( "si_fragLimit" );
 
@@ -1282,7 +1282,7 @@ return the current winner ( or a player from the winning team )
 NULL if even
 ================
 */
-idPlayer* idMultiplayerGame::FragLeader( void )
+idPlayer* idMultiplayerGame::FragLeader()
 {
 	int i;
 	int frags[ MAX_CLIENTS ];
@@ -1701,7 +1701,7 @@ void idMultiplayerGame::PlayerVote( int clientNum, playerVote_t vote )
 idMultiplayerGame::DumpTourneyLine
 ================
 */
-void idMultiplayerGame::DumpTourneyLine( void )
+void idMultiplayerGame::DumpTourneyLine()
 {
 	int i;
 	for( i = 0; i < gameLocal.numClients; i++ )
@@ -1925,7 +1925,7 @@ but we need a real wait list to be synced down to clients for GUI
 ignore current players, ignore wantSpectate
 ================
 */
-void idMultiplayerGame::UpdateTourneyLine( void )
+void idMultiplayerGame::UpdateTourneyLine()
 {
 	int i, j, imax, max, globalmax = -1;
 	idPlayer* p;
@@ -2024,7 +2024,7 @@ the votes are checked for validity/relevance before they are started
 we assume that they are still legit when reaching here
 ================
 */
-void idMultiplayerGame::ExecuteVote( void )
+void idMultiplayerGame::ExecuteVote()
 {
 	bool needRestart;
 	switch( vote )
@@ -2087,7 +2087,7 @@ void idMultiplayerGame::ExecuteVote( void )
 idMultiplayerGame::CheckVote
 ================
 */
-void idMultiplayerGame::CheckVote( void )
+void idMultiplayerGame::CheckVote()
 {
 	int numVoters, i;
 
@@ -2408,7 +2408,7 @@ void idMultiplayerGame::Run()
 idMultiplayerGame::UpdateMainGui
 ================
 */
-void idMultiplayerGame::UpdateMainGui( void )
+void idMultiplayerGame::UpdateMainGui()
 {
 	int i;
 	mainGui->SetStateInt( "readyon", gameState == WARMUP ? 1 : 0 );
@@ -2462,7 +2462,7 @@ void idMultiplayerGame::UpdateMainGui( void )
 idMultiplayerGame::StartMenu
 ================
 */
-idUserInterface* idMultiplayerGame::StartMenu( void )
+idUserInterface* idMultiplayerGame::StartMenu()
 {
 
 	if( mainGui == NULL )
@@ -2592,7 +2592,7 @@ idUserInterface* idMultiplayerGame::StartMenu( void )
 idMultiplayerGame::DisableMenu
 ================
 */
-void idMultiplayerGame::DisableMenu( void )
+void idMultiplayerGame::DisableMenu()
 {
 	gameLocal.sessionCommand = "";	// in case we used "game_startMenu" to trigger the menu
 	if( currentMenu == 1 )
@@ -2613,7 +2613,7 @@ void idMultiplayerGame::DisableMenu( void )
 idMultiplayerGame::SetMapShot
 ================
 */
-void idMultiplayerGame::SetMapShot( void )
+void idMultiplayerGame::SetMapShot()
 {
 	char screenshot[ MAX_STRING_CHARS ];
 	int mapNum = mapList->GetSelection( NULL, 0 );
@@ -3655,7 +3655,7 @@ solely for LMN if an end game ( fragLimitTimeout ) was entered and aborted befor
 LMN players which still have lives left need to be respawned without being marked lastManOver
 ================
 */
-void idMultiplayerGame::SuddenRespawn( void )
+void idMultiplayerGame::SuddenRespawn()
 {
 	int i;
 
@@ -4358,7 +4358,7 @@ void idMultiplayerGame::DisconnectClient( int clientNum )
 idMultiplayerGame::CheckAbortGame
 ================
 */
-void idMultiplayerGame::CheckAbortGame( void )
+void idMultiplayerGame::CheckAbortGame()
 {
 	int i;
 	if( gameLocal.gameType == GAME_TOURNEY && gameState == WARMUP )
@@ -4417,7 +4417,7 @@ void idMultiplayerGame::WantKilled( int clientNum )
 idMultiplayerGame::MapRestart
 ================
 */
-void idMultiplayerGame::MapRestart( void )
+void idMultiplayerGame::MapRestart()
 {
 	int clientNum;
 
@@ -4657,7 +4657,7 @@ void idMultiplayerGame::ProcessChatMessage( int clientNum, bool team, const char
 idMultiplayerGame::Precache
 ================
 */
-void idMultiplayerGame::Precache( void )
+void idMultiplayerGame::Precache()
 {
 	int			i;
 	idFile*		f;
@@ -4711,7 +4711,7 @@ void idMultiplayerGame::Precache( void )
 idMultiplayerGame::ToggleSpectate
 ================
 */
-void idMultiplayerGame::ToggleSpectate( void )
+void idMultiplayerGame::ToggleSpectate()
 {
 	bool spectating;
 	assert( gameLocal.isClient || gameLocal.localClientNum == 0 );
@@ -4741,7 +4741,7 @@ void idMultiplayerGame::ToggleSpectate( void )
 idMultiplayerGame::ToggleReady
 ================
 */
-void idMultiplayerGame::ToggleReady( void )
+void idMultiplayerGame::ToggleReady()
 {
 	bool ready;
 	assert( gameLocal.isClient || gameLocal.localClientNum == 0 );
@@ -4762,7 +4762,7 @@ void idMultiplayerGame::ToggleReady( void )
 idMultiplayerGame::ToggleTeam
 ================
 */
-void idMultiplayerGame::ToggleTeam( void )
+void idMultiplayerGame::ToggleTeam()
 {
 	bool team;
 	assert( gameLocal.isClient || gameLocal.localClientNum == 0 );
@@ -4783,7 +4783,7 @@ void idMultiplayerGame::ToggleTeam( void )
 idMultiplayerGame::ToggleUserInfo
 ================
 */
-void idMultiplayerGame::ThrottleUserInfo( void )
+void idMultiplayerGame::ThrottleUserInfo()
 {
 	int i;
 
@@ -5081,7 +5081,7 @@ void idMultiplayerGame::ClientReadWarmupTime( const idBitMsg& msg )
 idMultiplayerGame::IsGametypeTeamBased
 ================
 */
-bool idMultiplayerGame::IsGametypeTeamBased( void ) /* CTF */
+bool idMultiplayerGame::IsGametypeTeamBased() /* CTF */
 {
 	switch( gameLocal.gameType )
 	{
@@ -5108,7 +5108,7 @@ bool idMultiplayerGame::IsGametypeTeamBased( void ) /* CTF */
 idMultiplayerGame::IsGametypeFlagBased
 ================
 */
-bool idMultiplayerGame::IsGametypeFlagBased( void )
+bool idMultiplayerGame::IsGametypeFlagBased()
 {
 	switch( gameLocal.gameType )
 	{
@@ -5158,7 +5158,7 @@ idItemTeam* idMultiplayerGame::GetTeamFlag( int team )
 idMultiplayerGame::GetTeamFlag
 ================
 */
-void idMultiplayerGame::FindTeamFlags( void )
+void idMultiplayerGame::FindTeamFlags()
 {
 	char* flagDefs[2] =
 	{
@@ -5239,7 +5239,7 @@ void idMultiplayerGame::SetFlagMsg( bool b )
 idMultiplayerGame::IsFlagMsgOn
 ================
 */
-bool idMultiplayerGame::IsFlagMsgOn( void )
+bool idMultiplayerGame::IsFlagMsgOn()
 {
 	return ( GetGameState() == WARMUP || GetGameState() == GAMEON || GetGameState() == SUDDENDEATH ) && flagMsgOn;
 }

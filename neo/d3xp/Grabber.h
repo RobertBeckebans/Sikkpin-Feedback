@@ -43,13 +43,13 @@ class idGrabber : public idEntity
 public:
 	CLASS_PROTOTYPE( idGrabber );
 
-	idGrabber( void );
-	~idGrabber( void );
+	idGrabber();
+	~idGrabber();
 
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
 
-	void					Initialize( void );
+	void					Initialize();
 	void					SetDragDistance( float dist );
 	int						Update( idPlayer* player, bool hide );
 
@@ -80,8 +80,8 @@ private:
 	bool					grabbableAI( const char* aiName );
 	void					StartDrag( idEntity* grabEnt, int id );
 	void					StopDrag( bool dropOnly );
-	void					UpdateBeams( void );
-	void					ApplyShake( void );
+	void					UpdateBeams();
+	void					ApplyShake();
 };
 
 #endif

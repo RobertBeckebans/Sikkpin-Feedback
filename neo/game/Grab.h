@@ -41,8 +41,8 @@ class idGrabEntity : public idEntity
 public:
 	CLASS_PROTOTYPE( idGrabEntity );
 
-	idGrabEntity( void );
-	~idGrabEntity( void );
+	idGrabEntity();
+	~idGrabEntity();
 
 	void					Clear();
 
@@ -50,11 +50,11 @@ public:
 	void					StartDrag( idPlayer* player, idEntity* grabEnt, int id );
 	void					StopDrag( idPlayer* player, bool drop );
 
-	idEntity* 				GetGrabEntity( void ) const
+	idEntity* 				GetGrabEntity() const
 	{
 		return dragEnt.GetEntity();
 	}
-	int						GetThrownTime( void ) const
+	int						GetThrownTime() const
 	{
 		return lastThrownTime;
 	}

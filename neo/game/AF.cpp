@@ -47,7 +47,7 @@ If you have questions concerning this license or the applicable additional terms
 idAF::idAF
 ================
 */
-idAF::idAF( void )
+idAF::idAF()
 {
 	self = NULL;
 	animator = NULL;
@@ -66,7 +66,7 @@ idAF::idAF( void )
 idAF::~idAF
 ================
 */
-idAF::~idAF( void )
+idAF::~idAF()
 {
 }
 
@@ -142,7 +142,7 @@ void idAF::Restore( idRestoreGame* savefile )
 idAF::UpdateAnimation
 ================
 */
-bool idAF::UpdateAnimation( void )
+bool idAF::UpdateAnimation()
 {
 	int i;
 	idVec3 origin, renderOrigin, bodyOrigin;
@@ -208,7 +208,7 @@ idAF::GetBounds
   returns bounds for the current pose
 ================
 */
-idBounds idAF::GetBounds( void ) const
+idBounds idAF::GetBounds() const
 {
 	int i;
 	idAFBody* body;
@@ -1091,7 +1091,7 @@ bool idAF::Load( idEntity* ent, const char* fileName )
 idAF::Start
 ================
 */
-void idAF::Start( void )
+void idAF::Start()
 {
 	if( !IsLoaded() )
 	{
@@ -1113,7 +1113,7 @@ void idAF::Start( void )
 idAF::TestSolid
 ================
 */
-bool idAF::TestSolid( void ) const
+bool idAF::TestSolid() const
 {
 	int i;
 	idAFBody* body;
@@ -1203,7 +1203,7 @@ void idAF::StartFromCurrentPose( int inheritVelocityTime )
 idAF::Stop
 ================
 */
-void idAF::Stop( void )
+void idAF::Stop()
 {
 	// disable the articulated figure for collision detection
 	physicsObj.UnlinkClip();
@@ -1215,7 +1215,7 @@ void idAF::Stop( void )
 idAF::Rest
 ================
 */
-void idAF::Rest( void )
+void idAF::Rest()
 {
 	physicsObj.PutToRest();
 }
@@ -1338,7 +1338,7 @@ void idAF::LoadState( const idDict& args )
 idAF::AddBindConstraints
 ================
 */
-void idAF::AddBindConstraints( void )
+void idAF::AddBindConstraints()
 {
 	const idKeyValue* kv;
 	idStr name;
@@ -1436,7 +1436,7 @@ void idAF::AddBindConstraints( void )
 idAF::RemoveBindConstraints
 ================
 */
-void idAF::RemoveBindConstraints( void )
+void idAF::RemoveBindConstraints()
 {
 	const idKeyValue* kv;
 

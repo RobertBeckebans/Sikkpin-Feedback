@@ -93,7 +93,7 @@ idSaveGame::~idSaveGame()
 idSaveGame::Close
 ================
 */
-void idSaveGame::Close( void )
+void idSaveGame::Close()
 {
 	int i;
 
@@ -121,7 +121,7 @@ void idSaveGame::Close( void )
 idSaveGame::WriteObjectList
 ================
 */
-void idSaveGame::WriteObjectList( void )
+void idSaveGame::WriteObjectList()
 {
 	int i;
 
@@ -853,7 +853,7 @@ void idSaveGame::WriteClipModel( const idClipModel* clipModel )
 idSaveGame::WriteSoundCommands
 ===================
 */
-void idSaveGame::WriteSoundCommands( void )
+void idSaveGame::WriteSoundCommands()
 {
 	gameSoundWorld->WriteToSaveGame( file );
 }
@@ -898,7 +898,7 @@ idRestoreGame::~idRestoreGame()
 void idRestoreGame::CreateObjects
 ================
 */
-void idRestoreGame::CreateObjects( void )
+void idRestoreGame::CreateObjects()
 {
 	int i, num;
 	idStr classname;
@@ -931,7 +931,7 @@ void idRestoreGame::CreateObjects( void )
 void idRestoreGame::RestoreObjects
 ================
 */
-void idRestoreGame::RestoreObjects( void )
+void idRestoreGame::RestoreObjects()
 {
 	int i;
 
@@ -971,7 +971,7 @@ void idRestoreGame::RestoreObjects( void )
 void idRestoreGame::DeleteObjects
 ====================
 */
-void idRestoreGame::DeleteObjects( void )
+void idRestoreGame::DeleteObjects()
 {
 
 	// Remove the NULL object before deleting
@@ -1729,7 +1729,7 @@ void idRestoreGame::ReadClipModel( idClipModel*& clipModel )
 idRestoreGame::ReadSoundCommands
 =====================
 */
-void idRestoreGame::ReadSoundCommands( void )
+void idRestoreGame::ReadSoundCommands()
 {
 	gameSoundWorld->StopAllSounds();
 	gameSoundWorld->ReadFromSaveGame( file );
@@ -1740,7 +1740,7 @@ void idRestoreGame::ReadSoundCommands( void )
 idRestoreGame::ReadBuildNumber
 =====================
 */
-void idRestoreGame::ReadBuildNumber( void )
+void idRestoreGame::ReadBuildNumber()
 {
 	file->ReadInt( buildNumber );
 }
@@ -1750,7 +1750,7 @@ void idRestoreGame::ReadBuildNumber( void )
 idRestoreGame::GetBuildNumber
 =====================
 */
-int idRestoreGame::GetBuildNumber( void )
+int idRestoreGame::GetBuildNumber()
 {
 	return buildNumber;
 }

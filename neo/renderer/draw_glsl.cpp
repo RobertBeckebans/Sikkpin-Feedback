@@ -372,7 +372,7 @@ static void RB_GLSL_CreateDrawInteractions( const drawSurf_t* surf )
 RB_GLSL_DrawInteractions
 ==================
 */
-void RB_GLSL_DrawInteractions( void )
+void RB_GLSL_DrawInteractions()
 {
 	viewLight_t* vLight;
 
@@ -831,7 +831,7 @@ void R_ReloadGLSLPrograms_f( const idCmdArgs& args )
 R_GLSL_Init
 ==================
 */
-void R_GLSL_Init( void )
+void R_GLSL_Init()
 {
 	glConfig.allowGLSLPath = false;
 

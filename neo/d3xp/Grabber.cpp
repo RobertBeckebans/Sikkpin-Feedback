@@ -58,7 +58,7 @@ END_CLASS
 idGrabber::idGrabber
 ==============
 */
-idGrabber::idGrabber( void )
+idGrabber::idGrabber()
 {
 	dragEnt = NULL;
 	owner = NULL;
@@ -80,7 +80,7 @@ idGrabber::idGrabber( void )
 idGrabber::~idGrabber
 ==============
 */
-idGrabber::~idGrabber( void )
+idGrabber::~idGrabber()
 {
 	StopDrag( true );
 	if( beam )
@@ -176,7 +176,7 @@ void idGrabber::Restore( idRestoreGame* savefile )
 idGrabber::Initialize
 ==============
 */
-void idGrabber::Initialize( void )
+void idGrabber::Initialize()
 {
 	if( !gameLocal.isMultiplayer )
 	{
@@ -727,7 +727,7 @@ int idGrabber::Update( idPlayer* player, bool hide )
 idGrabber::UpdateBeams
 ======================
 */
-void idGrabber::UpdateBeams( void )
+void idGrabber::UpdateBeams()
 {
 	jointHandle_t	muzzle_joint;
 	idVec3	muzzle_origin;
@@ -772,7 +772,7 @@ void idGrabber::UpdateBeams( void )
 idGrabber::ApplyShake
 ==============
 */
-void idGrabber::ApplyShake( void )
+void idGrabber::ApplyShake()
 {
 	float u = 1 - ( float )( endTime - gameLocal.time ) / ( g_grabberHoldSeconds.GetFloat() * 1000 );
 

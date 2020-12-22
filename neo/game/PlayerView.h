@@ -60,17 +60,17 @@ public:
 
 	void				SetPlayerEntity( class idPlayer* playerEnt );
 
-	void				ClearEffects( void );
+	void				ClearEffects();
 
 	void				DamageImpulse( idVec3 localKickDir, const idDict* damageDef );
 
 	void				WeaponFireFeedback( const idDict* weaponDef, int primary );	// sikk - Secondary Fire
 
-	idAngles			AngleOffset( void ) const;			// returns the current kick angle
+	idAngles			AngleOffset() const;			// returns the current kick angle
 
-	idMat3				ShakeAxis( void ) const;			// returns the current shake angle
+	idMat3				ShakeAxis() const;			// returns the current shake angle
 
-	void				CalculateShake( void );
+	void				CalculateShake();
 
 	// this may involve rendering to a texture and displaying
 	// that with a warp model or in double vision mode
@@ -88,8 +88,8 @@ public:
 
 private:
 	void				SingleView( const renderView_t* view );
-	void				ScreenFade( void );
-	screenBlob_t* 		GetScreenBlob( void );
+	void				ScreenFade();
+	screenBlob_t* 		GetScreenBlob();
 
 	const idMaterial* 	tunnelMaterial;			// health tunnel vision
 	const idMaterial* 	bloodSprayMaterial;		// blood spray
@@ -116,28 +116,28 @@ private:
 	renderView_t		view;
 
 // ---> sikk - PostProcess Effects
-	void				DoPostFX( void );
-	void				PostFX_EdgeAA( void );
-	void				PostFX_HDR( void );
-	void				PostFX_Bloom( void );
-	void				PostFX_SSAO( void );
-	void				PostFX_SunShafts( void );
-	void				PostFX_DoF( void );
-	void				PostFX_ColorGrading( void );
-	void				PostFX_ExplosionFX( void );
-	void				PostFX_Filmgrain( void );
-	void				PostFX_Vignetting( void );
-	void				PostFX_Underwater( void );
-	void				PostFX_ScreenWipe( void );
+	void				DoPostFX();
+	void				PostFX_EdgeAA();
+	void				PostFX_HDR();
+	void				PostFX_Bloom();
+	void				PostFX_SSAO();
+	void				PostFX_SunShafts();
+	void				PostFX_DoF();
+	void				PostFX_ColorGrading();
+	void				PostFX_ExplosionFX();
+	void				PostFX_Filmgrain();
+	void				PostFX_Vignetting();
+	void				PostFX_Underwater();
+	void				PostFX_ScreenWipe();
 
-	void				PostFX_DoubleVision( void );
-	void				PostFX_MegashieldVision( void );
-	void				PostFX_InfluenceVision( void );
-	void				PostFX_BFGVision( void );
-	void				PostFX_TunnelVision( void );
-	void				PostFX_ScreenBlobs( void );
+	void				PostFX_DoubleVision();
+	void				PostFX_MegashieldVision();
+	void				PostFX_InfluenceVision();
+	void				PostFX_BFGVision();
+	void				PostFX_TunnelVision();
+	void				PostFX_ScreenBlobs();
 
-	void				RenderDepth( void );
+	void				RenderDepth();
 
 	const idMaterial* 	blackMaterial;			// Black material (for general use)
 	const idMaterial* 	whiteMaterial;			// White material (for general use)

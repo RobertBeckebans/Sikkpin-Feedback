@@ -40,7 +40,7 @@ If you have questions concerning this license or the applicable additional terms
 
 glconfig_t	glConfig;
 
-static void GfxInfo_f( void );
+static void GfxInfo_f();
 
 // sikk - Removed obsolete render paths
 //const char *r_rendererArgs[] = { "best", "arb", "arb2", "Cg", "exp", "nv10", "nv20", "r200", NULL };
@@ -333,7 +333,7 @@ void ( APIENTRY* qglDetachObjectARB )( GLhandleARB containerObj, GLhandleARB att
 GLhandleARB( APIENTRY* qglCreateShaderObjectARB )( GLenum shaderType );
 void ( APIENTRY* qglShaderSourceARB )( GLhandleARB shaderObj, GLsizei count, const GLcharARB * *string, const GLint* length );
 void ( APIENTRY* qglCompileShaderARB )( GLhandleARB shaderObj );
-GLhandleARB( APIENTRY* qglCreateProgramObjectARB )( void );
+GLhandleARB( APIENTRY* qglCreateProgramObjectARB )();
 void ( APIENTRY* qglAttachObjectARB )( GLhandleARB containerObj, GLhandleARB obj );
 void ( APIENTRY* qglLinkProgramARB )( GLhandleARB programObj );
 void ( APIENTRY* qglUseProgramObjectARB )( GLhandleARB programObj );
@@ -392,7 +392,7 @@ R_CheckPortableExtensions
 
 ==================
 */
-static void R_CheckPortableExtensions( void )
+static void R_CheckPortableExtensions()
 {
 	glConfig.glVersion = atof( glConfig.version_string );
 
@@ -806,7 +806,7 @@ all renderSystem functions will still operate properly, notably the material
 and model information functions.
 ==================
 */
-void R_InitOpenGL( void )
+void R_InitOpenGL()
 {
 	GLint			temp;
 	glimpParms_t	parms;
@@ -942,7 +942,7 @@ void R_InitOpenGL( void )
 GL_CheckErrors
 ==================
 */
-void GL_CheckErrors( void )
+void GL_CheckErrors()
 {
 	int		err;
 	char	s[64];
@@ -2085,7 +2085,7 @@ void R_MakeAmbientMap_f( const idCmdArgs& args )
 R_SetColorMappings
 ===============
 */
-void R_SetColorMappings( void )
+void R_SetColorMappings()
 {
 	int		i, j;
 	float	g, b;
@@ -2379,7 +2379,7 @@ void R_VidRestart_f( const idCmdArgs& args )
 R_InitMaterials
 =================
 */
-void R_InitMaterials( void )
+void R_InitMaterials()
 {
 	tr.defaultMaterial = declManager->FindMaterial( "_default", false );
 	if( !tr.defaultMaterial )
@@ -2461,7 +2461,7 @@ void R_TouchGui_f( const idCmdArgs& args )
 R_InitCvars
 =================
 */
-void R_InitCvars( void )
+void R_InitCvars()
 {
 	// update latched cvars here
 }
@@ -2471,7 +2471,7 @@ void R_InitCvars( void )
 R_InitCommands
 =================
 */
-void R_InitCommands( void )
+void R_InitCommands()
 {
 	cmdSystem->AddCommand( "MakeMegaTexture", idMegaTexture::MakeMegaTexture_f, CMD_FL_RENDERER | CMD_FL_CHEAT, "processes giant images" );
 	cmdSystem->AddCommand( "sizeUp", R_SizeUp_f, CMD_FL_RENDERER, "makes the rendered view larger" );
@@ -2505,7 +2505,7 @@ void R_InitCommands( void )
 idRenderSystemLocal::Clear
 ===============
 */
-void idRenderSystemLocal::Clear( void )
+void idRenderSystemLocal::Clear()
 {
 	registered = false;
 	frameCount = 0;
@@ -2549,7 +2549,7 @@ void idRenderSystemLocal::Clear( void )
 idRenderSystemLocal::Init
 ===============
 */
-void idRenderSystemLocal::Init( void )
+void idRenderSystemLocal::Init()
 {
 
 	common->Printf( "------- Initializing renderSystem --------\n" );
@@ -2607,7 +2607,7 @@ void idRenderSystemLocal::Init( void )
 idRenderSystemLocal::Shutdown
 ===============
 */
-void idRenderSystemLocal::Shutdown( void )
+void idRenderSystemLocal::Shutdown()
 {
 	common->Printf( "idRenderSystem::Shutdown()\n" );
 
@@ -2655,7 +2655,7 @@ void idRenderSystemLocal::Shutdown( void )
 idRenderSystemLocal::BeginLevelLoad
 ========================
 */
-void idRenderSystemLocal::BeginLevelLoad( void )
+void idRenderSystemLocal::BeginLevelLoad()
 {
 	renderModelManager->BeginLevelLoad();
 	globalImages->BeginLevelLoad();
@@ -2666,7 +2666,7 @@ void idRenderSystemLocal::BeginLevelLoad( void )
 idRenderSystemLocal::EndLevelLoad
 ========================
 */
-void idRenderSystemLocal::EndLevelLoad( void )
+void idRenderSystemLocal::EndLevelLoad()
 {
 	renderModelManager->EndLevelLoad();
 	globalImages->EndLevelLoad();
@@ -2681,7 +2681,7 @@ void idRenderSystemLocal::EndLevelLoad( void )
 idRenderSystemLocal::InitOpenGL
 ========================
 */
-void idRenderSystemLocal::InitOpenGL( void )
+void idRenderSystemLocal::InitOpenGL()
 {
 	// if OpenGL isn't started, start it now
 	if( !glConfig.isInitialized )
@@ -2705,7 +2705,7 @@ void idRenderSystemLocal::InitOpenGL( void )
 idRenderSystemLocal::ShutdownOpenGL
 ========================
 */
-void idRenderSystemLocal::ShutdownOpenGL( void )
+void idRenderSystemLocal::ShutdownOpenGL()
 {
 	// free the context and close the window
 	R_ShutdownFrameData();
@@ -2718,7 +2718,7 @@ void idRenderSystemLocal::ShutdownOpenGL( void )
 idRenderSystemLocal::IsOpenGLRunning
 ========================
 */
-bool idRenderSystemLocal::IsOpenGLRunning( void ) const
+bool idRenderSystemLocal::IsOpenGLRunning() const
 {
 	if( !glConfig.isInitialized )
 	{
@@ -2732,7 +2732,7 @@ bool idRenderSystemLocal::IsOpenGLRunning( void ) const
 idRenderSystemLocal::IsFullScreen
 ========================
 */
-bool idRenderSystemLocal::IsFullScreen( void ) const
+bool idRenderSystemLocal::IsFullScreen() const
 {
 	return glConfig.isFullscreen;
 }
@@ -2742,7 +2742,7 @@ bool idRenderSystemLocal::IsFullScreen( void ) const
 idRenderSystemLocal::GetScreenWidth
 ========================
 */
-int idRenderSystemLocal::GetScreenWidth( void ) const
+int idRenderSystemLocal::GetScreenWidth() const
 {
 	return glConfig.vidWidth;
 }
@@ -2752,7 +2752,7 @@ int idRenderSystemLocal::GetScreenWidth( void ) const
 idRenderSystemLocal::GetScreenHeight
 ========================
 */
-int idRenderSystemLocal::GetScreenHeight( void ) const
+int idRenderSystemLocal::GetScreenHeight() const
 {
 	return glConfig.vidHeight;
 }

@@ -372,7 +372,7 @@ void idLight::Restore( idRestoreGame* savefile )
 idLight::Spawn
 ================
 */
-void idLight::Spawn( void )
+void idLight::Spawn()
 {
 	bool start_off;
 	bool needBroken;
@@ -504,7 +504,7 @@ void idLight::Spawn( void )
 idLight::SetLightLevel
 ================
 */
-void idLight::SetLightLevel( void )
+void idLight::SetLightLevel()
 {
 	idVec3	color;
 	float	intensity;
@@ -646,7 +646,7 @@ void idLight::SetRadius( float radius )
 idLight::On
 ================
 */
-void idLight::On( void )
+void idLight::On()
 {
 	currentLevel = levels;
 	// offset the start time of the shader to sync it to the game time
@@ -665,7 +665,7 @@ void idLight::On( void )
 idLight::Off
 ================
 */
-void idLight::Off( void )
+void idLight::Off()
 {
 	currentLevel = 0;
 	// kill any sound it was making
@@ -802,7 +802,7 @@ void idLight::BecomeBroken( idEntity* activator )
 idLight::PresentLightDefChange
 ================
 */
-void idLight::PresentLightDefChange( void )
+void idLight::PresentLightDefChange()
 {
 	// let the renderer apply it to the world
 	if( ( lightDefHandle != -1 ) )
@@ -820,7 +820,7 @@ void idLight::PresentLightDefChange( void )
 idLight::PresentModelDefChange
 ================
 */
-void idLight::PresentModelDefChange( void )
+void idLight::PresentModelDefChange()
 {
 
 	if( !renderEntity.hModel || IsHidden() )
@@ -844,7 +844,7 @@ void idLight::PresentModelDefChange( void )
 idLight::Present
 ================
 */
-void idLight::Present( void )
+void idLight::Present()
 {
 	// don't present to the renderer if the entity hasn't changed
 	if( !( thinkFlags & TH_UPDATEVISUALS ) )
@@ -881,7 +881,7 @@ void idLight::Present( void )
 idLight::Think
 ================
 */
-void idLight::Think( void )
+void idLight::Think()
 {
 	idVec4 color;
 
@@ -924,7 +924,7 @@ bool idLight::GetPhysicsToSoundTransform( idVec3& origin, idMat3& axis )
 idLight::FreeLightDef
 ================
 */
-void idLight::FreeLightDef( void )
+void idLight::FreeLightDef()
 {
 	if( lightDefHandle != -1 )
 	{
@@ -957,7 +957,7 @@ void idLight::SaveState( idDict* args )
 idLight::ShowEditingDialog
 ===============
 */
-void idLight::ShowEditingDialog( void )
+void idLight::ShowEditingDialog()
 {
 	if( g_editEntityMode.GetInteger() == 1 )
 	{
@@ -1039,7 +1039,7 @@ void idLight::Event_SetRadius( float radius )
 idLight::Event_Hide
 ================
 */
-void idLight::Event_Hide( void )
+void idLight::Event_Hide()
 {
 	Hide();
 	PresentModelDefChange();
@@ -1051,7 +1051,7 @@ void idLight::Event_Hide( void )
 idLight::Event_Show
 ================
 */
-void idLight::Event_Show( void )
+void idLight::Event_Show()
 {
 	Show();
 	PresentModelDefChange();
@@ -1063,7 +1063,7 @@ void idLight::Event_Show( void )
 idLight::Event_On
 ================
 */
-void idLight::Event_On( void )
+void idLight::Event_On()
 {
 	On();
 }
@@ -1073,7 +1073,7 @@ void idLight::Event_On( void )
 idLight::Event_Off
 ================
 */
-void idLight::Event_Off( void )
+void idLight::Event_Off()
 {
 	Off();
 }
@@ -1126,7 +1126,7 @@ idLight::Event_SetSoundHandles
   set the same sound def handle on all targeted lights
 ================
 */
-void idLight::Event_SetSoundHandles( void )
+void idLight::Event_SetSoundHandles()
 {
 	int i;
 	idEntity* targetEnt;
@@ -1182,7 +1182,7 @@ idLight::ClientPredictionThink
 ================
 */
 // sikk - removed multiplayer
-//void idLight::ClientPredictionThink( void ) {
+//void idLight::ClientPredictionThink() {
 //	Think();
 //}
 

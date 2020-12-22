@@ -226,7 +226,7 @@ void idTarget_EndLevel::Event_Activate( idEntity* activator )
 idTarget_EndLevel::Think
 ================
 */
-void idTarget_EndLevel::Think( void )
+void idTarget_EndLevel::Think()
 {
 	idStr nextMap;
 	idPlayer* player;
@@ -317,7 +317,7 @@ void idTarget_WaitForButton::Event_Activate( idEntity* activator )
 idTarget_WaitForButton::Think
 ================
 */
-void idTarget_WaitForButton::Think( void )
+void idTarget_WaitForButton::Think()
 {
 	idPlayer* player;
 
@@ -483,7 +483,7 @@ END_CLASS
 idTarget_FadeEntity::idTarget_FadeEntity
 ================
 */
-idTarget_FadeEntity::idTarget_FadeEntity( void )
+idTarget_FadeEntity::idTarget_FadeEntity()
 {
 	fadeFrom.Zero();
 	fadeStart = 0;
@@ -553,7 +553,7 @@ void idTarget_FadeEntity::Event_Activate( idEntity* activator )
 idTarget_FadeEntity::Think
 ================
 */
-void idTarget_FadeEntity::Think( void )
+void idTarget_FadeEntity::Think()
 {
 	int			i;
 	idEntity*	ent;
@@ -708,7 +708,7 @@ END_CLASS
 idTarget_Give::Spawn
 ================
 */
-void idTarget_Give::Spawn( void )
+void idTarget_Give::Spawn()
 {
 	if( spawnArgs.GetBool( "onSpawn" ) )
 	{
@@ -772,7 +772,7 @@ END_CLASS
 idTarget_SetModel::Spawn
 ================
 */
-void idTarget_SetModel::Spawn( void )
+void idTarget_SetModel::Spawn()
 {
 	const char* model;
 
@@ -830,7 +830,7 @@ END_CLASS
 idTarget_SetInfluence::idTarget_SetInfluence
 ================
 */
-idTarget_SetInfluence::idTarget_SetInfluence( void )
+idTarget_SetInfluence::idTarget_SetInfluence()
 {
 	flashIn = 0.0f;
 	flashOut = 0.0f;
@@ -1276,7 +1276,7 @@ void idTarget_SetInfluence::Event_Activate( idEntity* activator )
 idTarget_SetInfluence::Think
 ================
 */
-void idTarget_SetInfluence::Think( void )
+void idTarget_SetInfluence::Think()
 {
 	if( thinkFlags & TH_THINK )
 	{
@@ -1530,7 +1530,7 @@ void idTarget_SetFov::Event_Activate( idEntity* activator )
 idTarget_SetFov::Think
 ================
 */
-void idTarget_SetFov::Think( void )
+void idTarget_SetFov::Think()
 {
 	if( thinkFlags & TH_THINK )
 	{

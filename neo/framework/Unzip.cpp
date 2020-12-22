@@ -236,7 +236,7 @@
 
 /* basic functions */
 
-const char* zlibVersion OF( ( void ) );
+const char* zlibVersion OF( () );
 /* The application can compare zlibVersion and ZLIB_VERSION for consistency.
    If the first character differs, the library code actually used is
    not compatible with the zlib.h header file used by the application.
@@ -948,7 +948,7 @@ int inflateInit2_ OF( ( z_streamp strm, int  windowBits,
 
 const char*    zError           OF( ( int err ) );
 int            inflateSyncPoint OF( ( z_streamp z ) );
-const uLong* get_crc_table    OF( ( void ) );
+const uLong* get_crc_table    OF( () );
 
 typedef unsigned char  uch;
 typedef unsigned short ush;
@@ -2524,7 +2524,7 @@ extern int unzGetGlobalComment( unzFile file, char* szComment, uLong uSizeBuf )
 
 static int crc_table_empty = 1;
 static uLong crc_table[256];
-static void make_crc_table OF( ( void ) );
+static void make_crc_table OF( () );
 
 /*
   Generate a table for a byte-wise 32-bit CRC calculation on the polynomial:
@@ -2774,7 +2774,7 @@ struct inflate_huft_s
 extern int inflate_trees_bits OF( (
 									  uInt*,                     /* 19 code lengths */
 									  uInt*,                     /* bits tree desired/actual depth */
-									  inflate_huft **,        /* bits tree result */
+									  inflate_huft**,         /* bits tree result */
 									  inflate_huft*,              /* space for trees */
 									  z_streamp ) );              /* for messages */
 
@@ -2784,16 +2784,16 @@ extern int inflate_trees_dynamic OF( (
 		uInt*,                     /* that many (total) code lengths */
 		uInt*,                     /* literal desired/actual bit depth */
 		uInt*,                     /* distance desired/actual bit depth */
-		inflate_huft **,        /* literal/length tree result */
-		inflate_huft **,        /* distance tree result */
+		inflate_huft**,         /* literal/length tree result */
+		inflate_huft**,         /* distance tree result */
 		inflate_huft*,              /* space for trees */
 		z_streamp ) );              /* for messages */
 
 extern int inflate_trees_fixed OF( (
 									   uInt*,                     /* literal desired/actual bit depth */
 									   uInt*,                     /* distance desired/actual bit depth */
-									   inflate_huft **,        /* literal/length tree result */
-									   inflate_huft **,        /* distance tree result */
+									   inflate_huft**,         /* literal/length tree result */
+									   inflate_huft**,         /* distance tree result */
 									   z_streamp ) );              /* for memory allocation */
 
 

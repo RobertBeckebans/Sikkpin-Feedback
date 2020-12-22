@@ -239,7 +239,7 @@ bool idItem::ModelCallback( renderEntity_t* renderEntity, const renderView_t* re
 idItem::Think
 ================
 */
-void idItem::Think( void )
+void idItem::Think()
 {
 	if( thinkFlags & TH_THINK )
 	{
@@ -268,7 +268,7 @@ void idItem::Think( void )
 idItem::Present
 ================
 */
-void idItem::Present( void )
+void idItem::Present()
 {
 	idEntity::Present();
 
@@ -301,7 +301,7 @@ void idItem::Present( void )
 idItem::Spawn
 ================
 */
-void idItem::Spawn( void )
+void idItem::Spawn()
 {
 	idStr		giveTo;
 	idEntity* 	ent;
@@ -482,7 +482,7 @@ idItem::ClientPredictionThink
 ================
 */
 // sikk - removed multiplayer
-//void idItem::ClientPredictionThink( void ) {
+//void idItem::ClientPredictionThink() {
 //	// only think forward because the state is not synced through snapshots
 //	if ( !gameLocal.isNewFrame ) {
 //		return;
@@ -557,7 +557,7 @@ idItem::ClientReceiveEvent
 idItem::Event_DropToFloor
 ================
 */
-void idItem::Event_DropToFloor( void )
+void idItem::Event_DropToFloor()
 {
 	trace_t trace;
 
@@ -616,7 +616,7 @@ void idItem::Event_Trigger( idEntity* activator )
 idItem::Event_Respawn
 ================
 */
-void idItem::Event_Respawn( void )
+void idItem::Event_Respawn()
 {
 // sikk - removed multiplayer
 	//if ( gameLocal.isServer ) {
@@ -637,7 +637,7 @@ void idItem::Event_Respawn( void )
 idItem::Event_RespawnFx
 ================
 */
-void idItem::Event_RespawnFx( void )
+void idItem::Event_RespawnFx()
 {
 // sikk - removed multiplayer
 	//if ( gameLocal.isServer ) {
@@ -705,7 +705,7 @@ void idItemPowerup::Restore( idRestoreGame* savefile )
 idItemPowerup::Spawn
 ================
 */
-void idItemPowerup::Spawn( void )
+void idItemPowerup::Spawn()
 {
 	time = spawnArgs.GetInt( "time", "30" );
 	type = spawnArgs.GetInt( "type", "0" );
@@ -810,7 +810,7 @@ void idMoveableItem::Restore( idRestoreGame* savefile )
 idMoveableItem::Spawn
 ================
 */
-void idMoveableItem::Spawn( void )
+void idMoveableItem::Spawn()
 {
 	idTraceModel trm;
 	float density, friction, bouncyness, tsize;
@@ -886,7 +886,7 @@ void idMoveableItem::Spawn( void )
 idMoveableItem::Think
 ================
 */
-void idMoveableItem::Think( void )
+void idMoveableItem::Think()
 {
 
 	RunPhysics();
@@ -1185,7 +1185,7 @@ void idMoveableItem::Gib( const idVec3& dir, const char* damageDefName )
 idMoveableItem::Event_DropToFloor
 ================
 */
-void idMoveableItem::Event_DropToFloor( void )
+void idMoveableItem::Event_DropToFloor()
 {
 	// the physics will drop the moveable to the floor
 }
@@ -1218,7 +1218,7 @@ END_CLASS
 idItemRemover::Spawn
 ================
 */
-void idItemRemover::Spawn( void )
+void idItemRemover::Spawn()
 {
 }
 

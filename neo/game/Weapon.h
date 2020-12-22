@@ -66,10 +66,10 @@ public:
 	virtual					~idWeapon();
 
 	// Init
-	void					Spawn( void );
+	void					Spawn();
 	void					SetOwner( idPlayer* owner );
-	idPlayer*				GetOwner( void );
-	virtual bool			ShouldConstructScriptObjectAtSpawn( void ) const;
+	idPlayer*				GetOwner();
+	virtual bool			ShouldConstructScriptObjectAtSpawn() const;
 
 	static void				CacheWeapon( const char* weaponName );
 
@@ -78,55 +78,55 @@ public:
 	void					Restore( idRestoreGame* savefile );					// unarchives object from save game file
 
 	// Weapon definition management
-	void					Clear( void );
+	void					Clear();
 	void					GetWeaponDef( const char* objectname, int ammoinclip );
-	bool					IsLinked( void );
-	bool					IsWorldModelReady( void );
+	bool					IsLinked();
+	bool					IsWorldModelReady();
 
 	// GUIs
-	void					UpdateGUI( void );
+	void					UpdateGUI();
 
 	virtual void			SetModel( const char* modelname );
 	bool					GetGlobalJointTransform( bool viewModel, const jointHandle_t jointHandle, idVec3& offset, idMat3& axis );
 	void					SetPushVelocity( const idVec3& pushVelocity );
-	bool					UpdateSkin( void );
+	bool					UpdateSkin();
 
 	// State control/player interface
-	void					Think( void );
-	void					Raise( void );
-	void					PutAway( void );
-	void					Reload( void );
-	void					LowerWeapon( void );
-	void					RaiseWeapon( void );
-	void					HideWeapon( void );
-	void					ShowWeapon( void );
-	void					HideWorldModel( void );
-	void					ShowWorldModel( void );
-	void					OwnerDied( void );
+	void					Think();
+	void					Raise();
+	void					PutAway();
+	void					Reload();
+	void					LowerWeapon();
+	void					RaiseWeapon();
+	void					HideWeapon();
+	void					ShowWeapon();
+	void					HideWorldModel();
+	void					ShowWorldModel();
+	void					OwnerDied();
 	void					BeginAttack( bool primary );
-	void					EndAttack( void );
-	bool					IsReady( void ) const;
-	bool					IsReloading( void ) const;
-	bool					IsHolstered( void ) const;
-	bool					ShowCrosshair( void ) const;
+	void					EndAttack();
+	bool					IsReady() const;
+	bool					IsReloading() const;
+	bool					IsHolstered() const;
+	bool					ShowCrosshair() const;
 // sikk - removed multiplayer
 	//idEntity *				DropItem( const idVec3 &velocity, int activateDelay, int removeDelay, bool died );
-	//bool					CanDrop( void ) const;
-	//void					WeaponStolen( void );
+	//bool					CanDrop() const;
+	//void					WeaponStolen();
 
 	// Script state management
-	virtual idThread* 		ConstructScriptObject( void );
-	virtual void			DeconstructScriptObject( void );
+	virtual idThread* 		ConstructScriptObject();
+	virtual void			DeconstructScriptObject();
 	void					SetState( const char* statename, int blendFrames );
-	void					UpdateScript( void );
-	void					EnterCinematic( void );
-	void					ExitCinematic( void );
+	void					UpdateScript();
+	void					EnterCinematic();
+	void					ExitCinematic();
 // sikk - removed multiplayer
-	//void					NetCatchup( void );
+	//void					NetCatchup();
 
 	// Visual presentation
 	void					PresentWeapon( bool showViewModel );
-	int						GetZoomFov( void );
+	int						GetZoomFov();
 	void					GetWeaponAngleOffsets( int* average, float* scale, float* max );
 	void					GetWeaponTimeOffsets( float* time, float* scale );
 	bool					BloodSplat( float size );
@@ -142,7 +142,7 @@ public:
 	//virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
 	//virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 	//virtual bool			ClientReceiveEvent( int event, int time, const idBitMsg &msg );
-	//virtual void			ClientPredictionThink( void );
+	//virtual void			ClientPredictionThink();
 
 // ---> sikk - Railgun Beam
 	renderEntity_t			railbeamRenderEntity;
@@ -154,19 +154,19 @@ public:
 // <--- sikk - Railgun Beam
 
 // ---> sikk - Crosshair Positioning
-	idVec3					GetMuzzleOrigin( void )
+	idVec3					GetMuzzleOrigin()
 	{
 		return muzzleOrigin;
 	};
-	idMat3					GetMuzzleAxis( void )
+	idMat3					GetMuzzleAxis()
 	{
 		return muzzleAxis;
 	};
-	jointHandle_t			GetBarrelJointView( void )
+	jointHandle_t			GetBarrelJointView()
 	{
 		return barrelJointView;
 	};
-	idDict					GetProjectileDict( void )
+	idDict					GetProjectileDict()
 	{
 		return projectileDict;
 	};
@@ -316,33 +316,33 @@ private:
 	float					weaponOffsetScale;
 
 	// flashlight
-	void					AlertMonsters( void );
+	void					AlertMonsters();
 
 	// Visual presentation
 	void					InitWorldModel( const idDeclEntityDef* def );
-	void					MuzzleFlashLight( void );
+	void					MuzzleFlashLight();
 	void					MuzzleRise( idVec3& origin, idMat3& axis );
-	void					UpdateNozzleFx( void );
-	void					UpdateFlashPosition( void );
+	void					UpdateNozzleFx();
+	void					UpdateFlashPosition();
 
 	// script events
-	void					Event_Clear( void );
-	void					Event_GetOwner( void );
+	void					Event_Clear();
+	void					Event_GetOwner();
 	void					Event_WeaponState( const char* statename, int blendFrames );
 	void					Event_SetWeaponStatus( float newStatus );
-	void					Event_WeaponReady( void );
-	void					Event_WeaponOutOfAmmo( void );
-	void					Event_WeaponReloading( void );
-	void					Event_WeaponHolstered( void );
-	void					Event_WeaponRising( void );
-	void					Event_WeaponLowering( void );
-	void					Event_TotalEnergy( void );
+	void					Event_WeaponReady();
+	void					Event_WeaponOutOfAmmo();
+	void					Event_WeaponReloading();
+	void					Event_WeaponHolstered();
+	void					Event_WeaponRising();
+	void					Event_WeaponLowering();
+	void					Event_TotalEnergy();
 	void					Event_PlayAnim( int channel, const char* animname );
 	void					Event_PlayCycle( int channel, const char* animname );
 	void					Event_AnimDone( int channel, int blendFrames );
 	void					Event_SetBlendFrames( int channel, int blendFrames );
 	void					Event_GetBlendFrames( int channel );
-	void					Event_Next( void );
+	void					Event_Next();
 	void					Event_SetSkin( const char* skinname );
 	void					Event_Flashlight( int enable );
 	void					Event_GetLightParm( int parmnum );
@@ -350,29 +350,29 @@ private:
 	void					Event_SetLightParms( float parm0, float parm1, float parm2, float parm3 );
 	void					Event_LaunchProjectiles( int num_projectiles, float spread, float fuseOffset, float launchPower, float dmgPower, int primary = 1 );	// sikk - Secondary Fire
 	void					Event_CreateProjectile( int primary = 1 );	// sikk - Secondary Fire
-	void					Event_EjectBrass( void );
+	void					Event_EjectBrass();
 	void					Event_Melee( int primary = 1 );	// sikk - Secondary Fire );
-	void					Event_GetWorldModel( void );
-	void					Event_IsMegadamage( void );		// sikk - Megadamage Check for skin update
-	void					Event_IsMegashield( void );		// sikk - Megashield Check for skin update
-	void					Event_IsInvisible( void );
+	void					Event_GetWorldModel();
+	void					Event_IsMegadamage();		// sikk - Megadamage Check for skin update
+	void					Event_IsMegashield();		// sikk - Megashield Check for skin update
+	void					Event_IsInvisible();
 // sikk - removed multiplayer
 	//void					Event_AllowDrop( int allow );
-	//void					Event_NetReload( void );
-	//void					Event_NetEndReload( void );
+	//void					Event_NetReload();
+	//void					Event_NetEndReload();
 };
 
-ID_INLINE bool idWeapon::IsLinked( void )
+ID_INLINE bool idWeapon::IsLinked()
 {
 	return isLinked;
 }
 
-ID_INLINE bool idWeapon::IsWorldModelReady( void )
+ID_INLINE bool idWeapon::IsWorldModelReady()
 {
 	return ( worldModel.GetEntity() != NULL );
 }
 
-ID_INLINE idPlayer* idWeapon::GetOwner( void )
+ID_INLINE idPlayer* idWeapon::GetOwner()
 {
 	return owner;
 }

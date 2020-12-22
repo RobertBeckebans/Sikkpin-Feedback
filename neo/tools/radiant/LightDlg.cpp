@@ -600,7 +600,7 @@ void CLightDlg::EnableControls()
 	SetSpecifics();
 }
 
-void CLightDlg::UpdateDialogFromLightInfo( void )
+void CLightDlg::UpdateDialogFromLightInfo()
 {
 	m_hasCenter = lightInfo.hasCenter;
 	m_bEqualRadius = lightInfo.equalRadius;
@@ -680,7 +680,7 @@ void CLightDlg::UpdateDialogFromLightInfo( void )
 	UpdateData( FALSE );
 }
 
-void CLightDlg::UpdateLightInfoFromDialog( void )
+void CLightDlg::UpdateLightInfoFromDialog()
 {
 	UpdateData( TRUE );
 
@@ -1164,7 +1164,7 @@ void LightEditorInit( const idDict* spawnArgs )
 	}
 }
 
-void LightEditorRun( void )
+void LightEditorRun()
 {
 #if _MSC_VER >= 1300
 	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
@@ -1181,7 +1181,7 @@ void LightEditorRun( void )
 	}
 }
 
-void LightEditorShutdown( void )
+void LightEditorShutdown()
 {
 	delete g_LightDialog;
 	g_LightDialog = NULL;

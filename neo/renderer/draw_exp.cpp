@@ -235,7 +235,7 @@ wglString_t	wglString[] =
 
 static const int NUM_WGL_STRINGS = sizeof( wglString ) / sizeof( wglString[ 0 ] );
 
-static void R_CheckWglErrors( void )
+static void R_CheckWglErrors()
 {
 	int	err = GetLastError();
 	char* name;
@@ -301,7 +301,7 @@ static void R_BindTexImage( HPBUFFERARB pbuffer )
 	}
 }
 
-static void R_ReportTextureParms( void )
+static void R_ReportTextureParms()
 {
 	int	parms[ 8 ];
 
@@ -316,7 +316,7 @@ RB_CreateBloomTable
 ====================
 */
 static const int BLOOM_RADIUS = 8;
-static void RB_CreateBloomTable( void )
+static void RB_CreateBloomTable()
 {
 	float bloom[ BLOOM_RADIUS ];
 	float total = 0;
@@ -527,7 +527,7 @@ void R_PrintPixelFormat( int pixelFormat )
 R_Exp_Allocate
 ==================
 */
-void R_Exp_Allocate( void )
+void R_Exp_Allocate()
 {
 	// find a pixel format for our floating point pbuffer
 	int		iAttributes[ NUM_WGL_STRINGS * 2 ], *atr_p;
@@ -1961,7 +1961,7 @@ Bilerp might even be aprorpiate, although it would cause issues at edges
 */
 void RB_T_FillDepthBuffer( const drawSurf_t* surf );
 
-void R_EXP_RenderViewDepthImage( void )
+void R_EXP_RenderViewDepthImage()
 {
 	if( !r_sb_screenSpaceShadow.GetBool() )
 	{
@@ -2042,7 +2042,7 @@ RB_EXP_SetNativeBuffer
 This is always the back buffer, and scissor is set full screen
 ==================
 */
-void RB_EXP_SetNativeBuffer( void )
+void RB_EXP_SetNativeBuffer()
 {
 	// set the normal screen drawable current
 	R_MakeCurrent( win32.hDC, win32.hGLRC, NULL );
@@ -2112,7 +2112,7 @@ RB_shadowResampleAlpha
 
 ==================
 */
-void RB_shadowResampleAlpha( void )
+void RB_shadowResampleAlpha()
 {
 	viewAlphaImage->Bind();
 	// we could make this a subimage, but it isn't relevent once we have render-to-texture
@@ -2211,7 +2211,7 @@ void RB_shadowResampleAlpha( void )
 RB_EXP_CoverScreen
 ==================
 */
-void RB_EXP_CoverScreen( void )
+void RB_EXP_CoverScreen()
 {
 	// draw a full screen quad
 	qglMatrixMode( GL_PROJECTION );
@@ -2233,7 +2233,7 @@ void RB_EXP_CoverScreen( void )
 RB_EXP_ReadFloatBuffer
 ==================
 */
-void RB_EXP_ReadFloatBuffer( void )
+void RB_EXP_ReadFloatBuffer()
 {
 	int		pixels = glConfig.vidWidth * glConfig.vidHeight;
 	float*	buf = ( float* )R_StaticAlloc( pixels * 4 * sizeof( float ) );
@@ -2278,14 +2278,14 @@ void RB_EXP_ReadFloatBuffer( void )
 }
 
 
-void RB_TestGamma( void );
+void RB_TestGamma();
 
 /*
 ==================
 RB_EXP_GammaDither
 ==================
 */
-void RB_EXP_GammaDither( void )
+void RB_EXP_GammaDither()
 {
 	if( !r_hdr_useFloats.GetBool() )
 	{
@@ -2387,7 +2387,7 @@ void RB_EXP_GammaDither( void )
 RB_EXP_Bloom
 ==================
 */
-void RB_EXP_Bloom( void )
+void RB_EXP_Bloom()
 {
 	if( !r_hdr_useFloats.GetBool() )
 	{
@@ -2509,7 +2509,7 @@ void RB_EXP_Bloom( void )
 RB_Exp_DrawInteractions
 ==================
 */
-void RB_Exp_DrawInteractions( void )
+void RB_Exp_DrawInteractions()
 {
 	if( !initialized )
 	{
@@ -2772,7 +2772,7 @@ void RB_Exp_DrawInteractions( void )
 R_Exp_Init
 ==================
 */
-void R_Exp_Init( void )
+void R_Exp_Init()
 {
 	glConfig.allowExpPath = false;
 

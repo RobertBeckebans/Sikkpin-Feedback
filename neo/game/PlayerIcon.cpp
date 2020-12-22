@@ -115,7 +115,7 @@ idPlayerIcon::Draw
 idPlayerIcon::FreeIcon
 ===============
 */
-void idPlayerIcon::FreeIcon( void )
+void idPlayerIcon::FreeIcon()
 {
 	if( iconHandle != - 1 )
 	{

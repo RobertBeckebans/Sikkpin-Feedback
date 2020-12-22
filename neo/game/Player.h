@@ -172,9 +172,9 @@ public:
 	void					Save( idSaveGame* savefile ) const;					// archives object for save game file
 	void					Restore( idRestoreGame* savefile );					// unarchives object from save game file
 
-	void					Clear( void );
+	void					Clear();
 	void					GivePowerUp( idPlayer* player, int powerup, int msec );
-	void					ClearPowerUps( void );
+	void					ClearPowerUps();
 	void					GetPersistantData( idDict& dict );
 	void					RestoreInventory( idPlayer* owner, const idDict& dict );
 	bool					Give( idPlayer* owner, const idDict& spawnArgs, const char* statname, const char* value, int* idealWeapon, bool updateHud );
@@ -359,43 +359,43 @@ public:
 	idPlayer();
 	virtual					~idPlayer();
 
-	void					Spawn( void );
-	void					Think( void );
+	void					Spawn();
+	void					Think();
 
 	// save games
 	void					Save( idSaveGame* savefile ) const;					// archives object for save game file
 	void					Restore( idRestoreGame* savefile );					// unarchives object from save game file
 
-	virtual void			Hide( void );
-	virtual void			Show( void );
+	virtual void			Hide();
+	virtual void			Show();
 
-	void					Init( void );
-	void					PrepareForRestart( void );
-	virtual void			Restart( void );
-	void					LinkScriptVariables( void );
-	void					SetupWeaponEntity( void );
+	void					Init();
+	void					PrepareForRestart();
+	virtual void			Restart();
+	void					LinkScriptVariables();
+	void					SetupWeaponEntity();
 	void					SelectInitialSpawnPoint( idVec3& origin, idAngles& angles );
-	void					SpawnFromSpawnSpot( void );
+	void					SpawnFromSpawnSpot();
 	void					SpawnToPoint( const idVec3&	spawn_origin, const idAngles& spawn_angles );
-	void					SetClipModel( void );	// spectator mode uses a different bbox size
+	void					SetClipModel();	// spectator mode uses a different bbox size
 
-	void					SavePersistantInfo( void );
-	void					RestorePersistantInfo( void );
+	void					SavePersistantInfo();
+	void					RestorePersistantInfo();
 	void					SetLevelTrigger( const char* levelName, const char* triggerName );
 
 	bool					UserInfoChanged( bool canModify );
-	idDict* 				GetUserInfo( void );
+	idDict* 				GetUserInfo();
 // sikk - removed multiplayer
-	//bool					BalanceTDM( void );
+	//bool					BalanceTDM();
 
-	void					CacheWeapons( void );
+	void					CacheWeapons();
 
-	void					EnterCinematic( void );
-	void					ExitCinematic( void );
-	bool					HandleESC( void );
-	bool					SkipCinematic( void );
+	void					EnterCinematic();
+	void					ExitCinematic();
+	bool					HandleESC();
+	bool					SkipCinematic();
 
-	void					UpdateConditions( void );
+	void					UpdateConditions();
 	void					SetViewAngles( const idAngles& angles );
 
 	// delta view angles to allow movers to rotate the view of the player
@@ -417,18 +417,18 @@ public:
 	virtual void			Killed( idEntity* inflictor, idEntity* attacker, int damage, const idVec3& dir, int location );
 	void					StartFxOnBone( const char* fx, const char* bone );
 
-	renderView_t* 			GetRenderView( void );
-	void					CalculateRenderView( void );	// called every tic by player code
-	void					CalculateFirstPersonView( void );
+	renderView_t* 			GetRenderView();
+	void					CalculateRenderView();	// called every tic by player code
+	void					CalculateFirstPersonView();
 
 	void					DrawHUD( idUserInterface* hud );
 
 	void					WeaponFireFeedback( const idDict* weaponDef, int primary );	// sikk - Secondary Fire
 
-	float					DefaultFov( void ) const;
+	float					DefaultFov() const;
 	float					CalcFov( bool honorZoom );
 	void					CalculateViewWeaponPos( idVec3& origin, idMat3& axis );
-	idVec3					GetEyePosition( void ) const;
+	idVec3					GetEyePosition() const;
 	void					GetViewPos( idVec3& origin, idMat3& axis ) const;
 	void					OffsetThirdPersonView( float angle, float range, float height, bool clip );
 
@@ -444,13 +444,13 @@ public:
 	idDict* 				FindInventoryItem( const char* name );
 
 	bool					GivePowerUp( int powerup, int time, int score = 0 );	// sikk - Level Stats System: Added score
-	void					ClearPowerUps( void );
+	void					ClearPowerUps();
 	bool					PowerUpActive( int powerup ) const;
 
 	int						SlotForWeapon( const char* weaponName );
-	void					NextWeapon( void );
-	void					NextBestWeapon( void );
-	void					PrevWeapon( void );
+	void					NextWeapon();
+	void					NextBestWeapon();
+	void					PrevWeapon();
 	void					SelectWeapon( int num, bool force );
 // sikk - removed multiplayer
 	//void					DropWeapon( bool died ) ;
@@ -458,47 +458,47 @@ public:
 	void					AddProjectilesFired( int count );
 	void					AddProjectileHits( int count );
 	void					SetLastHitTime( int time );
-	void					LowerWeapon( void );
-	void					RaiseWeapon( void );
-	void					WeaponLoweringCallback( void );
-	void					WeaponRisingCallback( void );
+	void					LowerWeapon();
+	void					RaiseWeapon();
+	void					WeaponLoweringCallback();
+	void					WeaponRisingCallback();
 	void					RemoveWeapon( const char* weap );
-	bool					CanShowWeaponViewmodel( void ) const;
+	bool					CanShowWeaponViewmodel() const;
 
 	void					AddAIKill( int _energy );	// sikk - handles energy and score accumilation
 	void					SetSoulCubeProjectile( idProjectile* projectile );
 
-	void					UpdateAir( void );
+	void					UpdateAir();
 
 	virtual bool			HandleSingleGuiCommand( idEntity* entityGui, idLexer* src );
-	bool					GuiActive( void )
+	bool					GuiActive()
 	{
 		return focusGUIent != NULL;
 	}
 
 	void					PerformImpulse( int impulse );
 	void					Spectate( bool spectate );
-	void					ToggleScoreboard( void );
+	void					ToggleScoreboard();
 	void					RouteGuiMouse( idUserInterface* gui );
-	void					UpdateHud( void );
+	void					UpdateHud();
 	void					UpdateHudWeapon( bool flashWeapon = true );
 	void					UpdateHudStats( idUserInterface* hud );
 	void					SetInfluenceFov( float fov );
 	void					SetInfluenceView( const char* mtr, const char* skinname, float radius, idEntity* ent );
 	void					SetInfluenceLevel( int level );
-	int						GetInfluenceLevel( void )
+	int						GetInfluenceLevel()
 	{
 		return influenceActive;
 	};
 	void					SetPrivateCameraView( idCamera* camView );
-	idCamera* 				GetPrivateCameraView( void ) const
+	idCamera* 				GetPrivateCameraView() const
 	{
 		return privateCameraView;
 	}
 	void					StartFxFov( float duration );
 
 // sikk - removed multiplayer
-	//virtual void			ClientPredictionThink( void );
+	//virtual void			ClientPredictionThink();
 	//virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
 	//virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 	//void					WritePlayerStateToSnapshot( idBitMsgDelta &msg ) const;
@@ -510,19 +510,19 @@ public:
 	virtual bool			GetPhysicsToVisualTransform( idVec3& origin, idMat3& axis );
 	virtual bool			GetPhysicsToSoundTransform( idVec3& origin, idMat3& axis );
 
-	bool					IsReady( void );
-	bool					IsRespawning( void );
-	bool					IsInTeleport( void );
+	bool					IsReady();
+	bool					IsRespawning();
+	bool					IsInTeleport();
 
-	idEntity*				GetInfluenceEntity( void )
+	idEntity*				GetInfluenceEntity()
 	{
 		return influenceEntity;
 	};
-	const idMaterial*		GetInfluenceMaterial( void )
+	const idMaterial*		GetInfluenceMaterial()
 	{
 		return influenceMaterial;
 	};
-	float					GetInfluenceRadius( void )
+	float					GetInfluenceRadius()
 	{
 		return influenceRadius;
 	};
@@ -531,22 +531,22 @@ public:
 // sikk - removed multiplayer
 	//void					ServerSpectate( bool spectate );
 	// for very specific usage. != GetPhysics()
-	//idPhysics*				GetPlayerPhysics( void );
+	//idPhysics*				GetPlayerPhysics();
 	void					TeleportDeath( int killer );
 	//void					SetLeader( bool lead );
-	//bool					IsLeader( void );
+	//bool					IsLeader();
 
 	//void					UpdateSkinSetup( bool restart );
 
-	bool					OnLadder( void ) const;
+	bool					OnLadder() const;
 
 // sikk - removed multiplayer
-	//virtual	void			UpdatePlayerIcons( void );
-	//virtual	void			DrawPlayerIcons( void );
-	//virtual	void			HidePlayerIcons( void );
-	//bool					NeedsIcon( void );
+	//virtual	void			UpdatePlayerIcons();
+	//virtual	void			DrawPlayerIcons();
+	//virtual	void			HidePlayerIcons();
+	//bool					NeedsIcon();
 
-	//bool					SelfSmooth( void );
+	//bool					SelfSmooth();
 	//void					SetSelfSmooth( bool b );
 
 	bool					underwater;	// sikk - Liquid Physics
@@ -564,16 +564,16 @@ public:
 	{
 		activeModifier = modifier;
 	};
-	int						GetActiveModifier( void )
+	int						GetActiveModifier()
 	{
 		return activeModifier;
 	};
-	void					ClearModifier( void )
+	void					ClearModifier()
 	{
 		activeModifier = 0;
 	};
-	void					ResetModifiers( void );
-	void					UpdateModifiers( void );
+	void					ResetModifiers();
+	void					UpdateModifiers();
 // <--- sikk - Modifier System
 
 // ---> sikk - Lives System
@@ -581,8 +581,8 @@ public:
 	int						respawnerAmount;
 	idVec3					respawnPos;
 	idAngles				respawnAng;
-	void					Respawn( void );
-	void					UpdateRespawnPos( void );
+	void					Respawn();
+	void					UpdateRespawnPos();
 // <--- sikk - Lives System
 
 // ---> sikk - Energy System
@@ -590,9 +590,9 @@ public:
 	int						energy;
 	int						energyTally;
 	void					GiveEnergy( int amt );
-	int						GetEnergy( void );
+	int						GetEnergy();
 	void					GiveEnergyTally( int amt );
-	int						GetEnergyTally( void )
+	int						GetEnergyTally()
 	{
 		return energyTally;
 	};
@@ -600,7 +600,7 @@ public:
 
 // ---> sikk - Forward Velocity Damage Multiplier
 	float					velocityDamageScale;
-	void					UpdateForwardVelocity( void );
+	void					UpdateForwardVelocity();
 // <--- sikk - Forward Velocity Damage Multiplier
 
 // ---> sikk - Level Stats System
@@ -608,17 +608,17 @@ public:
 	int						GetLevelStat( int stat );
 	void					SetLevelStat( int stat, int amount );
 	void					AddToLevelStat( int stat, int amount );
-	void					ClearLevelStats( void );
-	void					UpdateLevelStats( void );
-	int						GetTotalScore( void );
+	void					ClearLevelStats();
+	void					UpdateLevelStats();
+	int						GetTotalScore();
 	void					SaveLevelStats( idSaveGame* savefile ) const;
 // <--- sikk - Level Stats System
 
 // ---> sikk - Level Music
 	int						musicTime;
 	int						musicFlag;
-	void					SpawnMusic( void );
-	void					UpdateMusic( void );
+	void					SpawnMusic();
+	void					UpdateMusic();
 // <--- sikk - Level Music
 
 // ---> sikk - Object Manipulation
@@ -745,72 +745,72 @@ private:
 
 	void					LookAtKiller( idEntity* inflictor, idEntity* attacker );
 
-	void					StopFiring( void );
+	void					StopFiring();
 	void					FireWeapon( bool primary );	// sikk - Secondary Fire
-	void					Weapon_Combat( void );
-	void					Weapon_NPC( void );
-	void					Weapon_GUI( void );
-	void					UpdateWeapon( void );
+	void					Weapon_Combat();
+	void					Weapon_NPC();
+	void					Weapon_GUI();
+	void					UpdateWeapon();
 // sikk - removed multiplayer
-	//void					UpdateSpectating( void );
+	//void					UpdateSpectating();
 	//void					SpectateFreeFly( bool force );	// ignore the timeout to force when followed spec is no longer valid
-	//void					SpectateCycle( void );
-	idAngles				GunTurningOffset( void );
-	idVec3					GunAcceleratingOffset( void );
+	//void					SpectateCycle();
+	idAngles				GunTurningOffset();
+	idVec3					GunAcceleratingOffset();
 
-	void					UseObjects( void );
+	void					UseObjects();
 	void					CrashLand( const idVec3& oldOrigin, const idVec3& oldVelocity );
 	void					BobCycle( const idVec3& pushVelocity );
-	void					UpdateViewAngles( void );
-	void					EvaluateControls( void );
-	void					AdjustSpeed( void );
-	void					AdjustBodyAngles( void );
-	void					InitAASLocation( void );
-	void					SetAASLocation( void );
-	void					Move( void );
-	void					UpdatePowerUps( void );
+	void					UpdateViewAngles();
+	void					EvaluateControls();
+	void					AdjustSpeed();
+	void					AdjustBodyAngles();
+	void					InitAASLocation();
+	void					SetAASLocation();
+	void					Move();
+	void					UpdatePowerUps();
 	void					UpdateDeathSkin( bool state_hitch );
 	void					ClearPowerup( int i );
 // sikk - removed multiplayer
-	//void					SetSpectateOrigin( void );
+	//void					SetSpectateOrigin();
 
-	void					ClearFocus( void );
-	void					UpdateFocus( void );
-	void					UpdateLocation( void );
-	idUserInterface* 		ActiveGui( void );
+	void					ClearFocus();
+	void					UpdateFocus();
+	void					UpdateLocation();
+	idUserInterface* 		ActiveGui();
 
 	void					UseVehicle( bool drive );	// sikk - function modified to support use function
 
-	void					Event_GetButtons( void );
-	void					Event_GetMove( void );
-	void					Event_GetViewAngles( void );
-	void					Event_StopFxFov( void );
-	void					Event_EnableWeapon( void );
-	void					Event_DisableWeapon( void );
-	void					Event_GetCurrentWeapon( void );
-	void					Event_GetPreviousWeapon( void );
+	void					Event_GetButtons();
+	void					Event_GetMove();
+	void					Event_GetViewAngles();
+	void					Event_StopFxFov();
+	void					Event_EnableWeapon();
+	void					Event_DisableWeapon();
+	void					Event_GetCurrentWeapon();
+	void					Event_GetPreviousWeapon();
 	void					Event_SelectWeapon( const char* weaponName );
-	void					Event_GetWeaponEntity( void );
-	void					Event_ExitTeleporter( void );
-	void					Event_LevelTrigger( void );
-	void					Event_Gibbed( void );
-	void					Event_GetIdealWeapon( void );
+	void					Event_GetWeaponEntity();
+	void					Event_ExitTeleporter();
+	void					Event_LevelTrigger();
+	void					Event_Gibbed();
+	void					Event_GetIdealWeapon();
 };
 
 // sikk - removed multiplayer
-//ID_INLINE bool idPlayer::IsReady( void ) {
+//ID_INLINE bool idPlayer::IsReady() {
 //	return ready || forcedReady;
 //}
 //
-//ID_INLINE bool idPlayer::IsRespawning( void ) {
+//ID_INLINE bool idPlayer::IsRespawning() {
 //	return respawning;
 //}
 //
-//ID_INLINE idPhysics* idPlayer::GetPlayerPhysics( void ) {
+//ID_INLINE idPhysics* idPlayer::GetPlayerPhysics() {
 //	return &physicsObj;
 //}
 //
-ID_INLINE bool idPlayer::IsInTeleport( void )
+ID_INLINE bool idPlayer::IsInTeleport()
 {
 	return ( teleportEntity.GetEntity() != NULL );
 }
@@ -819,11 +819,11 @@ ID_INLINE bool idPlayer::IsInTeleport( void )
 //	leader = lead;
 //}
 //
-//ID_INLINE bool idPlayer::IsLeader( void ) {
+//ID_INLINE bool idPlayer::IsLeader() {
 //	return leader;
 //}
 //
-//ID_INLINE bool idPlayer::SelfSmooth( void ) {
+//ID_INLINE bool idPlayer::SelfSmooth() {
 //	return selfSmooth;
 //}
 //

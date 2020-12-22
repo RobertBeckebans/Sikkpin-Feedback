@@ -29,7 +29,7 @@ END_CLASS
 idSpawner::Spawn
 ==============
 */
-void idSpawner::Spawn( void )
+void idSpawner::Spawn()
 {
 	GetPhysics()->SetContents( 0 );
 
@@ -149,7 +149,7 @@ Generate the list of classnames to spawn from the spawnArgs.  Anything matching 
 prefix "def_spawn" will be included in the list.
 ==============
 */
-void idSpawner::FindSpawnTypes( void )
+void idSpawner::FindSpawnTypes()
 {
 	const idKeyValue* kv;
 	for( kv = spawnArgs.MatchPrefix( "def_spawn", NULL ); kv; kv = spawnArgs.MatchPrefix( "def_spawn", kv ) )
@@ -166,7 +166,7 @@ void idSpawner::FindSpawnTypes( void )
 idSpawner::FindTargets
 ==============
 */
-void idSpawner::FindTargets( void )
+void idSpawner::FindTargets()
 {
 	int i;
 	idBounds bounds( idVec3( -16, -16, 0 ), idVec3( 16, 16, 72 ) );
@@ -276,7 +276,7 @@ void idSpawner::AddCallback( idEntity* owner, const idEventDef* ev )
 idSpawner::GetSpawnPoint
 ==============
 */
-idEntity* idSpawner::GetSpawnPoint( void )
+idEntity* idSpawner::GetSpawnPoint()
 {
 	idBounds bounds( idVec3( -16, -16, 0 ), idVec3( 16, 16, 72 ) );
 	idList< idEntityPtr<idEntity> >	spawns;
@@ -380,7 +380,7 @@ void idSpawner::CopyPrefixedSpawnArgs( idEntity* src, const char* prefix, idDict
 idSpawner::SpawnEnt
 ==============
 */
-bool idSpawner::SpawnEnt( void )
+bool idSpawner::SpawnEnt()
 {
 	idDict		args;
 	idEntity*	spawnPoint;
@@ -477,7 +477,7 @@ bool idSpawner::SpawnEnt( void )
 idSpawner::Think
 ==============
 */
-void idSpawner::Think( void )
+void idSpawner::Think()
 {
 	if( thinkFlags & TH_THINK )
 	{
@@ -495,7 +495,7 @@ void idSpawner::Think( void )
 idSpawner::CheckSpawn
 ==============
 */
-void idSpawner::CheckSpawn( void )
+void idSpawner::CheckSpawn()
 {
 	int count;
 
@@ -693,7 +693,7 @@ void idSpawner::Event_Activate( idEntity* activator )
 idSpawner::Event_RemoveNullActiveEntities
 ==============
 */
-void idSpawner::Event_RemoveNullActiveEntities( void )
+void idSpawner::Event_RemoveNullActiveEntities()
 {
 	for( int ix = currentActive.Num() - 1; ix >= 0; --ix )
 	{
@@ -709,7 +709,7 @@ void idSpawner::Event_RemoveNullActiveEntities( void )
 idSpawner::Event_NumActiveEntities
 ==============
 */
-void idSpawner::Event_NumActiveEntities( void )
+void idSpawner::Event_NumActiveEntities()
 {
 	idThread::ReturnInt( currentActive.Num() );
 }

@@ -61,7 +61,7 @@ END_CLASS
 idGrabEntity::idGrabEntity
 ==============
 */
-idGrabEntity::idGrabEntity( void )
+idGrabEntity::idGrabEntity()
 {
 	Clear();
 }
@@ -71,7 +71,7 @@ idGrabEntity::idGrabEntity( void )
 idGrabEntity::~idGrabEntity
 ==============
 */
-idGrabEntity::~idGrabEntity( void )
+idGrabEntity::~idGrabEntity()
 {
 	StopDrag( owner, true );
 }

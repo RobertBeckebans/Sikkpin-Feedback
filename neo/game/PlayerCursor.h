@@ -21,7 +21,7 @@ public:
 	bool			bInCinematic;
 
 public:
-	void   FreeCursor( void );
+	void   FreeCursor();
 	bool   CreateCursor( idPlayer* player , const idVec3& origin, const idMat3& axis, const char* material );
 	void   UpdateCursor( idPlayer* player , const idVec3& origin, const idMat3& axis );
 };

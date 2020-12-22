@@ -79,7 +79,7 @@ class idPhysics_Player : public idPhysics_Actor
 public:
 	CLASS_PROTOTYPE( idPhysics_Player );
 
-	idPhysics_Player( void );
+	idPhysics_Player();
 
 	void					Save( idSaveGame* savefile ) const;
 	void					Restore( idRestoreGame* savefile );
@@ -87,7 +87,7 @@ public:
 	// initialisation
 	void					SetSpeed( const float newWalkSpeed, const float newCrouchSpeed, const float newLadderSpeed );	// sikk - Added ladderspeed arg
 	void					SetMaxStepHeight( const float newMaxStepHeight );
-	float					GetMaxStepHeight( void ) const;
+	float					GetMaxStepHeight() const;
 	void					SetMaxJumpHeight( const float newMaxJumpHeight );
 	void					SetMovementType( const pmtype_t type );
 	void					SetPlayerInput( const usercmd_t& cmd, const idAngles& newViewAngles );
@@ -101,29 +101,29 @@ public:
 // <--- sikk - Modifier System
 
 // ---> sikk - Liquid Physics: defined in "Physics_Actor"
-	// waterLevel_t			GetWaterLevel( void ) const;
-	// int					GetWaterType( void ) const;
+	// waterLevel_t			GetWaterLevel() const;
+	// int					GetWaterType() const;
 // <--- sikk - Liquid Physics
 
-	bool					HasJumped( void ) const;
-	bool					HasSteppedUp( void ) const;
-	float					GetStepUp( void ) const;
-	bool					IsCrouching( void ) const;
-	bool					OnLadder( void ) const;
-	const idVec3& 			PlayerGetOrigin( void ) const;	// != GetOrigin
+	bool					HasJumped() const;
+	bool					HasSteppedUp() const;
+	float					GetStepUp() const;
+	bool					IsCrouching() const;
+	bool					OnLadder() const;
+	const idVec3& 			PlayerGetOrigin() const;	// != GetOrigin
 
 public:	// common physics interface
 	bool					Evaluate( int timeStepMSec, int endTimeMSec );
 	void					UpdateTime( int endTimeMSec );
-	int						GetTime( void ) const;
+	int						GetTime() const;
 
 	void					GetImpactInfo( const int id, const idVec3& point, impactInfo_t* info ) const;
 	void					ApplyImpulse( const int id, const idVec3& point, const idVec3& impulse );
-	bool					IsAtRest( void ) const;
-	int						GetRestStartTime( void ) const;
+	bool					IsAtRest() const;
+	int						GetRestStartTime() const;
 
-	void					SaveState( void );
-	void					RestoreState( void );
+	void					SaveState();
+	void					RestoreState();
 
 	void					SetOrigin( const idVec3& newOrigin, int id = -1 );
 	void					SetAxis( const idMat3& newAxis, int id = -1 );
@@ -136,7 +136,7 @@ public:	// common physics interface
 
 	void					SetPushed( int deltaTime );
 	const idVec3& 			GetPushedLinearVelocity( const int id = 0 ) const;
-	void					ClearPushedVelocity( void );
+	void					ClearPushedVelocity();
 
 	void					SetMaster( idEntity* master, const bool orientated = true );
 
@@ -195,27 +195,27 @@ private:
 	float					CmdScale( const usercmd_t& cmd ) const;
 	void					Accelerate( const idVec3& wishdir, const float wishspeed, const float accel );
 	bool					SlideMove( bool gravity, bool stepUp, bool stepDown, bool push );
-	void					Friction( void );
-	void					WaterJumpMove( void );
-	void					WaterMove( void );
-	void					FlyMove( void );
-	void					AirMove( void );
-	void					WalkMove( void );
-	void					DeadMove( void );
-	void					NoclipMove( void );
-	void					SpectatorMove( void );
-	void					LadderMove( void );
+	void					Friction();
+	void					WaterJumpMove();
+	void					WaterMove();
+	void					FlyMove();
+	void					AirMove();
+	void					WalkMove();
+	void					DeadMove();
+	void					NoclipMove();
+	void					SpectatorMove();
+	void					LadderMove();
 	void					CorrectAllSolid( trace_t& trace, int contents );
-	void					CheckGround( void );
-	void					CheckDuck( void );
-	void					CheckLadder( void );
-	bool					CheckJump( void );
-	bool					CheckWallJump( void );	// sikk - Wall Jump
-	bool					CheckWaterJump( void );
+	void					CheckGround();
+	void					CheckDuck();
+	void					CheckLadder();
+	bool					CheckJump();
+	bool					CheckWallJump();	// sikk - Wall Jump
+	bool					CheckWaterJump();
 
-//	void					SetWaterLevel( void );	// sikk - Liquid Physics: defined in "Physics_Actor"
+//	void					SetWaterLevel();	// sikk - Liquid Physics: defined in "Physics_Actor"
 
-	void					DropTimers( void );
+	void					DropTimers();
 	void					MovePlayer( int msec );
 };
 

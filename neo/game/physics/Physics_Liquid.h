@@ -22,8 +22,8 @@ class idPhysics_Liquid : public idPhysics_Static
 public:
 	CLASS_PROTOTYPE( idPhysics_Liquid );
 
-	idPhysics_Liquid( void );
-	~idPhysics_Liquid( void );
+	idPhysics_Liquid();
+	~idPhysics_Liquid();
 
 	void				Save( idSaveGame* savefile ) const;
 	void				Restore( idRestoreGame* savefile );

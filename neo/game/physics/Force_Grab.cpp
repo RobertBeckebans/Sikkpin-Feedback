@@ -67,7 +67,7 @@ void idForce_Grab::Restore( idRestoreGame* savefile )
 idForce_Grab::idForce_Grab
 ================
 */
-idForce_Grab::idForce_Grab( void )
+idForce_Grab::idForce_Grab()
 {
 	damping			= 0.5f;
 	physics			= NULL;
@@ -79,7 +79,7 @@ idForce_Grab::idForce_Grab( void )
 idForce_Grab::~idForce_Grab
 ================
 */
-idForce_Grab::~idForce_Grab( void )
+idForce_Grab::~idForce_Grab()
 {
 }
 
@@ -123,7 +123,7 @@ void idForce_Grab::SetGoalPosition( const idVec3& goal )
 idForce_Grab::GetDistanceToGoal
 =================
 */
-float idForce_Grab::GetDistanceToGoal( void )
+float idForce_Grab::GetDistanceToGoal()
 {
 	return distanceToGoal;
 }

@@ -82,7 +82,7 @@ const float LIQUID_MASS_MUL					= 3.0f;		// I'm not sure how to explain this, wi
 idAFConstraint::idAFConstraint
 ================
 */
-idAFConstraint::idAFConstraint( void )
+idAFConstraint::idAFConstraint()
 {
 	type				= CONSTRAINT_INVALID;
 	name				= "noname";
@@ -115,7 +115,7 @@ idAFConstraint::idAFConstraint( void )
 idAFConstraint::~idAFConstraint
 ================
 */
-idAFConstraint::~idAFConstraint( void )
+idAFConstraint::~idAFConstraint()
 {
 }
 
@@ -158,7 +158,7 @@ void idAFConstraint::SetBody2( idAFBody* body )
 idAFConstraint::GetMultiplier
 ================
 */
-const idVecX& idAFConstraint::GetMultiplier( void )
+const idVecX& idAFConstraint::GetMultiplier()
 {
 	return lm;
 }
@@ -247,7 +247,7 @@ void idAFConstraint::GetCenter( idVec3& center )
 idAFConstraint::DebugDraw
 ================
 */
-void idAFConstraint::DebugDraw( void )
+void idAFConstraint::DebugDraw()
 {
 }
 
@@ -319,7 +319,7 @@ idAFConstraint_Fixed::idAFConstraint_Fixed( const idStr& name, idAFBody* body1, 
 idAFConstraint_Fixed::InitOffset
 ================
 */
-void idAFConstraint_Fixed::InitOffset( void )
+void idAFConstraint_Fixed::InitOffset()
 {
 	if( body2 )
 	{
@@ -468,7 +468,7 @@ void idAFConstraint_Fixed::GetCenter( idVec3& center )
 idAFConstraint_Fixed::DebugDraw
 ================
 */
-void idAFConstraint_Fixed::DebugDraw( void )
+void idAFConstraint_Fixed::DebugDraw()
 {
 	idAFBody* master;
 
@@ -540,7 +540,7 @@ idAFConstraint_BallAndSocketJoint::idAFConstraint_BallAndSocketJoint( const idSt
 idAFConstraint_BallAndSocketJoint::~idAFConstraint_BallAndSocketJoint
 ================
 */
-idAFConstraint_BallAndSocketJoint::~idAFConstraint_BallAndSocketJoint( void )
+idAFConstraint_BallAndSocketJoint::~idAFConstraint_BallAndSocketJoint()
 {
 	if( coneLimit )
 	{
@@ -587,7 +587,7 @@ void idAFConstraint_BallAndSocketJoint::SetAnchor( const idVec3& worldPosition )
 idAFConstraint_BallAndSocketJoint::GetAnchor
 ================
 */
-idVec3 idAFConstraint_BallAndSocketJoint::GetAnchor( void ) const
+idVec3 idAFConstraint_BallAndSocketJoint::GetAnchor() const
 {
 	if( body2 )
 	{
@@ -601,7 +601,7 @@ idVec3 idAFConstraint_BallAndSocketJoint::GetAnchor( void ) const
 idAFConstraint_BallAndSocketJoint::SetNoLimit
 ================
 */
-void idAFConstraint_BallAndSocketJoint::SetNoLimit( void )
+void idAFConstraint_BallAndSocketJoint::SetNoLimit()
 {
 	if( coneLimit )
 	{
@@ -695,7 +695,7 @@ void idAFConstraint_BallAndSocketJoint::SetLimitEpsilon( const float e )
 idAFConstraint_BallAndSocketJoint::GetFriction
 ================
 */
-float idAFConstraint_BallAndSocketJoint::GetFriction( void ) const
+float idAFConstraint_BallAndSocketJoint::GetFriction() const
 {
 	if( af_forceFriction.GetFloat() > 0.0f )
 	{
@@ -867,7 +867,7 @@ void idAFConstraint_BallAndSocketJoint::GetCenter( idVec3& center )
 idAFConstraint_BallAndSocketJoint::DebugDraw
 ================
 */
-void idAFConstraint_BallAndSocketJoint::DebugDraw( void )
+void idAFConstraint_BallAndSocketJoint::DebugDraw()
 {
 	idVec3 a1 = body1->GetWorldOrigin() + anchor1 * body1->GetWorldAxis();
 	gameRenderWorld->DebugLine( colorBlue, a1 - idVec3( 5, 0, 0 ), a1 + idVec3( 5, 0, 0 ) );
@@ -941,7 +941,7 @@ void idAFConstraint_BallAndSocketJoint::Restore( idRestoreGame* saveFile )
 idAFConstraint_BallAndSocketJointFriction::idAFConstraint_BallAndSocketJointFriction
 ================
 */
-idAFConstraint_BallAndSocketJointFriction::idAFConstraint_BallAndSocketJointFriction( void )
+idAFConstraint_BallAndSocketJointFriction::idAFConstraint_BallAndSocketJointFriction()
 {
 	type = CONSTRAINT_FRICTION;
 	name = "ballAndSocketJointFriction";
@@ -1069,7 +1069,7 @@ idAFConstraint_UniversalJoint::idAFConstraint_UniversalJoint( const idStr& name,
 idAFConstraint_UniversalJoint::~idAFConstraint_UniversalJoint
 ================
 */
-idAFConstraint_UniversalJoint::~idAFConstraint_UniversalJoint( void )
+idAFConstraint_UniversalJoint::~idAFConstraint_UniversalJoint()
 {
 	if( coneLimit )
 	{
@@ -1120,7 +1120,7 @@ void idAFConstraint_UniversalJoint::SetAnchor( const idVec3& worldPosition )
 idAFConstraint_UniversalJoint::GetAnchor
 ================
 */
-idVec3 idAFConstraint_UniversalJoint::GetAnchor( void ) const
+idVec3 idAFConstraint_UniversalJoint::GetAnchor() const
 {
 	if( body2 )
 	{
@@ -1182,7 +1182,7 @@ void idAFConstraint_UniversalJoint::SetShafts( const idVec3& cardanShaft1, const
 idAFConstraint_UniversalJoint::SetNoLimit
 ================
 */
-void idAFConstraint_UniversalJoint::SetNoLimit( void )
+void idAFConstraint_UniversalJoint::SetNoLimit()
 {
 	if( coneLimit )
 	{
@@ -1274,7 +1274,7 @@ void idAFConstraint_UniversalJoint::SetLimitEpsilon( const float e )
 idAFConstraint_UniversalJoint::GetFriction
 ================
 */
-float idAFConstraint_UniversalJoint::GetFriction( void ) const
+float idAFConstraint_UniversalJoint::GetFriction() const
 {
 	if( af_forceFriction.GetFloat() > 0.0f )
 	{
@@ -1483,7 +1483,7 @@ void idAFConstraint_UniversalJoint::GetCenter( idVec3& center )
 idAFConstraint_UniversalJoint::DebugDraw
 ================
 */
-void idAFConstraint_UniversalJoint::DebugDraw( void )
+void idAFConstraint_UniversalJoint::DebugDraw()
 {
 	idVec3 a1, a2, s1, s2, d1, d2, v;
 	idAFBody* master;
@@ -1603,7 +1603,7 @@ void idAFConstraint_UniversalJoint::Restore( idRestoreGame* saveFile )
 idAFConstraint_UniversalJointFriction::idAFConstraint_UniversalJointFriction
 ================
 */
-idAFConstraint_UniversalJointFriction::idAFConstraint_UniversalJointFriction( void )
+idAFConstraint_UniversalJointFriction::idAFConstraint_UniversalJointFriction()
 {
 	type = CONSTRAINT_FRICTION;
 	name = "universalJointFriction";
@@ -1772,7 +1772,7 @@ void idAFConstraint_CylindricalJoint::Rotate( const idRotation& rotation )
 idAFConstraint_CylindricalJoint::DebugDraw
 ================
 */
-void idAFConstraint_CylindricalJoint::DebugDraw( void )
+void idAFConstraint_CylindricalJoint::DebugDraw()
 {
 	assert( 0 );	// FIXME: implement
 }
@@ -1815,7 +1815,7 @@ idAFConstraint_Hinge::idAFConstraint_Hinge( const idStr& name, idAFBody* body1, 
 idAFConstraint_Hinge::~idAFConstraint_Hinge
 ================
 */
-idAFConstraint_Hinge::~idAFConstraint_Hinge( void )
+idAFConstraint_Hinge::~idAFConstraint_Hinge()
 {
 	if( coneLimit )
 	{
@@ -1861,7 +1861,7 @@ void idAFConstraint_Hinge::SetAnchor( const idVec3& worldPosition )
 idAFConstraint_Hinge::GetAnchor
 ================
 */
-idVec3 idAFConstraint_Hinge::GetAnchor( void ) const
+idVec3 idAFConstraint_Hinge::GetAnchor() const
 {
 	if( body2 )
 	{
@@ -1900,7 +1900,7 @@ void idAFConstraint_Hinge::SetAxis( const idVec3& axis )
 idAFConstraint_Hinge::GetAxis
 ================
 */
-idVec3 idAFConstraint_Hinge::GetAxis( void ) const
+idVec3 idAFConstraint_Hinge::GetAxis() const
 {
 	if( body2 )
 	{
@@ -1914,7 +1914,7 @@ idVec3 idAFConstraint_Hinge::GetAxis( void ) const
 idAFConstraint_Hinge::SetNoLimit
 ================
 */
-void idAFConstraint_Hinge::SetNoLimit( void )
+void idAFConstraint_Hinge::SetNoLimit()
 {
 	if( coneLimit )
 	{
@@ -1963,7 +1963,7 @@ void idAFConstraint_Hinge::SetLimitEpsilon( const float e )
 idAFConstraint_Hinge::GetFriction
 ================
 */
-float idAFConstraint_Hinge::GetFriction( void ) const
+float idAFConstraint_Hinge::GetFriction() const
 {
 	if( af_forceFriction.GetFloat() > 0.0f )
 	{
@@ -1977,7 +1977,7 @@ float idAFConstraint_Hinge::GetFriction( void ) const
 idAFConstraint_Hinge::GetAngle
 ================
 */
-float idAFConstraint_Hinge::GetAngle( void ) const
+float idAFConstraint_Hinge::GetAngle() const
 {
 	idMat3 axis;
 	idRotation rotation;
@@ -2203,7 +2203,7 @@ void idAFConstraint_Hinge::GetCenter( idVec3& center )
 idAFConstraint_Hinge::DebugDraw
 ================
 */
-void idAFConstraint_Hinge::DebugDraw( void )
+void idAFConstraint_Hinge::DebugDraw()
 {
 	idVec3 vecX, vecY;
 	idVec3 a1 = body1->GetWorldOrigin() + anchor1 * body1->GetWorldAxis();
@@ -2326,7 +2326,7 @@ void idAFConstraint_Hinge::Restore( idRestoreGame* saveFile )
 idAFConstraint_HingeFriction::idAFConstraint_HingeFriction
 ================
 */
-idAFConstraint_HingeFriction::idAFConstraint_HingeFriction( void )
+idAFConstraint_HingeFriction::idAFConstraint_HingeFriction()
 {
 	type = CONSTRAINT_FRICTION;
 	name = "hingeFriction";
@@ -2441,7 +2441,7 @@ void idAFConstraint_HingeFriction::Rotate( const idRotation& rotation )
 idAFConstraint_HingeSteering::idAFConstraint_HingeSteering
 ================
 */
-idAFConstraint_HingeSteering::idAFConstraint_HingeSteering( void )
+idAFConstraint_HingeSteering::idAFConstraint_HingeSteering()
 {
 	type = CONSTRAINT_HINGESTEERING;
 	name = "hingeFriction";
@@ -2745,7 +2745,7 @@ void idAFConstraint_Slider::GetCenter( idVec3& center )
 idAFConstraint_Slider::DebugDraw
 ================
 */
-void idAFConstraint_Slider::DebugDraw( void )
+void idAFConstraint_Slider::DebugDraw()
 {
 	idVec3 ofs;
 	idAFBody* master;
@@ -2850,7 +2850,7 @@ void idAFConstraint_Line::Rotate( const idRotation& rotation )
 idAFConstraint_Line::DebugDraw
 ================
 */
-void idAFConstraint_Line::DebugDraw( void )
+void idAFConstraint_Line::DebugDraw()
 {
 	assert( 0 );	// FIXME: implement
 }
@@ -2986,7 +2986,7 @@ void idAFConstraint_Plane::Rotate( const idRotation& rotation )
 idAFConstraint_Plane::DebugDraw
 ================
 */
-void idAFConstraint_Plane::DebugDraw( void )
+void idAFConstraint_Plane::DebugDraw()
 {
 	idVec3 a1, normal, right, up;
 	idAFBody* master;
@@ -3282,7 +3282,7 @@ void idAFConstraint_Spring::GetCenter( idVec3& center )
 idAFConstraint_Spring::DebugDraw
 ================
 */
-void idAFConstraint_Spring::DebugDraw( void )
+void idAFConstraint_Spring::DebugDraw()
 {
 	idAFBody* master;
 	float length;
@@ -3378,7 +3378,7 @@ void idAFConstraint_Spring::Restore( idRestoreGame* saveFile )
 idAFConstraint_Contact::idAFConstraint_Contact
 ================
 */
-idAFConstraint_Contact::idAFConstraint_Contact( void )
+idAFConstraint_Contact::idAFConstraint_Contact()
 {
 	name = "contact";
 	type = CONSTRAINT_CONTACT;
@@ -3393,7 +3393,7 @@ idAFConstraint_Contact::idAFConstraint_Contact( void )
 idAFConstraint_Contact::~idAFConstraint_Contact
 ================
 */
-idAFConstraint_Contact::~idAFConstraint_Contact( void )
+idAFConstraint_Contact::~idAFConstraint_Contact()
 {
 	if( fc )
 	{
@@ -3559,7 +3559,7 @@ void idAFConstraint_Contact::GetCenter( idVec3& center )
 idAFConstraint_Contact::DebugDraw
 ================
 */
-void idAFConstraint_Contact::DebugDraw( void )
+void idAFConstraint_Contact::DebugDraw()
 {
 	idVec3 x, y;
 	contact.normal.NormalVectors( x, y );
@@ -3580,7 +3580,7 @@ void idAFConstraint_Contact::DebugDraw( void )
 idAFConstraint_ContactFriction::idAFConstraint_ContactFriction
 ================
 */
-idAFConstraint_ContactFriction::idAFConstraint_ContactFriction( void )
+idAFConstraint_ContactFriction::idAFConstraint_ContactFriction()
 {
 	type = CONSTRAINT_FRICTION;
 	name = "contactFriction";
@@ -3769,7 +3769,7 @@ void idAFConstraint_ContactFriction::Rotate( const idRotation& rotation )
 idAFConstraint_ContactFriction::DebugDraw
 ================
 */
-void idAFConstraint_ContactFriction::DebugDraw( void )
+void idAFConstraint_ContactFriction::DebugDraw()
 {
 }
 
@@ -3785,7 +3785,7 @@ void idAFConstraint_ContactFriction::DebugDraw( void )
 idAFConstraint_ConeLimit::idAFConstraint_ConeLimit
 ================
 */
-idAFConstraint_ConeLimit::idAFConstraint_ConeLimit( void )
+idAFConstraint_ConeLimit::idAFConstraint_ConeLimit()
 {
 	type = CONSTRAINT_CONELIMIT;
 	name = "coneLimit";
@@ -3973,7 +3973,7 @@ void idAFConstraint_ConeLimit::Rotate( const idRotation& rotation )
 idAFConstraint_ConeLimit::DebugDraw
 ================
 */
-void idAFConstraint_ConeLimit::DebugDraw( void )
+void idAFConstraint_ConeLimit::DebugDraw()
 {
 	idVec3 ax, anchor, x, y, z, start, end;
 	float sinAngle, a, size = 10.0f;
@@ -4057,7 +4057,7 @@ void idAFConstraint_ConeLimit::Restore( idRestoreGame* saveFile )
 idAFConstraint_PyramidLimit::idAFConstraint_PyramidLimit
 ================
 */
-idAFConstraint_PyramidLimit::idAFConstraint_PyramidLimit( void )
+idAFConstraint_PyramidLimit::idAFConstraint_PyramidLimit()
 {
 	type = CONSTRAINT_PYRAMIDLIMIT;
 	name = "pyramidLimit";
@@ -4269,7 +4269,7 @@ void idAFConstraint_PyramidLimit::Rotate( const idRotation& rotation )
 idAFConstraint_PyramidLimit::DebugDraw
 ================
 */
-void idAFConstraint_PyramidLimit::DebugDraw( void )
+void idAFConstraint_PyramidLimit::DebugDraw()
 {
 	int i;
 	float size = 10.0f;
@@ -4371,7 +4371,7 @@ void idAFConstraint_PyramidLimit::Restore( idRestoreGame* saveFile )
 idAFConstraint_Suspension::idAFConstraint_Suspension
 ================
 */
-idAFConstraint_Suspension::idAFConstraint_Suspension( void )
+idAFConstraint_Suspension::idAFConstraint_Suspension()
 {
 	type = CONSTRAINT_SUSPENSION;
 	name = "suspension";
@@ -4429,7 +4429,7 @@ void idAFConstraint_Suspension::SetSuspension( const float up, const float down,
 idAFConstraint_Suspension::GetWheelOrigin
 ================
 */
-const idVec3 idAFConstraint_Suspension::GetWheelOrigin( void ) const
+const idVec3 idAFConstraint_Suspension::GetWheelOrigin() const
 {
 	return body1->GetWorldOrigin() + wheelOffset * body1->GetWorldAxis();
 }
@@ -4605,7 +4605,7 @@ void idAFConstraint_Suspension::Rotate( const idRotation& rotation )
 idAFConstraint_Suspension::DebugDraw
 ================
 */
-void idAFConstraint_Suspension::DebugDraw( void )
+void idAFConstraint_Suspension::DebugDraw()
 {
 	idVec3 origin;
 	idMat3 axis;
@@ -4640,7 +4640,7 @@ void idAFConstraint_Suspension::DebugDraw( void )
 idAFBody::idAFBody
 ================
 */
-idAFBody::idAFBody( void )
+idAFBody::idAFBody()
 {
 	Init();
 }
@@ -4675,7 +4675,7 @@ idAFBody::idAFBody( const idStr& name, idClipModel* clipModel, float density )
 idAFBody::~idAFBody
 ================
 */
-idAFBody::~idAFBody( void )
+idAFBody::~idAFBody()
 {
 	delete clipModel;
 }
@@ -4685,7 +4685,7 @@ idAFBody::~idAFBody( void )
 idAFBody::Init
 ================
 */
-void idAFBody::Init( void )
+void idAFBody::Init()
 {
 	name						= "noname";
 	parent						= NULL;
@@ -5122,7 +5122,7 @@ idAFTree::Factor
   factor matrix for the primary constraints in the tree
 ================
 */
-void idAFTree::Factor( void ) const
+void idAFTree::Factor() const
 {
 	int i, j;
 	idAFBody* body;
@@ -5459,7 +5459,7 @@ void idAFTree::CalculateForces( float timeStep ) const
 idAFTree::SetMaxSubTreeAuxiliaryIndex
 ================
 */
-void idAFTree::SetMaxSubTreeAuxiliaryIndex( void )
+void idAFTree::SetMaxSubTreeAuxiliaryIndex()
 {
 	int i, j;
 	idAFBody* body, *child;
@@ -5507,7 +5507,7 @@ idAFTree::SortBodies
   sort body list to make sure parents come first
 ================
 */
-void idAFTree::SortBodies( void )
+void idAFTree::SortBodies()
 {
 	int i;
 	idAFBody* body;
@@ -5670,7 +5670,7 @@ void idPhysics_AF::EvaluateBodies( float timeStep )
 idPhysics_AF::AddFrameConstraints
 ================
 */
-void idPhysics_AF::AddFrameConstraints( void )
+void idPhysics_AF::AddFrameConstraints()
 {
 	int i;
 
@@ -5686,7 +5686,7 @@ void idPhysics_AF::AddFrameConstraints( void )
 idPhysics_AF::RemoveFrameConstraints
 ================
 */
-void idPhysics_AF::RemoveFrameConstraints( void )
+void idPhysics_AF::RemoveFrameConstraints()
 {
 	// remove all the frame constraints from the auxiliary constraints
 	auxiliaryConstraints.SetNum( auxiliaryConstraints.Num() - frameConstraints.Num(), false );
@@ -5763,7 +5763,7 @@ void idPhysics_AF::ApplyFriction( float timeStep, float endTimeMSec )
 idPhysics_AF::PrimaryFactor
 ================
 */
-void idPhysics_AF::PrimaryFactor( void )
+void idPhysics_AF::PrimaryFactor()
 {
 	int i;
 
@@ -6064,7 +6064,7 @@ void idPhysics_AF::AuxiliaryForces( float timeStep )
 idPhysics_AF::VerifyContactConstraints
 ================
 */
-void idPhysics_AF::VerifyContactConstraints( void )
+void idPhysics_AF::VerifyContactConstraints()
 {
 #if 0
 	int i;
@@ -6491,7 +6491,7 @@ void idPhysics_AF::CheckForCollisions( float timeStep )
 idPhysics_AF::EvaluateContacts
 ================
 */
-bool idPhysics_AF::EvaluateContacts( void )
+bool idPhysics_AF::EvaluateContacts()
 {
 	int i, j, k, numContacts, numBodyContacts;
 	idAFBody* body;
@@ -6587,7 +6587,7 @@ bool idPhysics_AF::EvaluateContacts( void )
 idPhysics_AF::SetupContactConstraints
 ================
 */
-void idPhysics_AF::SetupContactConstraints( void )
+void idPhysics_AF::SetupContactConstraints()
 {
 	int i;
 
@@ -6616,7 +6616,7 @@ void idPhysics_AF::SetupContactConstraints( void )
 idPhysics_AF::ApplyContactForces
 ================
 */
-void idPhysics_AF::ApplyContactForces( void )
+void idPhysics_AF::ApplyContactForces()
 {
 #if 0
 	int i;
@@ -6646,7 +6646,7 @@ void idPhysics_AF::ApplyContactForces( void )
 idPhysics_AF::ClearExternalForce
 ================
 */
-void idPhysics_AF::ClearExternalForce( void )
+void idPhysics_AF::ClearExternalForce()
 {
 	int i;
 	idAFBody* body;
@@ -6666,7 +6666,7 @@ void idPhysics_AF::ClearExternalForce( void )
 idPhysics_AF::AddGravity
 ================
 */
-void idPhysics_AF::AddGravity( void )
+void idPhysics_AF::AddGravity()
 {
 	int i;
 	idAFBody* body;
@@ -6743,7 +6743,7 @@ void idPhysics_AF::AddGravity( void )
 idPhysics_AF::SwapStates
 ================
 */
-void idPhysics_AF::SwapStates( void )
+void idPhysics_AF::SwapStates()
 {
 	int i;
 	idAFBody* body;
@@ -6766,7 +6766,7 @@ void idPhysics_AF::SwapStates( void )
 idPhysics_AF::UpdateClipModels
 ================
 */
-void idPhysics_AF::UpdateClipModels( void )
+void idPhysics_AF::UpdateClipModels()
 {
 	int i;
 	idAFBody* body;
@@ -6840,7 +6840,7 @@ void idPhysics_AF::SetJointFrictionDent( const float dent, const float start, co
 idPhysics_AF::GetJointFrictionScale
 ================
 */
-float idPhysics_AF::GetJointFrictionScale( void ) const
+float idPhysics_AF::GetJointFrictionScale() const
 {
 	if( jointFrictionDentScale > 0.0f )
 	{
@@ -6874,7 +6874,7 @@ void idPhysics_AF::SetContactFrictionDent( const float dent, const float start, 
 idPhysics_AF::GetContactFrictionScale
 ================
 */
-float idPhysics_AF::GetContactFrictionScale( void ) const
+float idPhysics_AF::GetContactFrictionScale() const
 {
 	if( contactFrictionDentScale > 0.0f )
 	{
@@ -7022,7 +7022,7 @@ bool idPhysics_AF::TestIfAtRest( float timeStep )
 idPhysics_AF::Rest
 ================
 */
-void idPhysics_AF::Rest( void )
+void idPhysics_AF::Rest()
 {
 	int i;
 
@@ -7042,7 +7042,7 @@ void idPhysics_AF::Rest( void )
 idPhysics_AF::Activate
 ================
 */
-void idPhysics_AF::Activate( void )
+void idPhysics_AF::Activate()
 {
 	// if the articulated figure was at rest
 	if( current.atRest >= 0 )
@@ -7065,7 +7065,7 @@ idPhysics_AF::PutToRest
   put to rest untill something collides with this physics object
 ================
 */
-void idPhysics_AF::PutToRest( void )
+void idPhysics_AF::PutToRest()
 {
 	Rest();
 }
@@ -7075,7 +7075,7 @@ void idPhysics_AF::PutToRest( void )
 idPhysics_AF::EnableImpact
 ================
 */
-void idPhysics_AF::EnableImpact( void )
+void idPhysics_AF::EnableImpact()
 {
 	noImpact = false;
 }
@@ -7085,7 +7085,7 @@ void idPhysics_AF::EnableImpact( void )
 idPhysics_AF::DisableImpact
 ================
 */
-void idPhysics_AF::DisableImpact( void )
+void idPhysics_AF::DisableImpact()
 {
 	noImpact = true;
 }
@@ -7136,7 +7136,7 @@ idClipModel* idPhysics_AF::GetClipModel( int id ) const
 idPhysics_AF::GetNumClipModels
 ================
 */
-int idPhysics_AF::GetNumClipModels( void ) const
+int idPhysics_AF::GetNumClipModels() const
 {
 	return bodies.Num();
 }
@@ -7543,7 +7543,7 @@ void idPhysics_AF::UpdateTime( int endTimeMSec )
 idPhysics_AF::GetTime
 ================
 */
-int idPhysics_AF::GetTime( void ) const
+int idPhysics_AF::GetTime() const
 {
 	return gameLocal.time;
 }
@@ -7576,7 +7576,7 @@ void DrawTraceModelSilhouette( const idVec3& projectionOrigin, const idClipModel
 idPhysics_AF::DebugDraw
 ================
 */
-void idPhysics_AF::DebugDraw( void )
+void idPhysics_AF::DebugDraw()
 {
 	int i;
 	idAFBody* body, *highlightBody = NULL, *constrainedBody1 = NULL, *constrainedBody2 = NULL;
@@ -7741,7 +7741,7 @@ void idPhysics_AF::DebugDraw( void )
 idPhysics_AF::idPhysics_AF
 ================
 */
-idPhysics_AF::idPhysics_AF( void )
+idPhysics_AF::idPhysics_AF()
 {
 	trees.Clear();
 	bodies.Clear();
@@ -7826,7 +7826,7 @@ idPhysics_AF::idPhysics_AF( void )
 idPhysics_AF::~idPhysics_AF
 ================
 */
-idPhysics_AF::~idPhysics_AF( void )
+idPhysics_AF::~idPhysics_AF()
 {
 	int i;
 
@@ -8077,7 +8077,7 @@ bool idPhysics_AF::IsClosedLoop( const idAFBody* body1, const idAFBody* body2 ) 
 idPhysics_AF::BuildTrees
 ================
 */
-void idPhysics_AF::BuildTrees( void )
+void idPhysics_AF::BuildTrees()
 {
 	int i;
 	float scale;
@@ -8417,7 +8417,7 @@ int idPhysics_AF::GetConstraintId( const char* constraintName ) const
 idPhysics_AF::GetNumBodies
 ================
 */
-int idPhysics_AF::GetNumBodies( void ) const
+int idPhysics_AF::GetNumBodies() const
 {
 	return bodies.Num();
 }
@@ -8427,7 +8427,7 @@ int idPhysics_AF::GetNumBodies( void ) const
 idPhysics_AF::GetNumConstraints
 ================
 */
-int idPhysics_AF::GetNumConstraints( void ) const
+int idPhysics_AF::GetNumConstraints() const
 {
 	return constraints.Num();
 }
@@ -8756,7 +8756,7 @@ void idPhysics_AF::AddForce( const int id, const idVec3& point, const idVec3& fo
 idPhysics_AF::IsAtRest
 ================
 */
-bool idPhysics_AF::IsAtRest( void ) const
+bool idPhysics_AF::IsAtRest() const
 {
 	return current.atRest >= 0;
 }
@@ -8766,7 +8766,7 @@ bool idPhysics_AF::IsAtRest( void ) const
 idPhysics_AF::GetRestStartTime
 ================
 */
-int idPhysics_AF::GetRestStartTime( void ) const
+int idPhysics_AF::GetRestStartTime() const
 {
 	return current.atRest;
 }
@@ -8776,7 +8776,7 @@ int idPhysics_AF::GetRestStartTime( void ) const
 idPhysics_AF::IsPushable
 ================
 */
-bool idPhysics_AF::IsPushable( void ) const
+bool idPhysics_AF::IsPushable() const
 {
 	return ( !noImpact && ( masterBody == NULL || forcePushable ) );
 }
@@ -8786,7 +8786,7 @@ bool idPhysics_AF::IsPushable( void ) const
 idPhysics_AF::SaveState
 ================
 */
-void idPhysics_AF::SaveState( void )
+void idPhysics_AF::SaveState()
 {
 	int i;
 
@@ -8803,7 +8803,7 @@ void idPhysics_AF::SaveState( void )
 idPhysics_AF::RestoreState
 ================
 */
-void idPhysics_AF::RestoreState( void )
+void idPhysics_AF::RestoreState()
 {
 	int i;
 
@@ -9145,7 +9145,7 @@ int idPhysics_AF::ClipContents( const idClipModel* model ) const
 idPhysics_AF::DisableClip
 ================
 */
-void idPhysics_AF::DisableClip( void )
+void idPhysics_AF::DisableClip()
 {
 	int i;
 
@@ -9160,7 +9160,7 @@ void idPhysics_AF::DisableClip( void )
 idPhysics_AF::EnableClip
 ================
 */
-void idPhysics_AF::EnableClip( void )
+void idPhysics_AF::EnableClip()
 {
 	int i;
 
@@ -9175,7 +9175,7 @@ void idPhysics_AF::EnableClip( void )
 idPhysics_AF::UnlinkClip
 ================
 */
-void idPhysics_AF::UnlinkClip( void )
+void idPhysics_AF::UnlinkClip()
 {
 	int i;
 
@@ -9190,7 +9190,7 @@ void idPhysics_AF::UnlinkClip( void )
 idPhysics_AF::LinkClip
 ================
 */
-void idPhysics_AF::LinkClip( void )
+void idPhysics_AF::LinkClip()
 {
 	UpdateClipModels();
 }

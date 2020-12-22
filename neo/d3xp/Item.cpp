@@ -239,7 +239,7 @@ bool idItem::ModelCallback( renderEntity_t* renderEntity, const renderView_t* re
 idItem::Think
 ================
 */
-void idItem::Think( void )
+void idItem::Think()
 {
 	if( thinkFlags & TH_THINK )
 	{
@@ -268,7 +268,7 @@ void idItem::Think( void )
 idItem::Present
 ================
 */
-void idItem::Present( void )
+void idItem::Present()
 {
 	idEntity::Present();
 
@@ -301,7 +301,7 @@ void idItem::Present( void )
 idItem::Spawn
 ================
 */
-void idItem::Spawn( void )
+void idItem::Spawn()
 {
 	idStr		giveTo;
 	idEntity* 	ent;
@@ -481,7 +481,7 @@ bool idItem::Pickup( idPlayer* player )
 idItem::ClientPredictionThink
 ================
 */
-void idItem::ClientPredictionThink( void )
+void idItem::ClientPredictionThink()
 {
 	// only think forward because the state is not synced through snapshots
 	if( !gameLocal.isNewFrame )
@@ -568,7 +568,7 @@ bool idItem::ClientReceiveEvent( int event, int time, const idBitMsg& msg )
 idItem::Event_DropToFloor
 ================
 */
-void idItem::Event_DropToFloor( void )
+void idItem::Event_DropToFloor()
 {
 	trace_t trace;
 
@@ -627,7 +627,7 @@ void idItem::Event_Trigger( idEntity* activator )
 idItem::Event_Respawn
 ================
 */
-void idItem::Event_Respawn( void )
+void idItem::Event_Respawn()
 {
 	if( gameLocal.isServer )
 	{
@@ -648,7 +648,7 @@ void idItem::Event_Respawn( void )
 idItem::Event_RespawnFx
 ================
 */
-void idItem::Event_RespawnFx( void )
+void idItem::Event_RespawnFx()
 {
 	if( gameLocal.isServer )
 	{
@@ -716,7 +716,7 @@ void idItemPowerup::Restore( idRestoreGame* savefile )
 idItemPowerup::Spawn
 ================
 */
-void idItemPowerup::Spawn( void )
+void idItemPowerup::Spawn()
 {
 	time = spawnArgs.GetInt( "time", "30" );
 	type = spawnArgs.GetInt( "type", "0" );
@@ -804,7 +804,7 @@ idItemTeam::~idItemTeam()
 idItemTeam::Spawn
 ===============
 */
-void idItemTeam::Spawn( void )
+void idItemTeam::Spawn()
 {
 	team					= spawnArgs.GetInt( "team" );
 	returnOrigin			= GetPhysics()->GetOrigin() + idVec3( 0, 0, 20 );
@@ -896,7 +896,7 @@ function_t* idItemTeam::LoadScript( char* script )
 idItemTeam::Think
 ===============
 */
-void idItemTeam::Think( void )
+void idItemTeam::Think()
 {
 	idMoveableItem::Think();
 
@@ -1065,7 +1065,7 @@ void idItemTeam::Return( idPlayer* player )
 idItemTeam::Capture
 ================
 */
-void idItemTeam::Capture( void )
+void idItemTeam::Capture()
 {
 	if( team != 0 && team != 1 )
 	{
@@ -1080,7 +1080,7 @@ void idItemTeam::Capture( void )
 idItemTeam::PrivateReturn
 ================
 */
-void idItemTeam::PrivateReturn( void )
+void idItemTeam::PrivateReturn()
 {
 	Unbind();
 
@@ -1346,7 +1346,7 @@ void idItemTeam::Event_FlagReturn( idPlayer* player )
 idItemTeam::Event_FlagCapture
 ================
 */
-void idItemTeam::Event_FlagCapture( void )
+void idItemTeam::Event_FlagCapture()
 {
 	gameLocal.DPrintf( "Event_FlagCapture()!\n" );
 
@@ -1407,7 +1407,7 @@ void idItemTeam::Event_FlagCapture( void )
 idItemTeam::FreeLightDef
 ================
 */
-void idItemTeam::FreeLightDef( void )
+void idItemTeam::FreeLightDef()
 {
 	if( itemGlowHandle != -1 )
 	{
@@ -1492,7 +1492,7 @@ idItemTeam::UpdateGuis
 Update all client's huds wrt the flag status.
 ================
 */
-void idItemTeam::UpdateGuis( void )
+void idItemTeam::UpdateGuis()
 {
 	idPlayer* player;
 
@@ -1520,7 +1520,7 @@ void idItemTeam::UpdateGuis( void )
 idItemTeam::Present
 ================
 */
-void idItemTeam::Present( void )
+void idItemTeam::Present()
 {
 	// hide the flag for localplayer if in first person
 	if( carried && GetBindMaster() )
@@ -1589,7 +1589,7 @@ void idObjective::Restore( idRestoreGame* savefile )
 idObjective::Spawn
 ================
 */
-void idObjective::Spawn( void )
+void idObjective::Spawn()
 {
 	Hide();
 	if( cvarSystem->GetCVarBool( "com_makingBuild" ) )
@@ -1772,7 +1772,7 @@ END_CLASS
 idVideoCDItem::Spawn
 ================
 */
-void idVideoCDItem::Spawn( void )
+void idVideoCDItem::Spawn()
 {
 }
 
@@ -1903,7 +1903,7 @@ void idMoveableItem::Restore( idRestoreGame* savefile )
 idMoveableItem::Spawn
 ================
 */
-void idMoveableItem::Spawn( void )
+void idMoveableItem::Spawn()
 {
 	idTraceModel trm;
 	float density, friction, bouncyness, tsize;
@@ -1982,7 +1982,7 @@ void idMoveableItem::Spawn( void )
 idMoveableItem::Think
 ================
 */
-void idMoveableItem::Think( void )
+void idMoveableItem::Think()
 {
 
 	RunPhysics();
@@ -2234,7 +2234,7 @@ void idMoveableItem::Gib( const idVec3& dir, const char* damageDefName )
 idMoveableItem::Event_DropToFloor
 ================
 */
-void idMoveableItem::Event_DropToFloor( void )
+void idMoveableItem::Event_DropToFloor()
 {
 	// the physics will drop the moveable to the floor
 }
@@ -2292,7 +2292,7 @@ END_CLASS
 idItemRemover::Spawn
 ================
 */
-void idItemRemover::Spawn( void )
+void idItemRemover::Spawn()
 {
 }
 
@@ -2371,7 +2371,7 @@ void idObjectiveComplete::Restore( idRestoreGame* savefile )
 idObjectiveComplete::Spawn
 ================
 */
-void idObjectiveComplete::Spawn( void )
+void idObjectiveComplete::Spawn()
 {
 	spawnArgs.SetBool( "objEnabled", false );
 	Hide();

@@ -1148,7 +1148,7 @@ bool idAI::FindPathAroundObstacles( const idPhysics* physics, const idAAS* aas, 
 idAI::FreeObstacleAvoidanceNodes
 ============
 */
-void idAI::FreeObstacleAvoidanceNodes( void )
+void idAI::FreeObstacleAvoidanceNodes()
 {
 	pathNodeAllocator.Shutdown();
 }

@@ -35,7 +35,7 @@ idPlayerCursor::FreeCursor
 Post: tells the game render world to free the cross hair entity, sets the cursor
 handle to -1 and sets created to false
 */
-void idPlayerCursor::FreeCursor( void )
+void idPlayerCursor::FreeCursor()
 {
 	if( cursorHandle != -1 )
 	{
