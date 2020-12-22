@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 // screenBlob_t are for the on-screen damage claw marks, etc
-typedef struct screenBlob_s {
+typedef struct screenBlob_s
+{
 	const idMaterial*	material;
 	float				x, y, w, h;
 	float				s1, t1, s2, t2;
@@ -49,20 +50,21 @@ typedef struct screenBlob_s {
 
 #define	MAX_SCREEN_BLOBS	8
 
-class idPlayerView {
+class idPlayerView
+{
 public:
-						idPlayerView();
+	idPlayerView();
 
-	void				Save( idSaveGame *savefile ) const;
-	void				Restore( idRestoreGame *savefile );
+	void				Save( idSaveGame* savefile ) const;
+	void				Restore( idRestoreGame* savefile );
 
-	void				SetPlayerEntity( class idPlayer *playerEnt );
+	void				SetPlayerEntity( class idPlayer* playerEnt );
 
 	void				ClearEffects( void );
 
-	void				DamageImpulse( idVec3 localKickDir, const idDict *damageDef );
+	void				DamageImpulse( idVec3 localKickDir, const idDict* damageDef );
 
-	void				WeaponFireFeedback( const idDict *weaponDef, int primary );	// sikk - Secondary Fire
+	void				WeaponFireFeedback( const idDict* weaponDef, int primary );	// sikk - Secondary Fire
 
 	idAngles			AngleOffset( void ) const;			// returns the current kick angle
 
@@ -72,30 +74,33 @@ public:
 
 	// this may involve rendering to a texture and displaying
 	// that with a warp model or in double vision mode
-	void				RenderPlayerView( idUserInterface *hud );
+	void				RenderPlayerView( idUserInterface* hud );
 
 	void				Fade( idVec4 color, int time );
 	void				Flash( idVec4 color, int time );
 	void				AddBloodSpray( float duration );
 
 	// temp for view testing
-	void				EnableBFGVision( bool b ) { bfgVision = b; };
+	void				EnableBFGVision( bool b )
+	{
+		bfgVision = b;
+	};
 
 private:
-	void				SingleView( const renderView_t *view );
+	void				SingleView( const renderView_t* view );
 	void				ScreenFade( void );
-	screenBlob_t *		GetScreenBlob( void );
+	screenBlob_t* 		GetScreenBlob( void );
 
-	const idMaterial *	tunnelMaterial;			// health tunnel vision
-	const idMaterial *	bloodSprayMaterial;		// blood spray
-	const idMaterial *	bfgMaterial;			// when targeted with BFG
+	const idMaterial* 	tunnelMaterial;			// health tunnel vision
+	const idMaterial* 	bloodSprayMaterial;		// blood spray
+	const idMaterial* 	bfgMaterial;			// when targeted with BFG
 // sikk - removed multiplayer
 //	const idMaterial *	lagoMaterial;			// lagometer drawing
 
 	int					dvFinishTime;			// double vision will be stopped at this time
 	int					kickFinishTime;			// view kick will be stopped at this time
-	idAngles			kickAngles;				
-	bool				bfgVision;				// 
+	idAngles			kickAngles;
+	bool				bfgVision;				//
 	idVec4				fadeColor;				// fade color
 	idVec4				fadeToColor;			// color to fade to
 	idVec4				fadeFromColor;			// color to fade from
@@ -107,7 +112,7 @@ private:
 
 	idAngles			shakeAng;				// from the sound sources
 
-	idPlayer *			player;
+	idPlayer* 			player;
 	renderView_t		view;
 
 // ---> sikk - PostProcess Effects
@@ -134,29 +139,29 @@ private:
 
 	void				RenderDepth( void );
 
-	const idMaterial *	blackMaterial;			// Black material (for general use) 
-	const idMaterial *	whiteMaterial;			// White material (for general use) 
-	const idMaterial *	currentRenderMaterial;	// Current Render material (for general use) 
-	const idMaterial *	scratchMaterial;		// Scratch material (for general use) 
-	const idMaterial *	depthMaterial;			// Depth material (for general use) 
-	const idMaterial *	edgeAAMaterial;			// Edge AA material
-	const idMaterial *	hdrLumBaseMaterial;		// HDR Luminance Base material
-	const idMaterial *	hdrLumAverageMaterial;	// HDR Luminance Average material
-	const idMaterial *	hdrLumAdaptedMaterial;	// HDR Luminance Adapted material
-	const idMaterial *	hdrBrightPassMaterial;	// HDR Bright Pass Filter material
-	const idMaterial *	hdrGlareMaterial;		// HDR Bloom/Glare/Lens Flare material
-	const idMaterial *	hdrFinalMaterial;		// HDR Final Tone Mapping material
-	const idMaterial *	bloomMaterial;			// Bloom material
-	const idMaterial *	ssaoMaterial;			// SSAO material
-	const idMaterial *	sunShaftsMaterial;		// Sun Shafts material
-	const idMaterial *	dofMaterial;			// DoF material
-	const idMaterial *	colorGradingMaterial;	// Color Grading material
-	const idMaterial *	filmgrainMaterial;		// Filmgrain material
-	const idMaterial *	vignettingMaterial;		// Vignetting material
-	const idMaterial *	explosionFXMaterial;	// Explosion FX material
-	const idMaterial *	megashieldMaterial;		// Megashield material
-	const idMaterial *	underwaterMaterial;		// Underwater material
-	const idMaterial *	screenWipeMaterial;		// End Level Screen Wipe material
+	const idMaterial* 	blackMaterial;			// Black material (for general use)
+	const idMaterial* 	whiteMaterial;			// White material (for general use)
+	const idMaterial* 	currentRenderMaterial;	// Current Render material (for general use)
+	const idMaterial* 	scratchMaterial;		// Scratch material (for general use)
+	const idMaterial* 	depthMaterial;			// Depth material (for general use)
+	const idMaterial* 	edgeAAMaterial;			// Edge AA material
+	const idMaterial* 	hdrLumBaseMaterial;		// HDR Luminance Base material
+	const idMaterial* 	hdrLumAverageMaterial;	// HDR Luminance Average material
+	const idMaterial* 	hdrLumAdaptedMaterial;	// HDR Luminance Adapted material
+	const idMaterial* 	hdrBrightPassMaterial;	// HDR Bright Pass Filter material
+	const idMaterial* 	hdrGlareMaterial;		// HDR Bloom/Glare/Lens Flare material
+	const idMaterial* 	hdrFinalMaterial;		// HDR Final Tone Mapping material
+	const idMaterial* 	bloomMaterial;			// Bloom material
+	const idMaterial* 	ssaoMaterial;			// SSAO material
+	const idMaterial* 	sunShaftsMaterial;		// Sun Shafts material
+	const idMaterial* 	dofMaterial;			// DoF material
+	const idMaterial* 	colorGradingMaterial;	// Color Grading material
+	const idMaterial* 	filmgrainMaterial;		// Filmgrain material
+	const idMaterial* 	vignettingMaterial;		// Vignetting material
+	const idMaterial* 	explosionFXMaterial;	// Explosion FX material
+	const idMaterial* 	megashieldMaterial;		// Megashield material
+	const idMaterial* 	underwaterMaterial;		// Underwater material
+	const idMaterial* 	screenWipeMaterial;		// End Level Screen Wipe material
 
 	renderView_t		hackedView;
 	int					prevTime;				// Holds previous frame's time

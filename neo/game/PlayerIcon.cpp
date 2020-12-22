@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "Game_local.h"
 #include "PlayerIcon.h"
 
-static const char * iconKeys[ ICON_NONE ] = {
+static const char* iconKeys[ ICON_NONE ] =
+{
 	"mtr_icon_lag",
 	"mtr_icon_chat"
 };
@@ -42,7 +43,8 @@ static const char * iconKeys[ ICON_NONE ] = {
 idPlayerIcon::idPlayerIcon
 ===============
 */
-idPlayerIcon::idPlayerIcon() {
+idPlayerIcon::idPlayerIcon()
+{
 	iconHandle	= -1;
 	iconType	= ICON_NONE;
 }
@@ -52,7 +54,8 @@ idPlayerIcon::idPlayerIcon() {
 idPlayerIcon::~idPlayerIcon
 ===============
 */
-idPlayerIcon::~idPlayerIcon() {
+idPlayerIcon::~idPlayerIcon()
+{
 	FreeIcon();
 }
 
@@ -61,11 +64,13 @@ idPlayerIcon::~idPlayerIcon() {
 idPlayerIcon::Draw
 ===============
 */
-void idPlayerIcon::Draw( idPlayer *player, jointHandle_t joint ) {
+void idPlayerIcon::Draw( idPlayer* player, jointHandle_t joint )
+{
 	idVec3 origin;
 	idMat3 axis;
 
-	if ( joint == INVALID_JOINT ) {
+	if( joint == INVALID_JOINT )
+	{
 		FreeIcon();
 		return;
 	}
@@ -110,8 +115,10 @@ idPlayerIcon::Draw
 idPlayerIcon::FreeIcon
 ===============
 */
-void idPlayerIcon::FreeIcon( void ) {
-	if ( iconHandle != - 1 ) {
+void idPlayerIcon::FreeIcon( void )
+{
+	if( iconHandle != - 1 )
+	{
 		gameRenderWorld->FreeEntityDef( iconHandle );
 		iconHandle = -1;
 	}
@@ -123,9 +130,10 @@ void idPlayerIcon::FreeIcon( void ) {
 idPlayerIcon::CreateIcon
 ===============
 */
-bool idPlayerIcon::CreateIcon( idPlayer *player, playerIconType_t type, const idVec3 &origin, const idMat3 &axis ) {
+bool idPlayerIcon::CreateIcon( idPlayer* player, playerIconType_t type, const idVec3& origin, const idMat3& axis )
+{
 	assert( type != ICON_NONE );
-	const char *mtr = player->spawnArgs.GetString( iconKeys[ type ], "_default" );
+	const char* mtr = player->spawnArgs.GetString( iconKeys[ type ], "_default" );
 	return CreateIcon( player, type, mtr, origin, axis );
 }
 
@@ -134,10 +142,12 @@ bool idPlayerIcon::CreateIcon( idPlayer *player, playerIconType_t type, const id
 idPlayerIcon::CreateIcon
 ===============
 */
-bool idPlayerIcon::CreateIcon( idPlayer *player, playerIconType_t type, const char *mtr, const idVec3 &origin, const idMat3 &axis ) {
+bool idPlayerIcon::CreateIcon( idPlayer* player, playerIconType_t type, const char* mtr, const idVec3& origin, const idMat3& axis )
+{
 	assert( type != ICON_NONE );
 
-	if ( type == iconType ) {
+	if( type == iconType )
+	{
 		return false;
 	}
 
@@ -174,7 +184,8 @@ bool idPlayerIcon::CreateIcon( idPlayer *player, playerIconType_t type, const ch
 idPlayerIcon::UpdateIcon
 ===============
 */
-void idPlayerIcon::UpdateIcon( idPlayer *player, const idVec3 &origin, const idMat3 &axis ) {
+void idPlayerIcon::UpdateIcon( idPlayer* player, const idVec3& origin, const idMat3& axis )
+{
 	assert( iconHandle >= 0 );
 
 	renderEnt.origin = origin;

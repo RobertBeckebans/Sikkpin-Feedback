@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ idTarget_Remove
 */
 
 CLASS_DECLARATION( idTarget, idTarget_Remove )
-	EVENT( EV_Activate, idTarget_Remove::Event_Activate )
+EVENT( EV_Activate, idTarget_Remove::Event_Activate )
 END_CLASS
 
 /*
@@ -65,13 +65,16 @@ END_CLASS
 idTarget_Remove::Event_Activate
 ================
 */
-void idTarget_Remove::Event_Activate( idEntity *activator ) {
+void idTarget_Remove::Event_Activate( idEntity* activator )
+{
 	int			i;
-	idEntity	*ent;
+	idEntity*	ent;
 
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent ) {
+		if( ent )
+		{
 			ent->PostEventMS( &EV_Remove, 0 );
 		}
 	}
@@ -90,7 +93,7 @@ idTarget_Show
 */
 
 CLASS_DECLARATION( idTarget, idTarget_Show )
-	EVENT( EV_Activate, idTarget_Show::Event_Activate )
+EVENT( EV_Activate, idTarget_Show::Event_Activate )
 END_CLASS
 
 /*
@@ -98,13 +101,16 @@ END_CLASS
 idTarget_Show::Event_Activate
 ================
 */
-void idTarget_Show::Event_Activate( idEntity *activator ) {
+void idTarget_Show::Event_Activate( idEntity* activator )
+{
 	int			i;
-	idEntity	*ent;
+	idEntity*	ent;
 
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent ) {
+		if( ent )
+		{
 			ent->Show();
 		}
 	}
@@ -123,7 +129,7 @@ idTarget_Damage
 */
 
 CLASS_DECLARATION( idTarget, idTarget_Damage )
-	EVENT( EV_Activate, idTarget_Damage::Event_Activate )
+EVENT( EV_Activate, idTarget_Damage::Event_Activate )
 END_CLASS
 
 /*
@@ -131,15 +137,18 @@ END_CLASS
 idTarget_Damage::Event_Activate
 ================
 */
-void idTarget_Damage::Event_Activate( idEntity *activator ) {
+void idTarget_Damage::Event_Activate( idEntity* activator )
+{
 	int			i;
-	const char *damage;
-	idEntity *	ent;
+	const char* damage;
+	idEntity* 	ent;
 
 	damage = spawnArgs.GetString( "def_damage", "damage_generic" );
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent ) {
+		if( ent )
+		{
 			ent->Damage( this, this, vec3_origin, damage, 1.0f, INVALID_JOINT );
 		}
 	}
@@ -155,7 +164,7 @@ idTarget_SessionCommand
 */
 
 CLASS_DECLARATION( idTarget, idTarget_SessionCommand )
-	EVENT( EV_Activate, idTarget_SessionCommand::Event_Activate )
+EVENT( EV_Activate, idTarget_SessionCommand::Event_Activate )
 END_CLASS
 
 /*
@@ -163,7 +172,8 @@ END_CLASS
 idTarget_SessionCommand::Event_Activate
 ================
 */
-void idTarget_SessionCommand::Event_Activate( idEntity *activator ) {
+void idTarget_SessionCommand::Event_Activate( idEntity* activator )
+{
 	gameLocal.sessionCommand = spawnArgs.GetString( "command" );
 }
 
@@ -178,7 +188,7 @@ Just a modified form of idTarget_SessionCommand
 */
 
 CLASS_DECLARATION( idTarget, idTarget_EndLevel )
-	EVENT( EV_Activate,		idTarget_EndLevel::Event_Activate )
+EVENT( EV_Activate,		idTarget_EndLevel::Event_Activate )
 END_CLASS
 
 /*
@@ -186,10 +196,14 @@ END_CLASS
 idTarget_EndLevel::Event_Activate
 ================
 */
-void idTarget_EndLevel::Event_Activate( idEntity *activator ) {
-	if ( thinkFlags & TH_THINK ) {
+void idTarget_EndLevel::Event_Activate( idEntity* activator )
+{
+	if( thinkFlags & TH_THINK )
+	{
 		BecomeInactive( TH_THINK );
-	} else {
+	}
+	else
+	{
 		// always allow during cinematics
 		cinematic = true;
 		BecomeActive( TH_THINK );
@@ -200,7 +214,8 @@ void idTarget_EndLevel::Event_Activate( idEntity *activator ) {
 	player->SetInfluenceLevel( 2 );
 	player->endLevelTime = gameLocal.time;	// sikk - End Level time
 	player->doEndLevel = true;				// sikk - End Level Flag
-	if ( !player->scoreBoardOpen ) {
+	if( !player->scoreBoardOpen )
+	{
 		player->ToggleScoreboard();
 	}
 	StartSoundShader( declManager->FindSound( "music_endLevel" ), SND_CHANNEL_ANY, 0, false, NULL );
@@ -211,45 +226,56 @@ void idTarget_EndLevel::Event_Activate( idEntity *activator ) {
 idTarget_EndLevel::Think
 ================
 */
-void idTarget_EndLevel::Think( void ) {
+void idTarget_EndLevel::Think( void )
+{
 	idStr nextMap;
 	idPlayer* player;
 
 // sikk - Level Stats System: EndLevel used to show scores and won't precede to next level until MOUSE1 is pressed
-	if ( thinkFlags & TH_THINK ) {
+	if( thinkFlags & TH_THINK )
+	{
 		player = gameLocal.GetLocalPlayer();
 		player->stats->Redraw( gameLocal.realClientTime );
-		if ( player && !( player->oldButtons & BUTTON_ATTACK ) && ( player->usercmd.buttons & BUTTON_ATTACK ) ) {
+		if( player && !( player->oldButtons & BUTTON_ATTACK ) && ( player->usercmd.buttons & BUTTON_ATTACK ) )
+		{
 			player->usercmd.buttons &= ~BUTTON_ATTACK;
 			BecomeInactive( TH_THINK );
 
 #ifdef ID_DEMO_BUILD
-			if ( spawnArgs.GetBool( "endOfGame" ) ) {
+			if( spawnArgs.GetBool( "endOfGame" ) )
+			{
 				cvarSystem->SetCVarBool( "g_nightmare", true );
 				gameLocal.sessionCommand = "endofDemo";
 				return;
 			}
 #else
-			if ( spawnArgs.GetBool( "endOfGame" ) ) {
+			if( spawnArgs.GetBool( "endOfGame" ) )
+			{
 				cvarSystem->SetCVarBool( "g_nightmare", true );
 				gameLocal.sessionCommand = "disconnect";
 				return;
 			}
 #endif
-			if ( !spawnArgs.GetString( "nextMap", "", nextMap ) ) {
+			if( !spawnArgs.GetString( "nextMap", "", nextMap ) )
+			{
 				gameLocal.Printf( "idTarget_SessionCommand::Event_Activate: no nextMap key\n" );
 				return;
 			}
 
-			if ( spawnArgs.GetInt( "devmap", "0" ) ) {
+			if( spawnArgs.GetInt( "devmap", "0" ) )
+			{
 				gameLocal.sessionCommand = "devmap ";	// only for special demos
-			} else {
+			}
+			else
+			{
 				gameLocal.sessionCommand = "map ";
 			}
 
 			gameLocal.sessionCommand += nextMap;
 		}
-	} else {
+	}
+	else
+	{
 		BecomeInactive( TH_ALL );
 	}
 }
@@ -264,7 +290,7 @@ idTarget_WaitForButton
 */
 
 CLASS_DECLARATION( idTarget, idTarget_WaitForButton )
-	EVENT( EV_Activate, idTarget_WaitForButton::Event_Activate )
+EVENT( EV_Activate, idTarget_WaitForButton::Event_Activate )
 END_CLASS
 
 /*
@@ -272,10 +298,14 @@ END_CLASS
 idTarget_WaitForButton::Event_Activate
 ================
 */
-void idTarget_WaitForButton::Event_Activate( idEntity *activator ) {
-	if ( thinkFlags & TH_THINK ) {
+void idTarget_WaitForButton::Event_Activate( idEntity* activator )
+{
+	if( thinkFlags & TH_THINK )
+	{
 		BecomeInactive( TH_THINK );
-	} else {
+	}
+	else
+	{
 		// always allow during cinematics
 		cinematic = true;
 		BecomeActive( TH_THINK );
@@ -287,17 +317,22 @@ void idTarget_WaitForButton::Event_Activate( idEntity *activator ) {
 idTarget_WaitForButton::Think
 ================
 */
-void idTarget_WaitForButton::Think( void ) {
-	idPlayer *player;
+void idTarget_WaitForButton::Think( void )
+{
+	idPlayer* player;
 
-	if ( thinkFlags & TH_THINK ) {
+	if( thinkFlags & TH_THINK )
+	{
 		player = gameLocal.GetLocalPlayer();
-		if ( player && ( !player->oldButtons & BUTTON_ATTACK ) && ( player->usercmd.buttons & BUTTON_ATTACK ) ) {
+		if( player && ( !player->oldButtons & BUTTON_ATTACK ) && ( player->usercmd.buttons & BUTTON_ATTACK ) )
+		{
 			player->usercmd.buttons &= ~BUTTON_ATTACK;
 			BecomeInactive( TH_THINK );
 			ActivateTargets( player );
 		}
-	} else {
+	}
+	else
+	{
 		BecomeInactive( TH_ALL );
 	}
 }
@@ -320,10 +355,12 @@ END_CLASS
 idTarget_SetGlobalShaderTime::Event_Activate
 ================
 */
-void idTarget_SetGlobalShaderTime::Event_Activate( idEntity *activator ) {
+void idTarget_SetGlobalShaderTime::Event_Activate( idEntity* activator )
+{
 	int parm = spawnArgs.GetInt( "globalParm" );
 	float time = -MS2SEC( gameLocal.time );
-	if ( parm >= 0 && parm < MAX_GLOBAL_SHADER_PARMS ) {
+	if( parm >= 0 && parm < MAX_GLOBAL_SHADER_PARMS )
+	{
 		gameLocal.globalShaderParms[parm] = time;
 	}
 }
@@ -337,7 +374,7 @@ idTarget_SetShaderParm
 */
 
 CLASS_DECLARATION( idTarget, idTarget_SetShaderParm )
-	EVENT( EV_Activate,	idTarget_SetShaderParm::Event_Activate )
+EVENT( EV_Activate,	idTarget_SetShaderParm::Event_Activate )
 END_CLASS
 
 /*
@@ -345,37 +382,46 @@ END_CLASS
 idTarget_SetShaderParm::Event_Activate
 ================
 */
-void idTarget_SetShaderParm::Event_Activate( idEntity *activator ) {
+void idTarget_SetShaderParm::Event_Activate( idEntity* activator )
+{
 	int			i;
-	idEntity *	ent;
+	idEntity* 	ent;
 	float		value;
 	idVec3		color;
 	int			parmnum;
 
 	// set the color on the targets
-	if ( spawnArgs.GetVector( "_color", "1 1 1", color ) ) {
-		for( i = 0; i < targets.Num(); i++ ) {
+	if( spawnArgs.GetVector( "_color", "1 1 1", color ) )
+	{
+		for( i = 0; i < targets.Num(); i++ )
+		{
 			ent = targets[ i ].GetEntity();
-			if ( ent ) {
+			if( ent )
+			{
 				ent->SetColor( color[ 0 ], color[ 1 ], color[ 2 ] );
 			}
 		}
 	}
 
 	// set any shader parms on the targets
-	for( parmnum = 0; parmnum < MAX_ENTITY_SHADER_PARMS; parmnum++ ) {
-		if ( spawnArgs.GetFloat( va( "shaderParm%d", parmnum ), "0", value ) ) {
-			for( i = 0; i < targets.Num(); i++ ) {
+	for( parmnum = 0; parmnum < MAX_ENTITY_SHADER_PARMS; parmnum++ )
+	{
+		if( spawnArgs.GetFloat( va( "shaderParm%d", parmnum ), "0", value ) )
+		{
+			for( i = 0; i < targets.Num(); i++ )
+			{
 				ent = targets[ i ].GetEntity();
-				if ( ent ) {
+				if( ent )
+				{
 					ent->SetShaderParm( parmnum, value );
 				}
 			}
-			if (spawnArgs.GetBool("toggle") && (value == 0 || value == 1)) {
+			if( spawnArgs.GetBool( "toggle" ) && ( value == 0 || value == 1 ) )
+			{
 				int val = value;
 				val ^= 1;
 				value = val;
-				spawnArgs.SetFloat(va("shaderParm%d", parmnum), value);
+				spawnArgs.SetFloat( va( "shaderParm%d", parmnum ), value );
 			}
 		}
 	}
@@ -391,7 +437,7 @@ idTarget_SetShaderTime
 */
 
 CLASS_DECLARATION( idTarget, idTarget_SetShaderTime )
-	EVENT( EV_Activate,	idTarget_SetShaderTime::Event_Activate )
+EVENT( EV_Activate,	idTarget_SetShaderTime::Event_Activate )
 END_CLASS
 
 /*
@@ -399,18 +445,22 @@ END_CLASS
 idTarget_SetShaderTime::Event_Activate
 ================
 */
-void idTarget_SetShaderTime::Event_Activate( idEntity *activator ) {
+void idTarget_SetShaderTime::Event_Activate( idEntity* activator )
+{
 	int			i;
-	idEntity *	ent;
+	idEntity* 	ent;
 	float		time;
 
 	time = -MS2SEC( gameLocal.time );
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent ) {
+		if( ent )
+		{
 			ent->SetShaderParm( SHADERPARM_TIMEOFFSET, time );
-			if ( ent->IsType( idLight::Type ) ) {
-				static_cast<idLight *>(ent)->SetLightParm( SHADERPARM_TIMEOFFSET, time );
+			if( ent->IsType( idLight::Type ) )
+			{
+				static_cast<idLight*>( ent )->SetLightParm( SHADERPARM_TIMEOFFSET, time );
 			}
 		}
 	}
@@ -425,7 +475,7 @@ idTarget_FadeEntity
 */
 
 CLASS_DECLARATION( idTarget, idTarget_FadeEntity )
-	EVENT( EV_Activate,				idTarget_FadeEntity::Event_Activate )
+EVENT( EV_Activate,				idTarget_FadeEntity::Event_Activate )
 END_CLASS
 
 /*
@@ -433,7 +483,8 @@ END_CLASS
 idTarget_FadeEntity::idTarget_FadeEntity
 ================
 */
-idTarget_FadeEntity::idTarget_FadeEntity( void ) {
+idTarget_FadeEntity::idTarget_FadeEntity( void )
+{
 	fadeFrom.Zero();
 	fadeStart = 0;
 	fadeEnd = 0;
@@ -444,7 +495,8 @@ idTarget_FadeEntity::idTarget_FadeEntity( void ) {
 idTarget_FadeEntity::Save
 ================
 */
-void idTarget_FadeEntity::Save( idSaveGame *savefile ) const {
+void idTarget_FadeEntity::Save( idSaveGame* savefile ) const
+{
 	savefile->WriteVec4( fadeFrom );
 	savefile->WriteInt( fadeStart );
 	savefile->WriteInt( fadeEnd );
@@ -455,7 +507,8 @@ void idTarget_FadeEntity::Save( idSaveGame *savefile ) const {
 idTarget_FadeEntity::Restore
 ================
 */
-void idTarget_FadeEntity::Restore( idRestoreGame *savefile ) {
+void idTarget_FadeEntity::Restore( idRestoreGame* savefile )
+{
 	savefile->ReadVec4( fadeFrom );
 	savefile->ReadInt( fadeStart );
 	savefile->ReadInt( fadeEnd );
@@ -466,11 +519,13 @@ void idTarget_FadeEntity::Restore( idRestoreGame *savefile ) {
 idTarget_FadeEntity::Event_Activate
 ================
 */
-void idTarget_FadeEntity::Event_Activate( idEntity *activator ) {
-	idEntity *ent;
+void idTarget_FadeEntity::Event_Activate( idEntity* activator )
+{
+	idEntity* ent;
 	int i;
 
-	if ( !targets.Num() ) {
+	if( !targets.Num() )
+	{
 		return;
 	}
 
@@ -479,9 +534,11 @@ void idTarget_FadeEntity::Event_Activate( idEntity *activator ) {
 	BecomeActive( TH_THINK );
 
 	ent = this;
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent ) {
+		if( ent )
+		{
 			ent->GetColor( fadeFrom );
 			break;
 		}
@@ -496,31 +553,40 @@ void idTarget_FadeEntity::Event_Activate( idEntity *activator ) {
 idTarget_FadeEntity::Think
 ================
 */
-void idTarget_FadeEntity::Think( void ) {
+void idTarget_FadeEntity::Think( void )
+{
 	int			i;
-	idEntity	*ent;
+	idEntity*	ent;
 	idVec4		color;
 	idVec4		fadeTo;
 	float		frac;
 
-	if ( thinkFlags & TH_THINK ) {
+	if( thinkFlags & TH_THINK )
+	{
 		GetColor( fadeTo );
-		if ( gameLocal.time >= fadeEnd ) {
+		if( gameLocal.time >= fadeEnd )
+		{
 			color = fadeTo;
 			BecomeInactive( TH_THINK );
-		} else {
+		}
+		else
+		{
 			frac = ( float )( gameLocal.time - fadeStart ) / ( float )( fadeEnd - fadeStart );
 			color.Lerp( fadeFrom, fadeTo, frac );
 		}
 
 		// set the color on the targets
-		for( i = 0; i < targets.Num(); i++ ) {
+		for( i = 0; i < targets.Num(); i++ )
+		{
 			ent = targets[ i ].GetEntity();
-			if ( ent ) {
+			if( ent )
+			{
 				ent->SetColor( color );
 			}
 		}
-	} else {
+	}
+	else
+	{
 		BecomeInactive( TH_ALL );
 	}
 }
@@ -534,7 +600,7 @@ idTarget_LightFadeIn
 */
 
 CLASS_DECLARATION( idTarget, idTarget_LightFadeIn )
-	EVENT( EV_Activate,				idTarget_LightFadeIn::Event_Activate )
+EVENT( EV_Activate,				idTarget_LightFadeIn::Event_Activate )
 END_CLASS
 
 /*
@@ -542,27 +608,34 @@ END_CLASS
 idTarget_LightFadeIn::Event_Activate
 ================
 */
-void idTarget_LightFadeIn::Event_Activate( idEntity *activator ) {
-	idEntity *ent;
-	idLight *light;
+void idTarget_LightFadeIn::Event_Activate( idEntity* activator )
+{
+	idEntity* ent;
+	idLight* light;
 	int i;
 	float time;
 
-	if ( !targets.Num() ) {
+	if( !targets.Num() )
+	{
 		return;
 	}
 
 	time = spawnArgs.GetFloat( "fadetime" );
 	ent = this;
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( !ent ) {
+		if( !ent )
+		{
 			continue;
 		}
-		if ( ent->IsType( idLight::Type ) ) {
-			light = static_cast<idLight *>( ent );
+		if( ent->IsType( idLight::Type ) )
+		{
+			light = static_cast<idLight*>( ent );
 			light->FadeIn( time );
-		} else {
+		}
+		else
+		{
 			gameLocal.Printf( "'%s' targets non-light '%s'", name.c_str(), ent->GetName() );
 		}
 	}
@@ -577,7 +650,7 @@ idTarget_LightFadeOut
 */
 
 CLASS_DECLARATION( idTarget, idTarget_LightFadeOut )
-	EVENT( EV_Activate,				idTarget_LightFadeOut::Event_Activate )
+EVENT( EV_Activate,				idTarget_LightFadeOut::Event_Activate )
 END_CLASS
 
 /*
@@ -585,27 +658,34 @@ END_CLASS
 idTarget_LightFadeOut::Event_Activate
 ================
 */
-void idTarget_LightFadeOut::Event_Activate( idEntity *activator ) {
-	idEntity *ent;
-	idLight *light;
+void idTarget_LightFadeOut::Event_Activate( idEntity* activator )
+{
+	idEntity* ent;
+	idLight* light;
 	int i;
 	float time;
 
-	if ( !targets.Num() ) {
+	if( !targets.Num() )
+	{
 		return;
 	}
 
 	time = spawnArgs.GetFloat( "fadetime" );
 	ent = this;
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( !ent ) {
+		if( !ent )
+		{
 			continue;
 		}
-		if ( ent->IsType( idLight::Type ) ) {
-			light = static_cast<idLight *>( ent );
+		if( ent->IsType( idLight::Type ) )
+		{
+			light = static_cast<idLight*>( ent );
 			light->FadeOut( time );
-		} else {
+		}
+		else
+		{
 			gameLocal.Printf( "'%s' targets non-light '%s'", name.c_str(), ent->GetName() );
 		}
 	}
@@ -620,7 +700,7 @@ idTarget_Give
 */
 
 CLASS_DECLARATION( idTarget, idTarget_Give )
-	EVENT( EV_Activate,				idTarget_Give::Event_Activate )
+EVENT( EV_Activate,				idTarget_Give::Event_Activate )
 END_CLASS
 
 /*
@@ -628,8 +708,10 @@ END_CLASS
 idTarget_Give::Spawn
 ================
 */
-void idTarget_Give::Spawn( void ) {
-	if ( spawnArgs.GetBool( "onSpawn" ) ) {
+void idTarget_Give::Spawn( void )
+{
+	if( spawnArgs.GetBool( "onSpawn" ) )
+	{
 		PostEventMS( &EV_Activate, 50 );
 	}
 }
@@ -639,25 +721,31 @@ void idTarget_Give::Spawn( void ) {
 idTarget_Give::Event_Activate
 ================
 */
-void idTarget_Give::Event_Activate( idEntity *activator ) {
-	
-	if ( spawnArgs.GetBool( "development" ) && developer.GetInteger() == 0 ) {
+void idTarget_Give::Event_Activate( idEntity* activator )
+{
+
+	if( spawnArgs.GetBool( "development" ) && developer.GetInteger() == 0 )
+	{
 		return;
 	}
 
 	static int giveNum = 0;
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-		const idKeyValue *kv = spawnArgs.MatchPrefix( "item", NULL );
-		while ( kv ) {
-			const idDict *dict = gameLocal.FindEntityDefDict( kv->GetValue(), false );
-			if ( dict ) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	if( player )
+	{
+		const idKeyValue* kv = spawnArgs.MatchPrefix( "item", NULL );
+		while( kv )
+		{
+			const idDict* dict = gameLocal.FindEntityDefDict( kv->GetValue(), false );
+			if( dict )
+			{
 				idDict d2;
 				d2.Copy( *dict );
 				d2.Set( "name", va( "givenitem_%i", giveNum++ ) );
-				idEntity *ent = NULL;
-				if ( gameLocal.SpawnEntityDef( d2, &ent ) && ent && ent->IsType( idItem::Type ) ) {
-					idItem *item = static_cast<idItem*>(ent);
+				idEntity* ent = NULL;
+				if( gameLocal.SpawnEntityDef( d2, &ent ) && ent && ent->IsType( idItem::Type ) )
+				{
+					idItem* item = static_cast<idItem*>( ent );
 					item->GiveToPlayer( gameLocal.GetLocalPlayer() );
 				}
 			}
@@ -676,7 +764,7 @@ idTarget_SetModel
 */
 
 CLASS_DECLARATION( idTarget, idTarget_SetModel )
-	EVENT( EV_Activate,	idTarget_SetModel::Event_Activate )
+EVENT( EV_Activate,	idTarget_SetModel::Event_Activate )
 END_CLASS
 
 /*
@@ -684,11 +772,13 @@ END_CLASS
 idTarget_SetModel::Spawn
 ================
 */
-void idTarget_SetModel::Spawn( void ) {
-	const char *model;
+void idTarget_SetModel::Spawn( void )
+{
+	const char* model;
 
 	model = spawnArgs.GetString( "newmodel" );
-	if ( declManager->FindType( DECL_MODELDEF, model, false ) == NULL ) {
+	if( declManager->FindType( DECL_MODELDEF, model, false ) == NULL )
+	{
 		// precache the render model
 		renderModelManager->FindModel( model );
 		// precache .cm files only
@@ -701,10 +791,13 @@ void idTarget_SetModel::Spawn( void ) {
 idTarget_SetModel::Event_Activate
 ================
 */
-void idTarget_SetModel::Event_Activate( idEntity *activator ) {
-	for( int i = 0; i < targets.Num(); i++ ) {
-		idEntity *ent = targets[ i ].GetEntity();
-		if ( ent ) {
+void idTarget_SetModel::Event_Activate( idEntity* activator )
+{
+	for( int i = 0; i < targets.Num(); i++ )
+	{
+		idEntity* ent = targets[ i ].GetEntity();
+		if( ent )
+		{
 			ent->SetModel( spawnArgs.GetString( "newmodel" ) );
 		}
 	}
@@ -725,11 +818,11 @@ const idEventDef EV_Flash( "<Flash>", "fd" );
 const idEventDef EV_ClearFlash( "<ClearFlash>", "f" );
 
 CLASS_DECLARATION( idTarget, idTarget_SetInfluence )
-	EVENT( EV_Activate,	idTarget_SetInfluence::Event_Activate )
-	EVENT( EV_RestoreInfluence,	idTarget_SetInfluence::Event_RestoreInfluence )
-	EVENT( EV_GatherEntities, idTarget_SetInfluence::Event_GatherEntities )
-	EVENT( EV_Flash, idTarget_SetInfluence::Event_Flash )
-	EVENT( EV_ClearFlash, idTarget_SetInfluence::Event_ClearFlash )
+EVENT( EV_Activate,	idTarget_SetInfluence::Event_Activate )
+EVENT( EV_RestoreInfluence,	idTarget_SetInfluence::Event_RestoreInfluence )
+EVENT( EV_GatherEntities, idTarget_SetInfluence::Event_GatherEntities )
+EVENT( EV_Flash, idTarget_SetInfluence::Event_Flash )
+EVENT( EV_ClearFlash, idTarget_SetInfluence::Event_ClearFlash )
 END_CLASS
 
 /*
@@ -737,7 +830,8 @@ END_CLASS
 idTarget_SetInfluence::idTarget_SetInfluence
 ================
 */
-idTarget_SetInfluence::idTarget_SetInfluence( void ) {
+idTarget_SetInfluence::idTarget_SetInfluence( void )
+{
 	flashIn = 0.0f;
 	flashOut = 0.0f;
 	delay = 0.0f;
@@ -751,26 +845,31 @@ idTarget_SetInfluence::idTarget_SetInfluence( void ) {
 idTarget_SetInfluence::Save
 ================
 */
-void idTarget_SetInfluence::Save( idSaveGame *savefile ) const {
+void idTarget_SetInfluence::Save( idSaveGame* savefile ) const
+{
 	int i;
 
 	savefile->WriteInt( lightList.Num() );
-	for( i = 0; i < lightList.Num(); i++ ) {
+	for( i = 0; i < lightList.Num(); i++ )
+	{
 		savefile->WriteInt( lightList[ i ] );
 	}
 
 	savefile->WriteInt( guiList.Num() );
-	for( i = 0; i < guiList.Num(); i++ ) {
+	for( i = 0; i < guiList.Num(); i++ )
+	{
 		savefile->WriteInt( guiList[ i ] );
 	}
 
 	savefile->WriteInt( soundList.Num() );
-	for( i = 0; i < soundList.Num(); i++ ) {
+	for( i = 0; i < soundList.Num(); i++ )
+	{
 		savefile->WriteInt( soundList[ i ] );
 	}
 
 	savefile->WriteInt( genericList.Num() );
-	for( i = 0; i < genericList.Num(); i++ ) {
+	for( i = 0; i < genericList.Num(); i++ )
+	{
 		savefile->WriteInt( genericList[ i ] );
 	}
 
@@ -798,31 +897,36 @@ void idTarget_SetInfluence::Save( idSaveGame *savefile ) const {
 idTarget_SetInfluence::Restore
 ================
 */
-void idTarget_SetInfluence::Restore( idRestoreGame *savefile ) {
+void idTarget_SetInfluence::Restore( idRestoreGame* savefile )
+{
 	int i, num;
 	int itemNum;
 	float set;
 
 	savefile->ReadInt( num );
-	for( i = 0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		savefile->ReadInt( itemNum );
 		lightList.Append( itemNum );
 	}
 
 	savefile->ReadInt( num );
-	for( i = 0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		savefile->ReadInt( itemNum );
 		guiList.Append( itemNum );
 	}
 
 	savefile->ReadInt( num );
-	for( i = 0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		savefile->ReadInt( itemNum );
 		soundList.Append( itemNum );
 	}
 
 	savefile->ReadInt( num );
-	for ( i = 0; i < num; i++ ) {
+	for( i = 0; i < num; i++ )
+	{
 		savefile->ReadInt( itemNum );
 		genericList.Append( itemNum );
 	}
@@ -835,7 +939,7 @@ void idTarget_SetInfluence::Restore( idRestoreGame *savefile ) {
 	savefile->ReadString( flashInSound );
 	savefile->ReadString( flashOutSound );
 
-	savefile->ReadObject( reinterpret_cast<idClass *&>( switchToCamera ) );
+	savefile->ReadObject( reinterpret_cast<idClass*&>( switchToCamera ) );
 
 	savefile->ReadFloat( set );
 	fovSetting.SetStartTime( set );
@@ -855,7 +959,8 @@ void idTarget_SetInfluence::Restore( idRestoreGame *savefile ) {
 idTarget_SetInfluence::Spawn
 ================
 */
-void idTarget_SetInfluence::Spawn() {
+void idTarget_SetInfluence::Spawn()
+{
 	PostEventMS( &EV_GatherEntities, 0 );
 	flashIn = spawnArgs.GetFloat( "flashIn", "0" );
 	flashOut = spawnArgs.GetFloat( "flashOut", "0" );
@@ -874,14 +979,18 @@ void idTarget_SetInfluence::Spawn() {
 idTarget_SetInfluence::Event_Flash
 ================
 */
-void idTarget_SetInfluence::Event_Flash( float flash, int out ) {
-	idPlayer *player = gameLocal.GetLocalPlayer();
+void idTarget_SetInfluence::Event_Flash( float flash, int out )
+{
+	idPlayer* player = gameLocal.GetLocalPlayer();
 	player->playerView.Fade( idVec4( 1, 1, 1, 1 ), flash );
-	const idSoundShader *shader = NULL;
-	if ( !out && flashInSound.Length() ){
+	const idSoundShader* shader = NULL;
+	if( !out && flashInSound.Length() )
+	{
 		shader = declManager->FindSound( flashInSound );
 		player->StartSoundShader( shader, SND_CHANNEL_VOICE, 0, false, NULL );
-	} else if ( out && ( flashOutSound.Length() || flashInSound.Length() ) ) {
+	}
+	else if( out && ( flashOutSound.Length() || flashInSound.Length() ) )
+	{
 		shader = declManager->FindSound( flashOutSound.Length() ? flashOutSound : flashInSound );
 		player->StartSoundShader( shader, SND_CHANNEL_VOICE, 0, false, NULL );
 	}
@@ -894,18 +1003,20 @@ void idTarget_SetInfluence::Event_Flash( float flash, int out ) {
 idTarget_SetInfluence::Event_ClearFlash
 ================
 */
-void idTarget_SetInfluence::Event_ClearFlash( float flash ) {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	player->playerView.Fade( vec4_zero , flash );		
+void idTarget_SetInfluence::Event_ClearFlash( float flash )
+{
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	player->playerView.Fade( vec4_zero , flash );
 }
 /*
 ================
 idTarget_SetInfluence::Event_GatherEntities
 ================
 */
-void idTarget_SetInfluence::Event_GatherEntities() {
+void idTarget_SetInfluence::Event_GatherEntities()
+{
 	int i, listedEntities;
-	idEntity *entityList[ MAX_GENTITIES ];
+	idEntity* entityList[ MAX_GENTITIES ];
 
 //	bool demonicOnly = spawnArgs.GetBool( "effect_demonic" );	// sikk - variable initialized but not used
 	bool lights = spawnArgs.GetBool( "effect_lights" );
@@ -919,36 +1030,47 @@ void idTarget_SetInfluence::Event_GatherEntities() {
 	guiList.Clear();
 	soundList.Clear();
 
-	if ( spawnArgs.GetBool( "effect_all" ) ) {
+	if( spawnArgs.GetBool( "effect_all" ) )
+	{
 		lights = sounds = guis = models = vision = true;
 	}
 
-	if ( targetsOnly ) {
+	if( targetsOnly )
+	{
 		listedEntities = targets.Num();
-		for ( i = 0; i < listedEntities; i++ ) {
+		for( i = 0; i < listedEntities; i++ )
+		{
 			entityList[i] = targets[i].GetEntity();
 		}
-	} else {
+	}
+	else
+	{
 		float radius = spawnArgs.GetFloat( "radius" );
 		listedEntities = gameLocal.EntitiesWithinRadius( GetPhysics()->GetOrigin(), radius, entityList, MAX_GENTITIES );
 	}
 
-	for( i = 0; i < listedEntities; i++ ) {
-		idEntity *ent = entityList[ i ];
-		if ( ent ) {
-			if ( lights && ent->IsType( idLight::Type ) && ent->spawnArgs.FindKey( "color_demonic" ) ) {
+	for( i = 0; i < listedEntities; i++ )
+	{
+		idEntity* ent = entityList[ i ];
+		if( ent )
+		{
+			if( lights && ent->IsType( idLight::Type ) && ent->spawnArgs.FindKey( "color_demonic" ) )
+			{
 				lightList.Append( ent->entityNumber );
 				continue;
 			}
-			if ( sounds && ent->IsType( idSound::Type ) && ent->spawnArgs.FindKey( "snd_demonic" ) ) {
+			if( sounds && ent->IsType( idSound::Type ) && ent->spawnArgs.FindKey( "snd_demonic" ) )
+			{
 				soundList.Append( ent->entityNumber );
 				continue;
 			}
-			if ( guis && ent->GetRenderEntity() && ent->GetRenderEntity()->gui[ 0 ] && ent->spawnArgs.FindKey( "gui_demonic" ) ) {
+			if( guis && ent->GetRenderEntity() && ent->GetRenderEntity()->gui[ 0 ] && ent->spawnArgs.FindKey( "gui_demonic" ) )
+			{
 				guiList.Append( ent->entityNumber );
 				continue;
 			}
-			if ( ent->IsType( idStaticEntity::Type ) && ent->spawnArgs.FindKey( "color_demonic" ) ) {
+			if( ent->IsType( idStaticEntity::Type ) && ent->spawnArgs.FindKey( "color_demonic" ) )
+			{
 				genericList.Append( ent->entityNumber );
 				continue;
 			}
@@ -965,23 +1087,26 @@ void idTarget_SetInfluence::Event_GatherEntities() {
 idTarget_SetInfluence::Event_Activate
 ================
 */
-void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
+void idTarget_SetInfluence::Event_Activate( idEntity* activator )
+{
 	int i, j;
-	idEntity *ent;
-	idLight *light;
-	idSound *sound;
-	idStaticEntity *generic;
-	const char *parm;
-	const char *skin;
+	idEntity* ent;
+	idLight* light;
+	idSound* sound;
+	idStaticEntity* generic;
+	const char* parm;
+	const char* skin;
 	bool update;
 	idVec3 color;
 	idVec4 colorTo;
-	idPlayer *player;
+	idPlayer* player;
 
 	player = gameLocal.GetLocalPlayer();
 
-	if ( spawnArgs.GetBool( "triggerActivate" ) ) {
-		if ( restoreOnTrigger ) {
+	if( spawnArgs.GetBool( "triggerActivate" ) )
+	{
+		if( restoreOnTrigger )
+		{
 			ProcessEvent( &EV_RestoreInfluence );
 			restoreOnTrigger = false;
 			return;
@@ -991,46 +1116,57 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 
 	float fadeTime = spawnArgs.GetFloat( "fadeWorldSounds" );
 
-	if ( delay > 0.0f ) {
+	if( delay > 0.0f )
+	{
 		PostEventSec( &EV_Activate, delay, activator );
 		delay = 0.0f;
 		// start any sound fading now
-		if ( fadeTime ) {
+		if( fadeTime )
+		{
 			gameSoundWorld->FadeSoundClasses( 0, -40.0f, fadeTime );
 			soundFaded = true;
 		}
 		return;
-	} else if ( fadeTime && !soundFaded ) {
+	}
+	else if( fadeTime && !soundFaded )
+	{
 		gameSoundWorld->FadeSoundClasses( 0, -40.0f, fadeTime );
 		soundFaded = true;
 	}
 
-	if ( spawnArgs.GetBool( "triggerTargets" ) ) {
+	if( spawnArgs.GetBool( "triggerTargets" ) )
+	{
 		ActivateTargets( activator );
 	}
 
-	if ( flashIn ) {
+	if( flashIn )
+	{
 		PostEventSec( &EV_Flash, 0.0f, flashIn, 0 );
 	}
 
 	parm = spawnArgs.GetString( "snd_influence" );
-	if ( parm && *parm ) {
+	if( parm && *parm )
+	{
 		PostEventSec( &EV_StartSoundShader, flashIn, parm, SND_CHANNEL_ANY );
 	}
 
-	if ( switchToCamera ) {
+	if( switchToCamera )
+	{
 		switchToCamera->PostEventSec( &EV_Activate, flashIn + 0.05f, this );
 	}
 
 	int fov = spawnArgs.GetInt( "fov" );
-	if ( fov ) {
+	if( fov )
+	{
 		fovSetting.Init( gameLocal.time, SEC2MS( spawnArgs.GetFloat( "fovTime" ) ), player->DefaultFov(), fov );
 		BecomeActive( TH_THINK );
 	}
 
-	for ( i = 0; i < genericList.Num(); i++ ) {
+	for( i = 0; i < genericList.Num(); i++ )
+	{
 		ent = gameLocal.entities[genericList[i]];
-		if ( ent == NULL ) {
+		if( ent == NULL )
+		{
 			continue;
 		}
 		generic = static_cast<idStaticEntity*>( ent );
@@ -1039,54 +1175,68 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 		generic->Fade( colorTo, spawnArgs.GetFloat( "fade_time", "0.25" ) );
 	}
 
-	for ( i = 0; i < lightList.Num(); i++ ) {
+	for( i = 0; i < lightList.Num(); i++ )
+	{
 		ent = gameLocal.entities[lightList[i]];
-		if ( ent == NULL || !ent->IsType( idLight::Type ) ) {
+		if( ent == NULL || !ent->IsType( idLight::Type ) )
+		{
 			continue;
 		}
-		light = static_cast<idLight *>(ent);
+		light = static_cast<idLight*>( ent );
 		parm = light->spawnArgs.GetString( "mat_demonic" );
-		if ( parm && *parm ) {
+		if( parm && *parm )
+		{
 			light->SetShader( parm );
 		}
-		
+
 		color = light->spawnArgs.GetVector( "_color" );
 		color = light->spawnArgs.GetVector( "color_demonic", color.ToString() );
 		colorTo.Set( color.x, color.y, color.z, 1.0f );
 		light->Fade( colorTo, spawnArgs.GetFloat( "fade_time", "0.25" ) );
 	}
 
-	for ( i = 0; i < soundList.Num(); i++ ) {
+	for( i = 0; i < soundList.Num(); i++ )
+	{
 		ent = gameLocal.entities[soundList[i]];
-		if ( ent == NULL || !ent->IsType( idSound::Type ) ) {
+		if( ent == NULL || !ent->IsType( idSound::Type ) )
+		{
 			continue;
 		}
-		sound = static_cast<idSound *>(ent);
+		sound = static_cast<idSound*>( ent );
 		parm = sound->spawnArgs.GetString( "snd_demonic" );
-		if ( parm && *parm ) {
-			if ( sound->spawnArgs.GetBool( "overlayDemonic" ) ) {
+		if( parm && *parm )
+		{
+			if( sound->spawnArgs.GetBool( "overlayDemonic" ) )
+			{
 				sound->StartSound( "snd_demonic", SND_CHANNEL_DEMONIC, 0, false, NULL );
-			} else {
+			}
+			else
+			{
 				sound->StopSound( SND_CHANNEL_ANY, false );
 				sound->SetSound( parm );
 			}
 		}
 	}
 
-	for ( i = 0; i < guiList.Num(); i++ ) {
+	for( i = 0; i < guiList.Num(); i++ )
+	{
 		ent = gameLocal.entities[guiList[i]];
-		if ( ent == NULL || ent->GetRenderEntity() == NULL ) {
+		if( ent == NULL || ent->GetRenderEntity() == NULL )
+		{
 			continue;
 		}
 		update = false;
-		for ( j = 0; j < MAX_RENDERENTITY_GUI; j++ ) {
-			if ( ent->GetRenderEntity()->gui[ j ] && ent->spawnArgs.FindKey( j == 0 ? "gui_demonic" : va( "gui_demonic%d", j+1 ) ) ) {
-				ent->GetRenderEntity()->gui[ j ] = uiManager->FindGui( ent->spawnArgs.GetString( j == 0 ? "gui_demonic" : va( "gui_demonic%d", j+1 ) ), true );
+		for( j = 0; j < MAX_RENDERENTITY_GUI; j++ )
+		{
+			if( ent->GetRenderEntity()->gui[ j ] && ent->spawnArgs.FindKey( j == 0 ? "gui_demonic" : va( "gui_demonic%d", j + 1 ) ) )
+			{
+				ent->GetRenderEntity()->gui[ j ] = uiManager->FindGui( ent->spawnArgs.GetString( j == 0 ? "gui_demonic" : va( "gui_demonic%d", j + 1 ) ), true );
 				update = true;
 			}
 		}
 
-		if ( update ) {
+		if( update )
+		{
 			ent->UpdateVisuals();
 			ent->Present();
 		}
@@ -1095,24 +1245,28 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 	player->SetInfluenceLevel( spawnArgs.GetInt( "influenceLevel" ) );
 
 	int snapAngle = spawnArgs.GetInt( "snapAngle" );
-	if ( snapAngle ) {
+	if( snapAngle )
+	{
 		idAngles ang( 0, snapAngle, 0 );
 		player->SetViewAngles( ang );
 		player->SetAngles( ang );
 	}
 
-	if ( spawnArgs.GetBool( "effect_vision" ) ) {
+	if( spawnArgs.GetBool( "effect_vision" ) )
+	{
 		parm = spawnArgs.GetString( "mtrVision" );
 		skin = spawnArgs.GetString( "skinVision" );
-		player->SetInfluenceView( parm, skin, spawnArgs.GetInt( "visionRadius" ), this ); 
+		player->SetInfluenceView( parm, skin, spawnArgs.GetInt( "visionRadius" ), this );
 	}
 
 	parm = spawnArgs.GetString( "mtrWorld" );
-	if ( parm && *parm ) {
+	if( parm && *parm )
+	{
 		gameLocal.SetGlobalMaterial( declManager->FindMaterial( parm ) );
 	}
 
-	if ( !restoreOnTrigger ) {
+	if( !restoreOnTrigger )
+	{
 		PostEventMS( &EV_RestoreInfluence, SEC2MS( spawnArgs.GetFloat( "time" ) ) );
 	}
 }
@@ -1122,17 +1276,23 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 idTarget_SetInfluence::Think
 ================
 */
-void idTarget_SetInfluence::Think( void ) {
-	if ( thinkFlags & TH_THINK ) {
-		idPlayer *player = gameLocal.GetLocalPlayer();
+void idTarget_SetInfluence::Think( void )
+{
+	if( thinkFlags & TH_THINK )
+	{
+		idPlayer* player = gameLocal.GetLocalPlayer();
 		player->SetInfluenceFov( fovSetting.GetCurrentValue( gameLocal.time ) );
-		if ( fovSetting.IsDone( gameLocal.time ) ) {
-			if ( !spawnArgs.GetBool( "leaveFOV" ) ) {
+		if( fovSetting.IsDone( gameLocal.time ) )
+		{
+			if( !spawnArgs.GetBool( "leaveFOV" ) )
+			{
 				player->SetInfluenceFov( 0 );
 			}
 			BecomeInactive( TH_THINK );
 		}
-	} else {
+	}
+	else
+	{
 		BecomeInactive( TH_ALL );
 	}
 }
@@ -1143,27 +1303,32 @@ void idTarget_SetInfluence::Think( void ) {
 idTarget_SetInfluence::Event_RestoreInfluence
 ================
 */
-void idTarget_SetInfluence::Event_RestoreInfluence() {
+void idTarget_SetInfluence::Event_RestoreInfluence()
+{
 	int i, j;
-	idEntity *ent;
-	idLight *light;
-	idSound *sound;
-	idStaticEntity *generic;
+	idEntity* ent;
+	idLight* light;
+	idSound* sound;
+	idStaticEntity* generic;
 	bool update;
 	idVec3 color;
 	idVec4 colorTo;
 
-	if ( flashOut ) {
+	if( flashOut )
+	{
 		PostEventSec( &EV_Flash, 0.0f, flashOut, 1 );
 	}
 
-	if ( switchToCamera ) {
+	if( switchToCamera )
+	{
 		switchToCamera->PostEventMS( &EV_Activate, 0.0f, this );
 	}
 
-	for ( i = 0; i < genericList.Num(); i++ ) {
+	for( i = 0; i < genericList.Num(); i++ )
+	{
 		ent = gameLocal.entities[genericList[i]];
-		if ( ent == NULL ) {
+		if( ent == NULL )
+		{
 			continue;
 		}
 		generic = static_cast<idStaticEntity*>( ent );
@@ -1171,14 +1336,17 @@ void idTarget_SetInfluence::Event_RestoreInfluence() {
 		generic->Fade( colorTo, spawnArgs.GetFloat( "fade_time", "0.25" ) );
 	}
 
-	for ( i = 0; i < lightList.Num(); i++ ) {
+	for( i = 0; i < lightList.Num(); i++ )
+	{
 		ent = gameLocal.entities[lightList[i]];
-		if ( ent == NULL || !ent->IsType( idLight::Type ) ) {
+		if( ent == NULL || !ent->IsType( idLight::Type ) )
+		{
 			continue;
 		}
-		light = static_cast<idLight *>(ent);
-		if ( !light->spawnArgs.GetBool( "leave_demonic_mat" ) ) {
-			const char *texture = light->spawnArgs.GetString( "texture", "lights/squarelight1" );
+		light = static_cast<idLight*>( ent );
+		if( !light->spawnArgs.GetBool( "leave_demonic_mat" ) )
+		{
+			const char* texture = light->spawnArgs.GetString( "texture", "lights/squarelight1" );
 			light->SetShader( texture );
 		}
 		color = light->spawnArgs.GetVector( "_color" );
@@ -1186,41 +1354,49 @@ void idTarget_SetInfluence::Event_RestoreInfluence() {
 		light->Fade( colorTo, spawnArgs.GetFloat( "fade_time", "0.25" ) );
 	}
 
-	for ( i = 0; i < soundList.Num(); i++ ) {
+	for( i = 0; i < soundList.Num(); i++ )
+	{
 		ent = gameLocal.entities[soundList[i]];
-		if ( ent == NULL || !ent->IsType( idSound::Type ) ) {
+		if( ent == NULL || !ent->IsType( idSound::Type ) )
+		{
 			continue;
 		}
-		sound = static_cast<idSound *>(ent);
+		sound = static_cast<idSound*>( ent );
 		sound->StopSound( SND_CHANNEL_ANY, false );
 		sound->SetSound( sound->spawnArgs.GetString( "s_shader" ) );
 	}
 
-	for ( i = 0; i < guiList.Num(); i++ ) {
+	for( i = 0; i < guiList.Num(); i++ )
+	{
 		ent = gameLocal.entities[guiList[i]];
-		if ( ent == NULL || GetRenderEntity() == NULL ) {
+		if( ent == NULL || GetRenderEntity() == NULL )
+		{
 			continue;
 		}
 		update = false;
-		for( j = 0; j < MAX_RENDERENTITY_GUI; j++ ) {
-			if ( ent->GetRenderEntity()->gui[ j ] ) {
-				ent->GetRenderEntity()->gui[ j ] = uiManager->FindGui( ent->spawnArgs.GetString( j == 0 ? "gui" : va( "gui%d", j+1 ) ) );
+		for( j = 0; j < MAX_RENDERENTITY_GUI; j++ )
+		{
+			if( ent->GetRenderEntity()->gui[ j ] )
+			{
+				ent->GetRenderEntity()->gui[ j ] = uiManager->FindGui( ent->spawnArgs.GetString( j == 0 ? "gui" : va( "gui%d", j + 1 ) ) );
 				update = true;
 			}
 		}
-		if ( update ) {
+		if( update )
+		{
 			ent->UpdateVisuals();
 			ent->Present();
 		}
 	}
 
-	idPlayer *player = gameLocal.GetLocalPlayer();
+	idPlayer* player = gameLocal.GetLocalPlayer();
 	player->SetInfluenceLevel( 0 );
 	player->SetInfluenceView( NULL, NULL, 0.0f, NULL );
 	player->SetInfluenceFov( 0 );
 	gameLocal.SetGlobalMaterial( NULL );
 	float fadeTime = spawnArgs.GetFloat( "fadeWorldSounds" );
-	if ( fadeTime ) {
+	if( fadeTime )
+	{
 		gameSoundWorld->FadeSoundClasses( 0, 0.0f, fadeTime / 2.0f );
 	}
 
@@ -1235,7 +1411,7 @@ idTarget_SetKeyVal
 */
 
 CLASS_DECLARATION( idTarget, idTarget_SetKeyVal )
-	EVENT( EV_Activate,	idTarget_SetKeyVal::Event_Activate )
+EVENT( EV_Activate,	idTarget_SetKeyVal::Event_Activate )
 END_CLASS
 
 /*
@@ -1243,26 +1419,34 @@ END_CLASS
 idTarget_SetKeyVal::Event_Activate
 ================
 */
-void idTarget_SetKeyVal::Event_Activate( idEntity *activator ) {
+void idTarget_SetKeyVal::Event_Activate( idEntity* activator )
+{
 	int i;
 	idStr key, val;
-	idEntity *ent;
-	const idKeyValue *kv;
+	idEntity* ent;
+	const idKeyValue* kv;
 	int n;
 
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent ) {
-			kv = spawnArgs.MatchPrefix("keyval");
-			while ( kv ) {
+		if( ent )
+		{
+			kv = spawnArgs.MatchPrefix( "keyval" );
+			while( kv )
+			{
 				n = kv->GetValue().Find( ";" );
-				if ( n > 0 ) {
+				if( n > 0 )
+				{
 					key = kv->GetValue().Left( n );
 					val = kv->GetValue().Right( kv->GetValue().Length() - n - 1 );
 					ent->spawnArgs.Set( key, val );
-					for ( int j = 0; j < MAX_RENDERENTITY_GUI; j++ ) {
-						if ( ent->GetRenderEntity()->gui[ j ] ) {
-							if ( idStr::Icmpn( key, "gui_", 4 ) == 0 ) {
+					for( int j = 0; j < MAX_RENDERENTITY_GUI; j++ )
+					{
+						if( ent->GetRenderEntity()->gui[ j ] )
+						{
+							if( idStr::Icmpn( key, "gui_", 4 ) == 0 )
+							{
 								ent->GetRenderEntity()->gui[ j ]->SetStateString( key, val );
 								ent->GetRenderEntity()->gui[ j ]->StateChanged( gameLocal.time );
 							}
@@ -1287,7 +1471,7 @@ idTarget_SetFov
 */
 
 CLASS_DECLARATION( idTarget, idTarget_SetFov )
-	EVENT( EV_Activate,	idTarget_SetFov::Event_Activate )
+EVENT( EV_Activate,	idTarget_SetFov::Event_Activate )
 END_CLASS
 
 
@@ -1296,7 +1480,8 @@ END_CLASS
 idTarget_SetFov::Save
 ================
 */
-void idTarget_SetFov::Save( idSaveGame *savefile ) const {
+void idTarget_SetFov::Save( idSaveGame* savefile ) const
+{
 
 	savefile->WriteFloat( fovSetting.GetStartTime() );
 	savefile->WriteFloat( fovSetting.GetDuration() );
@@ -1309,7 +1494,8 @@ void idTarget_SetFov::Save( idSaveGame *savefile ) const {
 idTarget_SetFov::Restore
 ================
 */
-void idTarget_SetFov::Restore( idRestoreGame *savefile ) {
+void idTarget_SetFov::Restore( idRestoreGame* savefile )
+{
 	float setting;
 
 	savefile->ReadFloat( setting );
@@ -1329,11 +1515,12 @@ void idTarget_SetFov::Restore( idRestoreGame *savefile ) {
 idTarget_SetFov::Event_Activate
 ================
 */
-void idTarget_SetFov::Event_Activate( idEntity *activator ) {
+void idTarget_SetFov::Event_Activate( idEntity* activator )
+{
 	// always allow during cinematics
 	cinematic = true;
 
-	idPlayer *player = gameLocal.GetLocalPlayer();
+	idPlayer* player = gameLocal.GetLocalPlayer();
 	fovSetting.Init( gameLocal.time, SEC2MS( spawnArgs.GetFloat( "time" ) ), player ? player->DefaultFov() : g_fov.GetFloat(), spawnArgs.GetFloat( "fov" ) );
 	BecomeActive( TH_THINK );
 }
@@ -1343,15 +1530,20 @@ void idTarget_SetFov::Event_Activate( idEntity *activator ) {
 idTarget_SetFov::Think
 ================
 */
-void idTarget_SetFov::Think( void ) {
-	if ( thinkFlags & TH_THINK ) {
-		idPlayer *player = gameLocal.GetLocalPlayer();
+void idTarget_SetFov::Think( void )
+{
+	if( thinkFlags & TH_THINK )
+	{
+		idPlayer* player = gameLocal.GetLocalPlayer();
 		player->SetInfluenceFov( fovSetting.GetCurrentValue( gameLocal.time ) );
-		if ( fovSetting.IsDone( gameLocal.time ) ) {
+		if( fovSetting.IsDone( gameLocal.time ) )
+		{
 			player->SetInfluenceFov( 0.0f );
 			BecomeInactive( TH_THINK );
 		}
-	} else {
+	}
+	else
+	{
 		BecomeInactive( TH_ALL );
 	}
 }
@@ -1366,7 +1558,7 @@ idTarget_LockDoor
 */
 
 CLASS_DECLARATION( idTarget, idTarget_LockDoor )
-	EVENT( EV_Activate,	idTarget_LockDoor::Event_Activate )
+EVENT( EV_Activate,	idTarget_LockDoor::Event_Activate )
 END_CLASS
 
 /*
@@ -1374,19 +1566,25 @@ END_CLASS
 idTarget_LockDoor::Event_Activate
 ================
 */
-void idTarget_LockDoor::Event_Activate( idEntity *activator ) {
+void idTarget_LockDoor::Event_Activate( idEntity* activator )
+{
 	int i;
-	idEntity *ent;
+	idEntity* ent;
 	int lock;
 
 	lock = spawnArgs.GetInt( "locked", "1" );
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent && ent->IsType( idDoor::Type ) ) {
-			if ( static_cast<idDoor *>( ent )->IsLocked() ) {
-				static_cast<idDoor *>( ent )->Lock( 0 );
-			} else {
-				static_cast<idDoor *>( ent )->Lock( lock );
+		if( ent && ent->IsType( idDoor::Type ) )
+		{
+			if( static_cast<idDoor*>( ent )->IsLocked() )
+			{
+				static_cast<idDoor*>( ent )->Lock( 0 );
+			}
+			else
+			{
+				static_cast<idDoor*>( ent )->Lock( lock );
 			}
 		}
 	}
@@ -1401,7 +1599,7 @@ idTarget_CallObjectFunction
 */
 
 CLASS_DECLARATION( idTarget, idTarget_CallObjectFunction )
-	EVENT( EV_Activate,	idTarget_CallObjectFunction::Event_Activate )
+EVENT( EV_Activate,	idTarget_CallObjectFunction::Event_Activate )
 END_CLASS
 
 /*
@@ -1409,25 +1607,31 @@ END_CLASS
 idTarget_CallObjectFunction::Event_Activate
 ================
 */
-void idTarget_CallObjectFunction::Event_Activate( idEntity *activator ) {
+void idTarget_CallObjectFunction::Event_Activate( idEntity* activator )
+{
 	int					i;
-	idEntity			*ent;
-	const function_t	*func;
-	const char			*funcName;
-	idThread			*thread;
+	idEntity*			ent;
+	const function_t*	func;
+	const char*			funcName;
+	idThread*			thread;
 
 	funcName = spawnArgs.GetString( "call" );
-	for( i = 0; i < targets.Num(); i++ ) {
+	for( i = 0; i < targets.Num(); i++ )
+	{
 		ent = targets[ i ].GetEntity();
-		if ( ent && ent->scriptObject.HasObject() ) {
+		if( ent && ent->scriptObject.HasObject() )
+		{
 			func = ent->scriptObject.GetFunction( funcName );
-			if ( !func ) {
+			if( !func )
+			{
 				gameLocal.Error( "Function '%s' not found on entity '%s' for function call from '%s'", funcName, ent->name.c_str(), name.c_str() );
 			}
-			if ( func->type->NumParameters() != 1 ) {
+			if( func->type->NumParameters() != 1 )
+			{
 				gameLocal.Error( "Function '%s' on entity '%s' has the wrong number of parameters for function call from '%s'", funcName, ent->name.c_str(), name.c_str() );
 			}
-			if ( !ent->scriptObject.GetTypeDef()->Inherits( func->type->GetParmType( 0 ) ) ) {
+			if( !ent->scriptObject.GetTypeDef()->Inherits( func->type->GetParmType( 0 ) ) )
+			{
 				gameLocal.Error( "Function '%s' on entity '%s' is the wrong type for function call from '%s'", funcName, ent->name.c_str(), name.c_str() );
 			}
 			// create a thread and call the function
@@ -1448,7 +1652,7 @@ idTarget_EnableLevelWeapons
 */
 
 CLASS_DECLARATION( idTarget, idTarget_EnableLevelWeapons )
-	EVENT( EV_Activate,	idTarget_EnableLevelWeapons::Event_Activate )
+EVENT( EV_Activate,	idTarget_EnableLevelWeapons::Event_Activate )
 END_CLASS
 
 /*
@@ -1456,24 +1660,33 @@ END_CLASS
 idTarget_EnableLevelWeapons::Event_Activate
 ================
 */
-void idTarget_EnableLevelWeapons::Event_Activate( idEntity *activator ) {
+void idTarget_EnableLevelWeapons::Event_Activate( idEntity* activator )
+{
 	int i;
-	const char *weap;
+	const char* weap;
 
 	gameLocal.world->spawnArgs.SetBool( "no_Weapons", spawnArgs.GetBool( "disable" ) );
 
-	if ( spawnArgs.GetBool( "disable" ) ) {
-		for( i = 0; i < gameLocal.numClients; i++ ) {
-			if ( gameLocal.entities[ i ] ) {
+	if( spawnArgs.GetBool( "disable" ) )
+	{
+		for( i = 0; i < gameLocal.numClients; i++ )
+		{
+			if( gameLocal.entities[ i ] )
+			{
 				gameLocal.entities[ i ]->ProcessEvent( &EV_Player_DisableWeapon );
 			}
 		}
-	} else {
+	}
+	else
+	{
 		weap = spawnArgs.GetString( "weapon" );
-		for( i = 0; i < gameLocal.numClients; i++ ) {
-			if ( gameLocal.entities[ i ] ) {
+		for( i = 0; i < gameLocal.numClients; i++ )
+		{
+			if( gameLocal.entities[ i ] )
+			{
 				gameLocal.entities[ i ]->ProcessEvent( &EV_Player_EnableWeapon );
-				if ( weap && weap[ 0 ] ) {
+				if( weap && weap[ 0 ] )
+				{
 					gameLocal.entities[ i ]->PostEventSec( &EV_Player_SelectWeapon, 0.5f, weap );
 				}
 			}
@@ -1499,12 +1712,16 @@ END_CLASS
 idTarget_RemoveWeapons::Event_Activate
 ================
 */
-void idTarget_RemoveWeapons::Event_Activate( idEntity *activator ) {
-	for( int i = 0; i < gameLocal.numClients; i++ ) {
-		if ( gameLocal.entities[ i ] ) {
-			idPlayer *player = static_cast< idPlayer* >( gameLocal.entities[i] );
-			const idKeyValue *kv = spawnArgs.MatchPrefix( "weapon", NULL );
-			while ( kv ) {
+void idTarget_RemoveWeapons::Event_Activate( idEntity* activator )
+{
+	for( int i = 0; i < gameLocal.numClients; i++ )
+	{
+		if( gameLocal.entities[ i ] )
+		{
+			idPlayer* player = static_cast< idPlayer* >( gameLocal.entities[i] );
+			const idKeyValue* kv = spawnArgs.MatchPrefix( "weapon", NULL );
+			while( kv )
+			{
 				player->RemoveWeapon( kv->GetValue() );
 				kv = spawnArgs.MatchPrefix( "weapon", kv );
 			}
@@ -1531,10 +1748,13 @@ END_CLASS
 idTarget_LevelTrigger::Event_Activate
 ================
 */
-void idTarget_LevelTrigger::Event_Activate( idEntity *activator ) {
-	for( int i = 0; i < gameLocal.numClients; i++ ) {
-		if ( gameLocal.entities[ i ] ) {
-			idPlayer *player = static_cast< idPlayer* >( gameLocal.entities[i] );
+void idTarget_LevelTrigger::Event_Activate( idEntity* activator )
+{
+	for( int i = 0; i < gameLocal.numClients; i++ )
+	{
+		if( gameLocal.entities[ i ] )
+		{
+			idPlayer* player = static_cast< idPlayer* >( gameLocal.entities[i] );
 			player->SetLevelTrigger( spawnArgs.GetString( "levelName" ), spawnArgs.GetString( "triggerName" ) );
 		}
 	}
@@ -1560,15 +1780,18 @@ END_CLASS
 idTarget_FadeSoundClass::Event_Activate
 ================
 */
-void idTarget_FadeSoundClass::Event_Activate( idEntity *activator ) {
+void idTarget_FadeSoundClass::Event_Activate( idEntity* activator )
+{
 	float fadeTime = spawnArgs.GetFloat( "fadeTime" );
 	float fadeDB = spawnArgs.GetFloat( "fadeDB" );
 	float fadeDuration = spawnArgs.GetFloat( "fadeDuration" );
 	int fadeClass = spawnArgs.GetInt( "fadeClass" );
 	// start any sound fading now
-	if ( fadeTime ) {
+	if( fadeTime )
+	{
 		gameSoundWorld->FadeSoundClasses( fadeClass, spawnArgs.GetBool( "fadeIn" ) ? fadeDB : 0.0f - fadeDB, fadeTime );
-		if ( fadeDuration ) {
+		if( fadeDuration )
+		{
 			PostEventSec( &EV_RestoreVolume, fadeDuration );
 		}
 	}
@@ -1579,7 +1802,8 @@ void idTarget_FadeSoundClass::Event_Activate( idEntity *activator ) {
 idTarget_FadeSoundClass::Event_RestoreVolume
 ================
 */
-void idTarget_FadeSoundClass::Event_RestoreVolume() {
+void idTarget_FadeSoundClass::Event_RestoreVolume()
+{
 	float fadeTime = spawnArgs.GetFloat( "fadeTime" );
 	float fadeDB = spawnArgs.GetFloat( "fadeDB" );
 //	int fadeClass = spawnArgs.GetInt( "fadeClass" );	// sikk - warning C4189: 'fadeClass' : variable initialized but not used (should be used as an arg below?)

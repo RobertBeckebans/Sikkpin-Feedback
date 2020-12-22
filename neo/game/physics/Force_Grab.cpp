@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ END_CLASS
 idForce_Grab::Save
 ================
 */
-void idForce_Grab::Save( idSaveGame *savefile ) const {
+void idForce_Grab::Save( idSaveGame* savefile ) const
+{
 	savefile->WriteFloat( damping );
 	savefile->WriteVec3( goalPosition );
 	savefile->WriteFloat( distanceToGoal );
@@ -52,7 +53,8 @@ void idForce_Grab::Save( idSaveGame *savefile ) const {
 idForce_Grab::Restore
 ================
 */
-void idForce_Grab::Restore( idRestoreGame *savefile ) {
+void idForce_Grab::Restore( idRestoreGame* savefile )
+{
 	//Note: Owner needs to call set physics
 	savefile->ReadFloat( damping );
 	savefile->ReadVec3( goalPosition );
@@ -65,7 +67,8 @@ void idForce_Grab::Restore( idRestoreGame *savefile ) {
 idForce_Grab::idForce_Grab
 ================
 */
-idForce_Grab::idForce_Grab( void ) {
+idForce_Grab::idForce_Grab( void )
+{
 	damping			= 0.5f;
 	physics			= NULL;
 	id				= 0;
@@ -76,7 +79,8 @@ idForce_Grab::idForce_Grab( void ) {
 idForce_Grab::~idForce_Grab
 ================
 */
-idForce_Grab::~idForce_Grab( void ) {
+idForce_Grab::~idForce_Grab( void )
+{
 }
 
 /*
@@ -84,8 +88,10 @@ idForce_Grab::~idForce_Grab( void ) {
 idForce_Grab::Init
 ================
 */
-void idForce_Grab::Init( float damping ) {
-	if ( damping >= 0.0f && damping < 1.0f ) {
+void idForce_Grab::Init( float damping )
+{
+	if( damping >= 0.0f && damping < 1.0f )
+	{
 		this->damping = damping;
 	}
 }
@@ -95,7 +101,8 @@ void idForce_Grab::Init( float damping ) {
 idForce_Grab::SetPhysics
 ================
 */
-void idForce_Grab::SetPhysics( idPhysics *phys, int id, const idVec3 &goal ) {
+void idForce_Grab::SetPhysics( idPhysics* phys, int id, const idVec3& goal )
+{
 	this->physics = phys;
 	this->id = id;
 	this->goalPosition = goal;
@@ -106,7 +113,8 @@ void idForce_Grab::SetPhysics( idPhysics *phys, int id, const idVec3 &goal ) {
 idForce_Grab::SetGoalPosition
 ================
 */
-void idForce_Grab::SetGoalPosition( const idVec3 &goal ) {
+void idForce_Grab::SetGoalPosition( const idVec3& goal )
+{
 	this->goalPosition = goal;
 }
 
@@ -115,7 +123,8 @@ void idForce_Grab::SetGoalPosition( const idVec3 &goal ) {
 idForce_Grab::GetDistanceToGoal
 =================
 */
-float idForce_Grab::GetDistanceToGoal( void ) {
+float idForce_Grab::GetDistanceToGoal( void )
+{
 	return distanceToGoal;
 }
 
@@ -124,9 +133,12 @@ float idForce_Grab::GetDistanceToGoal( void ) {
 idForce_Grab::Evaluate
 ================
 */
-void idForce_Grab::Evaluate( int time ) {
-	if ( !physics )
+void idForce_Grab::Evaluate( int time )
+{
+	if( !physics )
+	{
 		return;
+	}
 
 	idVec3	forceDir, v, objectCenter;
 	float	forceAmt;
@@ -138,22 +150,29 @@ void idForce_Grab::Evaluate( int time ) {
 	distanceToGoal = forceDir.Normalize();
 
 	float temp = distanceToGoal;
-	if ( temp > 12.0f && temp < 32.0f ) {
+	if( temp > 12.0f && temp < 32.0f )
+	{
 		temp = 32.0f;
 	}
 	forceAmt = ( 1000.0f * mass ) + ( 500.0f * temp * mass );
 
-	if ( forceAmt / mass > 120000.0f ) {
+	if( forceAmt / mass > 120000.0f )
+	{
 		forceAmt = 120000.0f * mass;
 	}
 	physics->AddForce( id, objectCenter, forceDir * forceAmt );
 
-	if ( distanceToGoal < 128.0f ) {
+	if( distanceToGoal < 128.0f )
+	{
 		v = physics->GetLinearVelocity( id );
-		if ( distanceToGoal <= 1.0f )
+		if( distanceToGoal <= 1.0f )
+		{
 			physics->SetLinearVelocity( vec3_origin, id );
+		}
 		else
+		{
 			physics->SetLinearVelocity( v * damping, id );
+		}
 	}
 
 	physics->SetAngularVelocity( vec3_origin, id );
@@ -170,8 +189,10 @@ void idForce_Grab::Evaluate( int time ) {
 idForce_Grab::RemovePhysics
 ================
 */
-void idForce_Grab::RemovePhysics( const idPhysics *phys ) {
-	if ( physics == phys ) {
+void idForce_Grab::RemovePhysics( const idPhysics* phys )
+{
+	if( physics == phys )
+	{
 		physics = NULL;
 	}
 }

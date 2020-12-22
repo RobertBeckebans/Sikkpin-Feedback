@@ -12,7 +12,8 @@
 idPlayerCursor::idPlayerCursor
 ===============
 */
-idPlayerCursor::idPlayerCursor() {
+idPlayerCursor::idPlayerCursor()
+{
 	cursorHandle   = -1;
 	created = false;
 }
@@ -22,7 +23,8 @@ idPlayerCursor::idPlayerCursor() {
 idPlayerCursor::~idPlayerCursor
 ===============
 */
-idPlayerCursor::~idPlayerCursor() {
+idPlayerCursor::~idPlayerCursor()
+{
 	FreeCursor();
 }
 
@@ -33,8 +35,10 @@ idPlayerCursor::FreeCursor
 Post: tells the game render world to free the cross hair entity, sets the cursor
 handle to -1 and sets created to false
 */
-void idPlayerCursor::FreeCursor( void ) {
-	if ( cursorHandle != -1 ) {
+void idPlayerCursor::FreeCursor( void )
+{
+	if( cursorHandle != -1 )
+	{
 		gameRenderWorld->FreeEntityDef( cursorHandle );
 		cursorHandle = -1;
 		created = false;
@@ -46,8 +50,9 @@ void idPlayerCursor::FreeCursor( void ) {
 idPlayerCursor::Draw
 ===============
 */
-void idPlayerCursor::Draw( const idVec3 &origin, const idMat3 &axis, const char *material ) {
-	idPlayer *localPlayer = gameLocal.GetLocalPlayer();
+void idPlayerCursor::Draw( const idVec3& origin, const idMat3& axis, const char* material )
+{
+	idPlayer* localPlayer = gameLocal.GetLocalPlayer();
 	trace_t		tr;
 	float		distance = 60;
 	float		length;
@@ -68,7 +73,8 @@ void idPlayerCursor::Draw( const idVec3 &origin, const idMat3 &axis, const char 
 	//linearly interpolate 5 feet between the camera position and the point at which the weapon is aiming
 	endPos.Lerp( cameraOrigin, endPos, length );
 
-	if ( !CreateCursor( localPlayer, endPos, cameraAxis, material ) ) {
+	if( !CreateCursor( localPlayer, endPos, cameraAxis, material ) )
+	{
 		UpdateCursor( localPlayer,  endPos, cameraAxis );
 	}
 }
@@ -78,11 +84,13 @@ void idPlayerCursor::Draw( const idVec3 &origin, const idMat3 &axis, const char 
 idPlayerCursor::CreateCursor
 ===============
 */
-bool idPlayerCursor::CreateCursor( idPlayer *player, const idVec3 &origin, const idMat3 &axis, const char *material ) {
-	const char *mtr =  material;
+bool idPlayerCursor::CreateCursor( idPlayer* player, const idVec3& origin, const idMat3& axis, const char* material )
+{
+	const char* mtr =  material;
 	int out = cursorHandle;
 
-	if ( out >= 0 ) {
+	if( out >= 0 )
+	{
 		return false;
 	}
 
@@ -119,7 +127,8 @@ bool idPlayerCursor::CreateCursor( idPlayer *player, const idVec3 &origin, const
 idPlayerCursor::UpdateCursor
 ===============
 */
-void idPlayerCursor::UpdateCursor( idPlayer* player,  const idVec3 &origin, const idMat3 &axis ) {
+void idPlayerCursor::UpdateCursor( idPlayer* player,  const idVec3& origin, const idMat3& axis )
+{
 	assert( cursorHandle >= 0 );
 	renderEnt.origin = origin;
 	renderEnt.axis   = axis;

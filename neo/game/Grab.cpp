@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,7 +61,8 @@ END_CLASS
 idGrabEntity::idGrabEntity
 ==============
 */
-idGrabEntity::idGrabEntity( void ) {
+idGrabEntity::idGrabEntity( void )
+{
 	Clear();
 }
 
@@ -70,7 +71,8 @@ idGrabEntity::idGrabEntity( void ) {
 idGrabEntity::~idGrabEntity
 ==============
 */
-idGrabEntity::~idGrabEntity( void ) {
+idGrabEntity::~idGrabEntity( void )
+{
 	StopDrag( owner, true );
 }
 
@@ -79,7 +81,8 @@ idGrabEntity::~idGrabEntity( void ) {
 idGrabEntity::Clear
 ==============
 */
-void idGrabEntity::Clear() {
+void idGrabEntity::Clear()
+{
 	dragEnt			= NULL;
 	owner			= NULL;
 	id				= 0;
@@ -94,9 +97,11 @@ void idGrabEntity::Clear() {
 idGrabEntity::StartDrag
 ==============
 */
-void idGrabEntity::StartDrag( idPlayer *player, idEntity *grabEnt, int id ) {
-	if ( grabEnt && grabEnt->GetPhysics()->GetBounds().GetRadius() < MAX_PICKUP_SIZE &&
-		grabEnt->GetPhysics()->GetLinearVelocity().LengthSqr() < MAX_PICKUP_VELOCITY ) {
+void idGrabEntity::StartDrag( idPlayer* player, idEntity* grabEnt, int id )
+{
+	if( grabEnt && grabEnt->GetPhysics()->GetBounds().GetRadius() < MAX_PICKUP_SIZE &&
+			grabEnt->GetPhysics()->GetLinearVelocity().LengthSqr() < MAX_PICKUP_VELOCITY )
+	{
 
 		dragFailTime = gameLocal.time + FAIL_TIME;
 
@@ -106,12 +111,12 @@ void idGrabEntity::StartDrag( idPlayer *player, idEntity *grabEnt, int id ) {
 		dragEnt = grabEnt;
 
 		// Get the current physics object to manipulate
-		idPhysics *phys = grabEnt->GetPhysics();
+		idPhysics* phys = grabEnt->GetPhysics();
 
 		// Turn off gravity on object
 		saveGravity = phys->GetGravity();
 		phys->SetGravity( vec3_origin );
-		
+
 		// hold it directly in front of player, distance depends on object size
 		float lerp = 1.0f - ( grabEnt->GetPhysics()->GetBounds().GetRadius() / MAX_HOLD_DISTANCE );
 		lerp *= lerp;
@@ -131,21 +136,28 @@ void idGrabEntity::StartDrag( idPlayer *player, idEntity *grabEnt, int id ) {
 idGrabEntity::StopDrag
 ==============
 */
-void idGrabEntity::StopDrag( idPlayer *player, bool drop ) {
-	if ( dragEnt.IsValid() ) {
-		idEntity *ent = dragEnt.GetEntity();
+void idGrabEntity::StopDrag( idPlayer* player, bool drop )
+{
+	if( dragEnt.IsValid() )
+	{
+		idEntity* ent = dragEnt.GetEntity();
 
 		// If a cinematic has started, allow dropped object to think in cinematics
-		if ( gameLocal.inCinematic )
+		if( gameLocal.inCinematic )
+		{
 			ent->cinematic = true;
+		}
 
 		// Restore Gravity
 		ent->GetPhysics()->SetGravity( saveGravity );
 
 		// If the object isn't near its goal, just drop it in place.
-		if ( drop || drag.GetDistanceToGoal() > DRAG_FAIL_LEN ) {
+		if( drop || drag.GetDistanceToGoal() > DRAG_FAIL_LEN )
+		{
 			ent->GetPhysics()->SetLinearVelocity( vec3_origin );
-		} else {	// throw the object forward
+		}
+		else  	// throw the object forward
+		{
 			ent->ApplyImpulse( player, 0, ent->GetPhysics()->GetOrigin(), player->firstPersonViewAxis[0] * THROW_SCALE );
 			player->StartSoundShader( declManager->FindSound( "use_throw" ), SND_CHANNEL_VOICE, 0, false, NULL );
 		}
@@ -163,13 +175,15 @@ void idGrabEntity::StopDrag( idPlayer *player, bool drop ) {
 idGrabEntity::Update
 ==============
 */
-void idGrabEntity::Update( idPlayer *player ) {
+void idGrabEntity::Update( idPlayer* player )
+{
 	trace_t trace;
 //	idEntity *newEnt;
 
 	owner = player;
 
-	if ( lastThrownTime > gameLocal.time ) {
+	if( lastThrownTime > gameLocal.time )
+	{
 		prevViewAngles = player->viewAngles;
 		return;
 	}
@@ -177,22 +191,25 @@ void idGrabEntity::Update( idPlayer *player ) {
 	bool valid = dragEnt.IsValid();
 
 	// Check if object being held has been removed or player is dead
-	if ( valid && dragEnt.GetEntity()->IsHidden() || player->health <= 0 ) {
+	if( valid && dragEnt.GetEntity()->IsHidden() || player->health <= 0 )
+	{
 		StopDrag( player, true );
 		prevViewAngles = player->viewAngles;
 		return;
 	}
 
-	// attack throws object 
-	if ( valid && player->usercmd.buttons & BUTTON_ATTACK ) {
+	// attack throws object
+	if( valid && player->usercmd.buttons & BUTTON_ATTACK )
+	{
 		StopDrag( player, false );
 		prevViewAngles = player->viewAngles;
 		return;
 	}
 
 	// if there is an entity selected for dragging
-	if ( dragEnt.GetEntity() ) {
-		idPhysics *entPhys = dragEnt.GetEntity()->GetPhysics();
+	if( dragEnt.GetEntity() )
+	{
+		idPhysics* entPhys = dragEnt.GetEntity()->GetPhysics();
 		idVec3 goalPos;
 
 		// Check if the player is standing on the object
@@ -208,7 +225,8 @@ void idGrabEntity::Update( idPlayer *player ) {
 		playerBounds.ExpandSelf( 8.0f );
 
 		// If it intersects the object bounds, then drop it
-		if ( playerBounds.IntersectsBounds( objectBounds ) ) {
+		if( playerBounds.IntersectsBounds( objectBounds ) )
+		{
 			StopDrag( player, true );
 			prevViewAngles = player->viewAngles;
 			return;
@@ -216,10 +234,14 @@ void idGrabEntity::Update( idPlayer *player ) {
 
 		idAngles ang = entPhys->GetAxis().ToAngles();
 		ang.yaw += player->viewAngles.yaw - prevViewAngles.yaw;
-		if ( ang.yaw > 180.0f )
+		if( ang.yaw > 180.0f )
+		{
 			ang.yaw -= 360.0f;
-		else if ( ang.yaw < -180.0f )
+		}
+		else if( ang.yaw < -180.0f )
+		{
 			ang.yaw += 360.0f;
+		}
 		entPhys->SetAxis( ang.ToMat3() );
 
 		// Set and evaluate drag force
@@ -229,13 +251,17 @@ void idGrabEntity::Update( idPlayer *player ) {
 		drag.Evaluate( gameLocal.time );
 
 		// If the object is stuck away from its intended position for more than 500ms, let it go.
-		if ( drag.GetDistanceToGoal() > DRAG_FAIL_LEN ) {
-			if ( dragFailTime < gameLocal.time ) {
+		if( drag.GetDistanceToGoal() > DRAG_FAIL_LEN )
+		{
+			if( dragFailTime < gameLocal.time )
+			{
 				StopDrag( player, true );
 				prevViewAngles = player->viewAngles;
 				return;
 			}
-		} else {
+		}
+		else
+		{
 			dragFailTime = gameLocal.time + 1000;
 		}
 	}

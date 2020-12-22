@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,28 +30,38 @@ If you have questions concerning this license or the applicable additional terms
 /*
 ===============================================================================
 
-	Grab Object - Class to extend idWeapon to include functionality for 
+	Grab Object - Class to extend idWeapon to include functionality for
 						manipulating physics objects.
 
 ===============================================================================
 */
 
-class idGrabEntity : public idEntity {
+class idGrabEntity : public idEntity
+{
 public:
 	CLASS_PROTOTYPE( idGrabEntity );
 
-							idGrabEntity( void );
-							~idGrabEntity( void );
+	idGrabEntity( void );
+	~idGrabEntity( void );
 
 	void					Clear();
 
-	void					Update( idPlayer *player );
-	void					StartDrag( idPlayer *player, idEntity *grabEnt, int id );
-	void					StopDrag( idPlayer *player, bool drop );
+	void					Update( idPlayer* player );
+	void					StartDrag( idPlayer* player, idEntity* grabEnt, int id );
+	void					StopDrag( idPlayer* player, bool drop );
 
-	idEntity *				GetGrabEntity( void ) const { return dragEnt.GetEntity(); }
-	int						GetThrownTime( void ) const { return lastThrownTime; }
-	int						SetThrownTime( int time ) { lastThrownTime = time; }
+	idEntity* 				GetGrabEntity( void ) const
+	{
+		return dragEnt.GetEntity();
+	}
+	int						GetThrownTime( void ) const
+	{
+		return lastThrownTime;
+	}
+	int						SetThrownTime( int time )
+	{
+		lastThrownTime = time;
+	}
 
 private:
 	idEntityPtr<idEntity>	dragEnt;			// entity being dragged

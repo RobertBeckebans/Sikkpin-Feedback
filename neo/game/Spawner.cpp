@@ -18,10 +18,10 @@ const idEventDef EV_Spawner_NumActiveEntities( "numActiveEntities", "", 'd' );
 const idEventDef EV_Spawner_GetActiveEntity( "getActiveEntity", "d", 'e' );
 
 CLASS_DECLARATION( idEntity, idSpawner )
-	EVENT( EV_Activate,								idSpawner::Event_Activate )
-	EVENT( EV_Spawner_RemoveNullActiveEntities,		idSpawner::Event_RemoveNullActiveEntities )
-	EVENT( EV_Spawner_NumActiveEntities,			idSpawner::Event_NumActiveEntities )
-	EVENT( EV_Spawner_GetActiveEntity,				idSpawner::Event_GetActiveEntity )
+EVENT( EV_Activate,								idSpawner::Event_Activate )
+EVENT( EV_Spawner_RemoveNullActiveEntities,		idSpawner::Event_RemoveNullActiveEntities )
+EVENT( EV_Spawner_NumActiveEntities,			idSpawner::Event_NumActiveEntities )
+EVENT( EV_Spawner_GetActiveEntity,				idSpawner::Event_GetActiveEntity )
 END_CLASS
 
 /*
@@ -29,25 +29,29 @@ END_CLASS
 idSpawner::Spawn
 ==============
 */
-void idSpawner::Spawn( void ){
+void idSpawner::Spawn( void )
+{
 	GetPhysics()->SetContents( 0 );
 
 	// TEMP: read max_team_test until we can get it out of all the current maps
-	if ( !spawnArgs.GetInt( "max_active", "4", maxActive ) ) {
-		if ( spawnArgs.GetInt( "max_team_test", "4", maxActive ) ) {
+	if( !spawnArgs.GetInt( "max_active", "4", maxActive ) )
+	{
+		if( spawnArgs.GetInt( "max_team_test", "4", maxActive ) )
+		{
 			gameLocal.Warning( "spawner '%s' using outdated 'max_team_test', please change to 'max_active'", GetName() );
 		}
 	}
 
 	maxToSpawn		= spawnArgs.GetInt( "count", "-1" );
-	skipVisible		= spawnArgs.GetBool ( "skipvisible", "0" );
+	skipVisible		= spawnArgs.GetBool( "skipvisible", "0" );
 	spawnWaves		= spawnArgs.GetInt( "waves", "1" );
 	spawnDelay		= SEC2MS( spawnArgs.GetFloat( "delay", "2" ) );
 	numSpawned		= 0;
 	nextSpawnTime	= 0;
 
 	// Spawn waves has to be less than max active
-	if ( spawnWaves > maxActive ) {
+	if( spawnWaves > maxActive )
+	{
 		spawnWaves = maxActive;
 	}
 
@@ -59,7 +63,8 @@ void idSpawner::Spawn( void ){
 idSpawner::Save
 ==============
 */
-void idSpawner::Save( idSaveGame *savefile ) const{
+void idSpawner::Save( idSaveGame* savefile ) const
+{
 	int i;
 
 	savefile->WriteInt( numSpawned );
@@ -68,7 +73,8 @@ void idSpawner::Save( idSaveGame *savefile ) const{
 	savefile->WriteInt( maxActive );
 
 	savefile->WriteInt( currentActive.Num() );
-	for ( i = 0; i < currentActive.Num(); i++ ) {
+	for( i = 0; i < currentActive.Num(); i++ )
+	{
 		currentActive[ i ].Save( savefile );
 	}
 
@@ -77,12 +83,14 @@ void idSpawner::Save( idSaveGame *savefile ) const{
 	savefile->WriteBool( skipVisible );
 
 	savefile->WriteInt( spawnPoints.Num() );
-    for ( i = 0; i < spawnPoints.Num(); i++ ) {
+	for( i = 0; i < spawnPoints.Num(); i++ )
+	{
 		spawnPoints[ i ].Save( savefile );
 	}
 
 	savefile->WriteInt( callbacks.Num() );
-	for ( i = 0; i < callbacks.Num(); i++ ) {
+	for( i = 0; i < callbacks.Num(); i++ )
+	{
 		callbacks[ i ].ent.Save( savefile );
 		savefile->WriteString( callbacks[ i ].event );
 	}
@@ -93,7 +101,8 @@ void idSpawner::Save( idSaveGame *savefile ) const{
 idSpawner::Restore
 ==============
 */
-void idSpawner::Restore( idRestoreGame *savefile ){
+void idSpawner::Restore( idRestoreGame* savefile )
+{
 	int num;
 	int i;
 
@@ -101,12 +110,13 @@ void idSpawner::Restore( idRestoreGame *savefile ){
 	savefile->ReadInt( maxToSpawn );
 	savefile->ReadFloat( nextSpawnTime );
 	savefile->ReadInt( maxActive );
-	
+
 	savefile->ReadInt( num );
 	currentActive.Clear( );
 	currentActive.SetNum( num );
-	for ( i = 0; i < num; i++ ) {
-		currentActive[ i ].Restore ( savefile );
+	for( i = 0; i < num; i++ )
+	{
+		currentActive[ i ].Restore( savefile );
 	}
 
 	savefile->ReadInt( spawnWaves );
@@ -115,13 +125,15 @@ void idSpawner::Restore( idRestoreGame *savefile ){
 
 	savefile->ReadInt( num );
 	spawnPoints.SetNum( num );
-	for ( i = 0; i < num; i ++ ) {
+	for( i = 0; i < num; i ++ )
+	{
 		spawnPoints[ i ].Restore( savefile );
 	}
 
 	savefile->ReadInt( num );
 	callbacks.SetNum( num );
-	for ( i = 0; i < num; i ++ ) {
+	for( i = 0; i < num; i ++ )
+	{
 		callbacks[ i ].ent.Restore( savefile );
 		savefile->ReadString( callbacks[ i ].event );
 	}
@@ -133,13 +145,15 @@ void idSpawner::Restore( idRestoreGame *savefile ){
 ==============
 idSpawner::FindSpawnTypes
 
-Generate the list of classnames to spawn from the spawnArgs.  Anything matching the 
+Generate the list of classnames to spawn from the spawnArgs.  Anything matching the
 prefix "def_spawn" will be included in the list.
 ==============
 */
-void idSpawner::FindSpawnTypes( void ){
-	const idKeyValue *kv;	
-	for ( kv = spawnArgs.MatchPrefix( "def_spawn", NULL ); kv; kv = spawnArgs.MatchPrefix( "def_spawn", kv ) ) {
+void idSpawner::FindSpawnTypes( void )
+{
+	const idKeyValue* kv;
+	for( kv = spawnArgs.MatchPrefix( "def_spawn", NULL ); kv; kv = spawnArgs.MatchPrefix( "def_spawn", kv ) )
+	{
 		spawnTypes.Append( kv->GetValue() );
 
 		// precache decls
@@ -152,36 +166,43 @@ void idSpawner::FindSpawnTypes( void ){
 idSpawner::FindTargets
 ==============
 */
-void idSpawner::FindTargets( void ) {
+void idSpawner::FindTargets( void )
+{
 	int i;
 	idBounds bounds( idVec3( -16, -16, 0 ), idVec3( 16, 16, 72 ) );
 	trace_t tr;
-	
+
 	idEntity::FindTargets();
-	if ( !spawnPoints.Num() ) {
-		const idKeyValue *kv;	
-		for ( kv = spawnArgs.MatchPrefix( "target", NULL ); kv; kv = spawnArgs.MatchPrefix( "target", kv ) ) {
+	if( !spawnPoints.Num() )
+	{
+		const idKeyValue* kv;
+		for( kv = spawnArgs.MatchPrefix( "target", NULL ); kv; kv = spawnArgs.MatchPrefix( "target", kv ) )
+		{
 			spawnPoints.Append( gameLocal.FindEntity( kv->GetValue() ) );
 		}
 	}
 
 	// Copy the relevant targets to the spawn point list (right now only target_null entities)
-	for ( i = targets.Num() - 1; i >= 0; i-- ) {
+	for( i = targets.Num() - 1; i >= 0; i-- )
+	{
 		idEntity* ent;
 		ent = targets[ i ].GetEntity();
-		if ( idStr::Icmp( ent->spawnArgs.GetString( "classname" ), "target_null" ) ) {
+		if( idStr::Icmp( ent->spawnArgs.GetString( "classname" ), "target_null" ) )
+		{
 			continue;
 		}
-		
-		idEntityPtr<idEntity> &entityPtr = spawnPoints.Alloc();
-		entityPtr = ent;		
 
-		if ( !spawnArgs.GetBool( "ignoreSpawnPointValidation" ) ) {
+		idEntityPtr<idEntity>& entityPtr = spawnPoints.Alloc();
+		entityPtr = ent;
+
+		if( !spawnArgs.GetBool( "ignoreSpawnPointValidation" ) )
+		{
 			gameLocal.clip.TraceBounds( tr, ent->GetPhysics()->GetOrigin(), ent->GetPhysics()->GetOrigin(), bounds, MASK_MONSTERSOLID, NULL );
-			if ( gameLocal.entities[ tr.c.entityNum ] && !gameLocal.entities[ tr.c.entityNum ]->IsType( idActor::Type ) ) {
+			if( gameLocal.entities[ tr.c.entityNum ] && !gameLocal.entities[ tr.c.entityNum ]->IsType( idActor::Type ) )
+			{
 				//drop a console warning here
-				gameLocal.Warning( "Spawner '%s' can't spawn at point '%s', the monster won't fit.", GetName(), ent->GetName() );		
-			}	
+				gameLocal.Warning( "Spawner '%s' can't spawn at point '%s', the monster won't fit.", GetName(), ent->GetName() );
+			}
 		}
 	}
 }
@@ -191,9 +212,11 @@ void idSpawner::FindTargets( void ) {
 idSpawner::ValidateSpawnPoint
 ==============
 */
-bool idSpawner::ValidateSpawnPoint( const idVec3 origin, const idBounds &bounds ){
+bool idSpawner::ValidateSpawnPoint( const idVec3 origin, const idBounds& bounds )
+{
 	trace_t tr;
-	if ( spawnArgs.GetBool( "ignoreSpawnPointValidation" ) ) {
+	if( spawnArgs.GetBool( "ignoreSpawnPointValidation" ) )
+	{
 		return true;
 	}
 
@@ -206,12 +229,14 @@ bool idSpawner::ValidateSpawnPoint( const idVec3 origin, const idBounds &bounds 
 idSpawner::AddSpawnPoint
 ==============
 */
-void idSpawner::AddSpawnPoint( idEntity* point ) {
-	idEntityPtr<idEntity> &entityPtr = spawnPoints.Alloc();
+void idSpawner::AddSpawnPoint( idEntity* point )
+{
+	idEntityPtr<idEntity>& entityPtr = spawnPoints.Alloc();
 	entityPtr = point;
-	
+
 	// If there were no spawnPoints then start with the delay
-	if ( spawnPoints.Num() == 1 ) {
+	if( spawnPoints.Num() == 1 )
+	{
 		nextSpawnTime = gameLocal.time + spawnDelay;
 	}
 }
@@ -221,10 +246,13 @@ void idSpawner::AddSpawnPoint( idEntity* point ) {
 idSpawner::RemoveSpawnPoint
 ==============
 */
-void idSpawner::RemoveSpawnPoint( idEntity* point ) {
+void idSpawner::RemoveSpawnPoint( idEntity* point )
+{
 	int i;
-	for ( i = spawnPoints.Num() - 1; i >= 0; i-- ) {
-		if ( spawnPoints[ i ].GetEntity() == point ) {
+	for( i = spawnPoints.Num() - 1; i >= 0; i-- )
+	{
+		if( spawnPoints[ i ].GetEntity() == point )
+		{
 			spawnPoints.RemoveIndex( i );
 			break;
 		}
@@ -236,7 +264,8 @@ void idSpawner::RemoveSpawnPoint( idEntity* point ) {
 idSpawner::GetSpawnPoint
 ==============
 */
-void idSpawner::AddCallback( idEntity* owner, const idEventDef* ev ) {	
+void idSpawner::AddCallback( idEntity* owner, const idEventDef* ev )
+{
 	spawnerCallback_t& callback = callbacks.Alloc();
 	callback.event = ev->GetName();
 	callback.ent = owner;
@@ -247,43 +276,50 @@ void idSpawner::AddCallback( idEntity* owner, const idEventDef* ev ) {
 idSpawner::GetSpawnPoint
 ==============
 */
-idEntity *idSpawner::GetSpawnPoint( void ) {
+idEntity* idSpawner::GetSpawnPoint( void )
+{
 	idBounds bounds( idVec3( -16, -16, 0 ), idVec3( 16, 16, 72 ) );
 	idList< idEntityPtr<idEntity> >	spawns;
 	int spawnIndex;
 	idEntity* spawnEnt;
-	
-	if ( !spawnPoints.Num() ) {
-		const idKeyValue *kv;	
-		for ( kv = spawnArgs.MatchPrefix( "target", NULL ); kv; kv = spawnArgs.MatchPrefix( "target", kv ) ) {
+
+	if( !spawnPoints.Num() )
+	{
+		const idKeyValue* kv;
+		for( kv = spawnArgs.MatchPrefix( "target", NULL ); kv; kv = spawnArgs.MatchPrefix( "target", kv ) )
+		{
 			spawnPoints.Append( gameLocal.FindEntity( kv->GetValue() ) );
 		}
 	}
 
 	// Run through all spawnPoints and choose a random one. Each time a spawn point is excluded
 	// it will be removed from the list until there are no more items in the list.
-	for ( spawns = spawnPoints; spawns.Num(); spawns.RemoveIndex( spawnIndex ) ) {		
+	for( spawns = spawnPoints; spawns.Num(); spawns.RemoveIndex( spawnIndex ) )
+	{
 		spawnIndex = gameLocal.random.RandomInt( spawns.Num() );
 		spawnEnt   = spawns[ spawnIndex ].GetEntity();
 
-		if ( !spawnEnt || !spawnEnt->GetPhysics() ) {
+		if( !spawnEnt || !spawnEnt->GetPhysics() )
+		{
 			continue;
 		}
-		
+
 		// Check to see if something is in the way at this spawn point
-		if ( !ValidateSpawnPoint( spawnEnt->GetPhysics()->GetOrigin(), bounds ) ) {
+		if( !ValidateSpawnPoint( spawnEnt->GetPhysics()->GetOrigin(), bounds ) )
+		{
 			continue;
 		}
-		
+
 		// Skip the spawn point because its currently visible?
-		if ( skipVisible && gameLocal.GetLocalPlayer()->CanSee( spawnEnt, true ) ) {
+		if( skipVisible && gameLocal.GetLocalPlayer()->CanSee( spawnEnt, true ) )
+		{
 			continue;
 		}
 
 		// Found one!
 		return spawnEnt;
 	}
-		
+
 	return NULL;
 }
 
@@ -292,29 +328,34 @@ idEntity *idSpawner::GetSpawnPoint( void ) {
 idSpawner::GetSpawnType
 ==============
 */
-const char* idSpawner::GetSpawnType( idEntity* spawnPoint ) {
+const char* idSpawner::GetSpawnType( idEntity* spawnPoint )
+{
 	const idKeyValue* kv;
-	
-	if ( spawnPoint ) {
+
+	if( spawnPoint )
+	{
 		// If the spawn point has any "def_spawn" keys then they override the normal spawn keys
 		kv = spawnPoint->spawnArgs.MatchPrefix( "def_spawn", NULL );
-		if ( kv ) {
+		if( kv )
+		{
 			const char* types[ MAX_SPAWN_TYPES ];
 			int			typeCount;
 
-			for ( typeCount = 0; typeCount < MAX_SPAWN_TYPES && kv; kv = spawnPoint->spawnArgs.MatchPrefix( "def_spawn", kv ) ) {
+			for( typeCount = 0; typeCount < MAX_SPAWN_TYPES && kv; kv = spawnPoint->spawnArgs.MatchPrefix( "def_spawn", kv ) )
+			{
 				types[ typeCount++ ] = kv->GetValue().c_str();
 			}
-			
+
 			return types[ gameLocal.random.RandomInt( typeCount ) ];
 		}
 	}
-	
+
 	// No spawn types?
-	if ( !spawnTypes.Num() ) {
+	if( !spawnTypes.Num() )
+	{
 		return "";
 	}
-	
+
 	// Return from the spawners list of types
 	return spawnTypes[ gameLocal.random.RandomInt( spawnTypes.Num() ) ];
 }
@@ -324,9 +365,11 @@ const char* idSpawner::GetSpawnType( idEntity* spawnPoint ) {
 idSpawner::CopyPrefixedSpawnArgs
 ==============
 */
-void idSpawner::CopyPrefixedSpawnArgs( idEntity *src, const char *prefix, idDict &args ){
-	const idKeyValue *kv = src->spawnArgs.MatchPrefix( prefix, NULL );
-	while ( kv ) {
+void idSpawner::CopyPrefixedSpawnArgs( idEntity* src, const char* prefix, idDict& args )
+{
+	const idKeyValue* kv = src->spawnArgs.MatchPrefix( prefix, NULL );
+	while( kv )
+	{
 		args.Set( kv->GetKey().c_str() + idStr::Length( prefix ), kv->GetValue() );
 		kv = src->spawnArgs.MatchPrefix( prefix, kv );
 	}
@@ -337,7 +380,8 @@ void idSpawner::CopyPrefixedSpawnArgs( idEntity *src, const char *prefix, idDict
 idSpawner::SpawnEnt
 ==============
 */
-bool idSpawner::SpawnEnt( void ){
+bool idSpawner::SpawnEnt( void )
+{
 	idDict		args;
 	idEntity*	spawnPoint;
 	idEntity*	spawnedEnt;
@@ -346,38 +390,45 @@ bool idSpawner::SpawnEnt( void ){
 	// Find a spawn point to spawn the entity
 	spawnPoint = GetSpawnPoint();
 
-	if ( spawnPoint == NULL ){
+	if( spawnPoint == NULL )
+	{
 		return false;
 	}
 
 	// No valid spawn types for this point
 	temp = GetSpawnType( spawnPoint );
-	if ( !temp || !*temp ) {
-		gameLocal.Warning ( "Spawner '%s' could not find any valid spawn types for spawn point '%s'", GetName(), spawnPoint->GetName() );
+	if( !temp || !*temp )
+	{
+		gameLocal.Warning( "Spawner '%s' could not find any valid spawn types for spawn point '%s'", GetName(), spawnPoint->GetName() );
 		return false;
 	}
 
 	// Build the spawn parameters for the entity about to be spawned
 	args.Set( "origin", spawnPoint->GetPhysics()->GetOrigin().ToString() );
-	if ( spawnArgs.GetBool( "face_enemy", "0" ) ) {
+	if( spawnArgs.GetBool( "face_enemy", "0" ) )
+	{
 		idVec3 dir = gameLocal.GetLocalPlayer()->GetPhysics()->GetOrigin() - spawnPoint->GetPhysics()->GetOrigin();
 		dir.Normalize();
 		args.SetFloat( "angle", dir.ToYaw() );
-	} else {
+	}
+	else
+	{
 		args.SetFloat( "angle", spawnPoint->GetPhysics()->GetAxis().ToAngles()[ YAW ] );
 	}
-	args.Set( "classname", temp );	
+	args.Set( "classname", temp );
 	args.SetBool( "forceEnemy", spawnArgs.GetBool( "auto_target", "1" ) );
 	args.SetInt( "teleport", spawnArgs.GetInt( "teleport", "4" ) );
 
 	// Copy all keywords prefixed with "spawn_" to the entity being spawned.
 	CopyPrefixedSpawnArgs( this, "spawn_", args );
-	if ( spawnPoint != this ) {
+	if( spawnPoint != this )
+	{
 		CopyPrefixedSpawnArgs( spawnPoint, "spawn_", args );
 	}
 
 	// Spawn the entity
-	if ( !gameLocal.SpawnEntityDef( args, &spawnedEnt ) ) {
+	if( !gameLocal.SpawnEntityDef( args, &spawnedEnt ) )
+	{
 		return false;
 	}
 
@@ -403,12 +454,14 @@ bool idSpawner::SpawnEnt( void ){
 	//}
 
 	// Activate the spawn point entity when an enemy is spawned there and all of its targets
-	if ( spawnPoint != this ) {
+	if( spawnPoint != this )
+	{
 		spawnPoint->ProcessEvent( &EV_Activate, spawnPoint );
 		spawnPoint->ActivateTargets( spawnedEnt );
-		
+
 		// One time use on this target?
-		if ( spawnPoint->spawnArgs.GetBool( "remove" ) ) {
+		if( spawnPoint->spawnArgs.GetBool( "remove" ) )
+		{
 			spawnPoint->PostEventMS( &EV_Remove, 0 );
 		}
 	}
@@ -424,9 +477,12 @@ bool idSpawner::SpawnEnt( void ){
 idSpawner::Think
 ==============
 */
-void idSpawner::Think( void ){
-	if ( thinkFlags & TH_THINK ) {
-		if ( ActiveListChanged() ) {// If an entity has been removed and we have not been informed via Detach
+void idSpawner::Think( void )
+{
+	if( thinkFlags & TH_THINK )
+	{
+		if( ActiveListChanged() )   // If an entity has been removed and we have not been informed via Detach
+		{
 			nextSpawnTime = gameLocal.time + spawnDelay;
 		}
 
@@ -439,32 +495,40 @@ void idSpawner::Think( void ){
 idSpawner::CheckSpawn
 ==============
 */
-void idSpawner::CheckSpawn( void ) {
+void idSpawner::CheckSpawn( void )
+{
 	int count;
 
-	if ( !spawnPoints.Num() ) {
-		const idKeyValue *kv;	
-		for ( kv = spawnArgs.MatchPrefix( "target", NULL ); kv; kv = spawnArgs.MatchPrefix( "target", kv ) ) {
+	if( !spawnPoints.Num() )
+	{
+		const idKeyValue* kv;
+		for( kv = spawnArgs.MatchPrefix( "target", NULL ); kv; kv = spawnArgs.MatchPrefix( "target", kv ) )
+		{
 			spawnPoints.Append( gameLocal.FindEntity( kv->GetValue() ) );
 		}
 	}
 
 	// Any spawn points?
-	if ( !spawnPoints.Num() ) {
+	if( !spawnPoints.Num() )
+	{
 		return;
 	}
 
 	// Is it time to spawn yet?
-	if ( nextSpawnTime == 0 || gameLocal.time < nextSpawnTime ) {
+	if( nextSpawnTime == 0 || gameLocal.time < nextSpawnTime )
+	{
 		return;
 	}
 
 	// Any left to spawn?
-	if ( maxToSpawn > -1 && numSpawned >= maxToSpawn ) {
+	if( maxToSpawn > -1 && numSpawned >= maxToSpawn )
+	{
 		// Activate trigger entity when last enemey has been killed
-		if ( currentActive.Num() == 0 ) {
+		if( currentActive.Num() == 0 )
+		{
 			idEntity* ent = gameLocal.FindEntity( spawnArgs.GetString( "trigger_used_up" ) );
-			if ( !ent ) {
+			if( !ent )
+			{
 				return;
 			}
 			ent->Signal( SIG_TRIGGER );
@@ -472,16 +536,19 @@ void idSpawner::CheckSpawn( void ) {
 			ent->TriggerGuis();
 			PostEventMS( &EV_Remove, 0 );
 		}
-		if ( !spawnArgs.GetString( "trigger_used_up" )[ 0 ] ) {
+		if( !spawnArgs.GetString( "trigger_used_up" )[ 0 ] )
+		{
 			PostEventMS( &EV_Remove, 0 );
 		}
 		return;
 	}
 
 	// Spawn in waves?
-	for ( count = 0; count < spawnWaves; count++ ) {
+	for( count = 0; count < spawnWaves; count++ )
+	{
 		// Too many active?
-		if ( currentActive.Num() >= maxActive ) {
+		if( currentActive.Num() >= maxActive )
+		{
 			return;
 		}
 
@@ -489,7 +556,8 @@ void idSpawner::CheckSpawn( void ) {
 		SpawnEnt();
 
 		// Are we at the limit now?
-		if ( maxToSpawn > -1 && numSpawned >= maxToSpawn ) {
+		if( maxToSpawn > -1 && numSpawned >= maxToSpawn )
+		{
 			CallScriptEvents( "call_used_up", this );
 			break;
 		}
@@ -504,24 +572,26 @@ void idSpawner::CheckSpawn( void ) {
 idSpawner::CallScriptEvents
 ==============
 */
-void idSpawner::CallScriptEvents( const char* prefixKey, idEntity* parm ) {
-	if ( !prefixKey || !prefixKey[ 0 ] ) {
+void idSpawner::CallScriptEvents( const char* prefixKey, idEntity* parm )
+{
+	if( !prefixKey || !prefixKey[ 0 ] )
+	{
 		return;
 	}
 
-/*	rvScriptFuncUtility func;
-	for ( const idKeyValue* kv = spawnArgs.MatchPrefix(prefixKey); kv; kv = spawnArgs.MatchPrefix( prefixKey, kv ) ) {
-		if( !kv->GetValue().Length() ) {
-			continue;
-		}
+	/*	rvScriptFuncUtility func;
+		for ( const idKeyValue* kv = spawnArgs.MatchPrefix(prefixKey); kv; kv = spawnArgs.MatchPrefix( prefixKey, kv ) ) {
+			if( !kv->GetValue().Length() ) {
+				continue;
+			}
 
-		if( func.Init( kv->GetValue()) <= SFU_ERROR ) {
-			continue;
-		}
+			if( func.Init( kv->GetValue()) <= SFU_ERROR ) {
+				continue;
+			}
 
-		func.InsertEntity( parm, 0 );
-		func.CallFunc( &spawnArgs );
-	}*/
+			func.InsertEntity( parm, 0 );
+			func.CallFunc( &spawnArgs );
+		}*/
 }
 
 /*
@@ -529,13 +599,16 @@ void idSpawner::CallScriptEvents( const char* prefixKey, idEntity* parm ) {
 idSpawner::ActiveListChanged
 ==============
 */
-bool idSpawner::ActiveListChanged() {
+bool idSpawner::ActiveListChanged()
+{
 	int previousCount = currentActive.Num();
 
 // ---> sikk - RemoveNull() function
 //	currentActive.RemoveNull();
-	for ( int i = currentActive.Num() - 1; i >= 0; --i ) {
-		if ( !currentActive[ i ].GetEntity() ) {
+	for( int i = currentActive.Num() - 1; i >= 0; --i )
+	{
+		if( !currentActive[ i ].GetEntity() )
+		{
 			currentActive.RemoveIndex( i );
 		}
 	}
@@ -552,7 +625,8 @@ Attach the given AI to the spawner.  This will increase the active count of the 
 set the spawner pointer in the ai.
 ==============
 */
-void idSpawner::Attach( idEntity* ent ) {
+void idSpawner::Attach( idEntity* ent )
+{
 	currentActive.AddUnique( ent );
 }
 
@@ -565,7 +639,8 @@ Attach the given AI to the spawner.  This will increase the active count of the 
 set the spawner pointer in the ai.
 ==============
 */
-void idSpawner::Detach( idEntity* ent ){
+void idSpawner::Detach( idEntity* ent )
+{
 	currentActive.Remove( ent );
 
 	nextSpawnTime = gameLocal.time + spawnDelay;
@@ -576,32 +651,38 @@ void idSpawner::Detach( idEntity* ent ){
 idSpawner::Event_Activate
 ==============
 */
-void idSpawner::Event_Activate( idEntity *activator ) {
-	
+void idSpawner::Event_Activate( idEntity* activator )
+{
+
 	// "trigger_only" spawners will attempt to spawn when triggered
-	if ( spawnArgs.GetBool( "trigger_only" ) ) {
+	if( spawnArgs.GetBool( "trigger_only" ) )
+	{
 		// Update next spawn time to follo CheckSpawn into thinking its time to spawn again
 		nextSpawnTime = gameLocal.time;
 		CheckSpawn();
 		return;
 	}
-	
+
 	// If nextSpawnTime is zero then the spawner is currently deactivated
-	if ( nextSpawnTime == 0 ) {
+	if( nextSpawnTime == 0 )
+	{
 		// Start thinking
 		BecomeActive( TH_THINK );
-		
+
 		// Allow immediate spawn
 		nextSpawnTime = gameLocal.time;
-		
+
 		// Spawn any ai targets and add them to the current count
 		ActivateTargets( this );
-	} else {
+	}
+	else
+	{
 		nextSpawnTime = 0;
 		BecomeInactive( TH_THINK );
-		
+
 		// Remove the spawner if need be
-		if ( spawnArgs.GetBool( "remove", "1" ) ) {
+		if( spawnArgs.GetBool( "remove", "1" ) )
+		{
 			PostEventMS( &EV_Remove, 0 );
 		}
 	}
@@ -612,9 +693,12 @@ void idSpawner::Event_Activate( idEntity *activator ) {
 idSpawner::Event_RemoveNullActiveEntities
 ==============
 */
-void idSpawner::Event_RemoveNullActiveEntities( void ) {
-	for ( int ix = currentActive.Num() - 1; ix >= 0; --ix ) {
-		if ( !currentActive[ ix ].IsValid() ) {
+void idSpawner::Event_RemoveNullActiveEntities( void )
+{
+	for( int ix = currentActive.Num() - 1; ix >= 0; --ix )
+	{
+		if( !currentActive[ ix ].IsValid() )
+		{
 			currentActive.RemoveIndex( ix );
 		}
 	}
@@ -625,7 +709,8 @@ void idSpawner::Event_RemoveNullActiveEntities( void ) {
 idSpawner::Event_NumActiveEntities
 ==============
 */
-void idSpawner::Event_NumActiveEntities( void ) {
+void idSpawner::Event_NumActiveEntities( void )
+{
 	idThread::ReturnInt( currentActive.Num() );
 }
 
@@ -634,6 +719,7 @@ void idSpawner::Event_NumActiveEntities( void ) {
 idSpawner::Event_GetActiveEntity
 ==============
 */
-void idSpawner::Event_GetActiveEntity( int index ) {
+void idSpawner::Event_GetActiveEntity( int index )
+{
 	idThread::ReturnEntity( ( index < 0 || index >= currentActive.Num() ) ? NULL : currentActive[ index ].GetEntity() );
 }

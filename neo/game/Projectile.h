@@ -2,9 +2,9 @@
 ===========================================================================
 
 Doom 3 GPL Source Code
-Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company. 
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
 
-This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).  
+This file is part of the Doom 3 GPL Source Code (?Doom 3 Source Code?).
 
 Doom 3 Source Code is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,46 +33,48 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 
   idProjectile
-	
+
 ===============================================================================
 */
 
 extern const idEventDef EV_Explode;
 
-class idProjectile : public idEntity {
+class idProjectile : public idEntity
+{
 public :
 	CLASS_PROTOTYPE( idProjectile );
 
-							idProjectile();
+	idProjectile();
 	virtual					~idProjectile();
 
 	void					Spawn( void );
 
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+	void					Save( idSaveGame* savefile ) const;
+	void					Restore( idRestoreGame* savefile );
 
-	void					Create( idEntity *owner, const idVec3 &start, const idVec3 &dir );
-	virtual void			Launch( const idVec3 &start, const idVec3 &dir, const idVec3 &pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f, const bool primary = true );	// sikk - Secondary Fire
+	void					Create( idEntity* owner, const idVec3& start, const idVec3& dir );
+	virtual void			Launch( const idVec3& start, const idVec3& dir, const idVec3& pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f, const bool primary = true );	// sikk - Secondary Fire
 	virtual void			FreeLightDef( void );
 
-	idEntity *				GetOwner( void ) const;
+	idEntity* 				GetOwner( void ) const;
 
 	virtual void			Think( void );
-	virtual void			Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
-	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
-	virtual void			Explode( const trace_t &collision, idEntity *ignore );
+	virtual void			Killed( idEntity* inflictor, idEntity* attacker, int damage, const idVec3& dir, int location );
+	virtual bool			Collide( const trace_t& collision, const idVec3& velocity );
+	virtual void			Explode( const trace_t& collision, idEntity* ignore );
 	void					Fizzle( void );
 
-	static idVec3			GetVelocity( const idDict *projectile );
-	static idVec3			GetGravity( const idDict *projectile );
+	static idVec3			GetVelocity( const idDict* projectile );
+	static idVec3			GetGravity( const idDict* projectile );
 
-	enum {
+	enum
+	{
 		EVENT_DAMAGE_EFFECT = idEntity::EVENT_MAXEVENTS,
 		EVENT_MAXEVENTS
 	};
 
-	void					AddDefaultDamageEffect( const trace_t &collision, const idVec3 &velocity );	// sikk - Move to public
-	static void				DefaultDamageEffect( idEntity *soundEnt, const idDict &projectileDef, const trace_t &collision, const idVec3 &velocity );
+	void					AddDefaultDamageEffect( const trace_t& collision, const idVec3& velocity );	// sikk - Move to public
+	static void				DefaultDamageEffect( idEntity* soundEnt, const idDict& projectileDef, const trace_t& collision, const idVec3& velocity );
 // sikk - removed multiplayer
 	//static bool				ClientPredictionCollide( idEntity *soundEnt, const idDict &projectileDef, const trace_t &collision, const idVec3 &velocity, bool addDamageEffect );
 	//virtual void			ClientPredictionThink( void );
@@ -83,7 +85,8 @@ public :
 protected:
 	idEntityPtr<idEntity>	owner;
 
-	struct projectileFlags_s {
+	struct projectileFlags_s
+	{
 		bool				detonate_on_world			: 1;
 		bool				detonate_on_actor			: 1;
 		bool				randomShaderSpin			: 1;
@@ -105,10 +108,11 @@ protected:
 	idForce_Constant		thruster;
 	idPhysics_RigidBody		physicsObj;
 
-	const idDeclParticle *	smokeFly;
+	const idDeclParticle* 	smokeFly;
 	int						smokeFlyTime;
 
-	typedef enum {
+	typedef enum
+	{
 		// must update these in script/doom_defs.script if changed
 		SPAWNED = 0,
 		CREATED = 1,
@@ -116,7 +120,7 @@ protected:
 		FIZZLED = 3,
 		EXPLODED = 4
 	} projectileState_t;
-	
+
 	projectileState_t		state;
 
 private:
@@ -125,29 +129,30 @@ private:
 
 	void					Event_Explode( void );
 	void					Event_Fizzle( void );
-	void					Event_RadiusDamage( idEntity *ignore );
-	void					Event_Touch( idEntity *other, trace_t *trace );
+	void					Event_RadiusDamage( idEntity* ignore );
+	void					Event_Touch( idEntity* other, trace_t* trace );
 	void					Event_GetProjectileState( void );
 };
 
-class idGuidedProjectile : public idProjectile {
+class idGuidedProjectile : public idProjectile
+{
 public :
 	CLASS_PROTOTYPE( idGuidedProjectile );
 
-							idGuidedProjectile( void );
-							~idGuidedProjectile( void );
+	idGuidedProjectile( void );
+	~idGuidedProjectile( void );
 
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+	void					Save( idSaveGame* savefile ) const;
+	void					Restore( idRestoreGame* savefile );
 
 	void					Spawn( void );
 	virtual void			Think( void );
-	virtual void			Launch( const idVec3 &start, const idVec3 &dir, const idVec3 &pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f, const bool primary = true );
+	virtual void			Launch( const idVec3& start, const idVec3& dir, const idVec3& pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f, const bool primary = true );
 
 protected:
 	float					speed;
 	idEntityPtr<idEntity>	enemy;
-	virtual void			GetSeekPos( idVec3 &out );
+	virtual void			GetSeekPos( idVec3& out );
 
 private:
 	idAngles				rndScale;
@@ -192,27 +197,29 @@ private:
 //	const idDeclParticle *	smokeKill;
 //};
 
-typedef struct beamTarget_s {
+typedef struct beamTarget_s
+{
 	//idEntityPtr<idEntity>	target;
 	idEntity*				target;
 	renderEntity_t			renderEntity;
 	qhandle_t				modelDefHandle;
 } beamTarget_t;
 
-class idBFGProjectile : public idProjectile {
+class idBFGProjectile : public idProjectile
+{
 public :
 	CLASS_PROTOTYPE( idBFGProjectile );
 
-							idBFGProjectile();
-							~idBFGProjectile();
+	idBFGProjectile();
+	~idBFGProjectile();
 
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+	void					Save( idSaveGame* savefile ) const;
+	void					Restore( idRestoreGame* savefile );
 
 	void					Spawn( void );
 	virtual void			Think( void );
-	virtual void			Launch( const idVec3 &start, const idVec3 &dir, const idVec3 &pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f, const bool primary = true );
-	virtual void			Explode( const trace_t &collision, idEntity *ignore );
+	virtual void			Launch( const idVec3& start, const idVec3& dir, const idVec3& pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f, const bool primary = true );
+	virtual void			Explode( const trace_t& collision, idEntity* ignore );
 
 // ---> sikk - BFG Modifications
 	virtual void			UpdateBeamTargets( void );
@@ -231,17 +238,18 @@ private:
 };
 
 // ---> sikk - Chainsaw Blade Projectile
-class idChainsawMissile : public idProjectile {
+class idChainsawMissile : public idProjectile
+{
 public:
-	CLASS_PROTOTYPE ( idChainsawMissile );
+	CLASS_PROTOTYPE( idChainsawMissile );
 	~idChainsawMissile();
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+	void					Save( idSaveGame* savefile ) const;
+	void					Restore( idRestoreGame* savefile );
 
 	void					Spawn( void );
 	virtual void			Think( void );
-	virtual void			Launch( const idVec3 &start, const idVec3 &dir, const idVec3 &pushVelocity, const float timeSinceFire = 0.0f, const float power = 1.0f, const float dmgPower = 1.0f, const bool primary = true );
-	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
+	virtual void			Launch( const idVec3& start, const idVec3& dir, const idVec3& pushVelocity, const float timeSinceFire = 0.0f, const float power = 1.0f, const float dmgPower = 1.0f, const bool primary = true );
+	virtual bool			Collide( const trace_t& collision, const idVec3& velocity );
 
 protected:
 	void					ReturnToOwner( void );
@@ -253,7 +261,7 @@ private:
 	bool					returnPhase;
 	idAngles				angles;
 	int						smokeKillTime;
-	const idDeclParticle *	smokeKill;
+	const idDeclParticle* 	smokeKill;
 
 	renderEntity_t			beamRenderEntity;
 	qhandle_t				beamModelDefHandle;
@@ -261,16 +269,17 @@ private:
 // <--- sikk - Chainsaw Blade Projectile
 
 // ---> sikk - Vagary Web Projectile
-class idVagaryMissile : public idProjectile {
+class idVagaryMissile : public idProjectile
+{
 public:
-	CLASS_PROTOTYPE ( idVagaryMissile );
+	CLASS_PROTOTYPE( idVagaryMissile );
 	~idVagaryMissile();
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+	void					Save( idSaveGame* savefile ) const;
+	void					Restore( idRestoreGame* savefile );
 
 	void					Spawn( void );
 	virtual void			Think( void );
-	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
+	virtual bool			Collide( const trace_t& collision, const idVec3& velocity );
 
 };
 // <--- sikk - Vagary Web Projectile
@@ -280,38 +289,39 @@ public:
 ===============================================================================
 
   idDebris
-	
+
 ===============================================================================
 */
 
-class idDebris : public idEntity {
+class idDebris : public idEntity
+{
 public :
 	CLASS_PROTOTYPE( idDebris );
 
-							idDebris();
-							~idDebris();
+	idDebris();
+	~idDebris();
 
 	// save games
-	void					Save( idSaveGame *savefile ) const;					// archives object for save game file
-	void					Restore( idRestoreGame *savefile );					// unarchives object from save game file
+	void					Save( idSaveGame* savefile ) const;					// archives object for save game file
+	void					Restore( idRestoreGame* savefile );					// unarchives object from save game file
 
 	void					Spawn( void );
 
-	void					Create( idEntity *owner, const idVec3 &start, const idMat3 &axis );
+	void					Create( idEntity* owner, const idVec3& start, const idMat3& axis );
 	void					Launch( void );
 	void					Think( void );
-	void					Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
+	void					Killed( idEntity* inflictor, idEntity* attacker, int damage, const idVec3& dir, int location );
 	void					Explode( void );
 	void					Fizzle( void );
-	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
+	virtual bool			Collide( const trace_t& collision, const idVec3& velocity );
 
 
 private:
 	idEntityPtr<idEntity>	owner;
 	idPhysics_RigidBody		physicsObj;
-	const idDeclParticle *	smokeFly;
+	const idDeclParticle* 	smokeFly;
 	int						smokeFlyTime;
-	const idSoundShader *	sndBounce;
+	const idSoundShader* 	sndBounce;
 
 
 	void					Event_Explode( void );
